@@ -382,15 +382,16 @@ def get_url_from_attachment(rally_attachment, filename)
 end
 
 # Creates an image (png, gif, jpg, bmp) image in rally
-# and returns the attachment object
+# and returns the Rally attachment object
 def create_image_attachment(attachment_data_hash)
 
+    # Base64-encoded string of image bytes for upload to Rally
     attachment_content_string = Base64.encode64(attachment_data_hash[:bytes])
 
-    # Create Attachment Content Object
+    # Create Rally Attachment Content Object
     attachment_content = @rally.create(:attachmentcontent, {"Content" => attachment_content_string})
 
-    # Now create Attachment and wire it up to Story
+    # Now create Rally Attachment and wire it up to Story
     attachment_fields = {}
     attachment_fields["Name"]                  = attachment_data_hash[:name]
     attachment_fields["ContentType"]           = attachment_data_hash[:mimetype]
@@ -398,6 +399,7 @@ def create_image_attachment(attachment_data_hash)
     attachment_fields["Artifact"]              = attachment_data_hash[:artifact]
     attachment_fields["Size"]                  = attachment_data_hash[:size]
     attachment = @rally.create(:attachment, attachment_fields)
+
     @logger.info "Imported #{attachment_data_hash[:name]} and attached to Rally Story with ObjectD: #{attachment_data_hash[:artifactoid]}."
     return attachment
 end
