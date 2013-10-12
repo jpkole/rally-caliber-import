@@ -32,7 +32,7 @@ $jdf_zeus_control_project        = "JDF-Zeus_Control-project"
 if $my_delim == nil then $my_delim = "\t" end
 
 # Load (and maybe override with) my personal/private variables from a file...
-# my_vars = File.dirname(__FILE__) + "/my_vars.rb"
+# my_vars = File.dirname(__FILE__) + "/my_vars_requirements_traces.rb"
 # if FileTest.exist?( my_vars ) then require my_vars end
 
 caliber_data = Nokogiri::XML(File.open($caliber_file_name), 'UTF-8') do | config |
