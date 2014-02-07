@@ -253,7 +253,7 @@ begin
                 testcase_oid_data                    = []
 
                 # Store fields that derive from Project and Requirement objects
-                this_testcase                        = $caliber_testcase_record_template
+                this_testcase                        = {}
                 this_testcase['project']             = report['project']
                 this_testcase['hierarchy']           = testcase['hierarchy']
                 this_testcase['id']                  = testcase['id']

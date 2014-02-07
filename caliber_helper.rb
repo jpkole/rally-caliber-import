@@ -26,9 +26,17 @@ class CaliberHelper
             "gif"    => "image/gif",
             "jpeg"   => "image/jpeg",
             "jpg"    => "image/jpeg",
-            "png"    => "image/png"
+            "png"    => "image/png",
+            "ico"    => "image/icon",
+            "emf"    => "image/emf",
+            "wmf"    => "image/wmf"
         }
-        return valid_mime_types[file_ext]
+        if valid_mime_types.has_key?(file_ext)
+            return valid_mime_types[file_ext]
+        else
+            @logger.error "Unrecognized mimetype '#{file_ext}' found."
+        end
+        debugger
     end
 
     # turns 0E2050EC-A2BD-4432-92A3-5B74027FC4AE.JPG (caliber name) into:
@@ -222,7 +230,7 @@ class CaliberHelper
             image_url_unescaped = URI.unescape(image_src)
             image_file_name = image_url_unescaped.split("\\")[-1]
 
-            image_file = File.dirname(__FILE__) + "#{@caliber_image_directory}/#{image_file_name}"
+            image_file = File.dirname(__FILE__) + "/#{@caliber_image_directory}/#{image_file_name}"
             caliber_image_files.push(image_file)
             caliber_image_ids.push(image_id)
         end
@@ -272,7 +280,9 @@ class CaliberHelper
     # Mash Caliber Open Issues data into a notes field for Rally Story
     def make_requirement_notes(requirement)
         notes = make_header('Caliber Open Issues')
-        notes += requirement['open_issues']
+        if requirement.has_key? 'open_issues'
+            notes += requirement['open_issues']
+	end
     end
 
     # Take Caliber Requirement hash, process and combine field data and create a story in Rally

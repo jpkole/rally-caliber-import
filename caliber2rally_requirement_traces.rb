@@ -17,7 +17,8 @@ $max_attachment_length           = 5000000
 
 # Caliber parameters
 $caliber_file_name               = "hhc_traces.xml"
-$caliber_trace_field_name        = 'CaliberTraces'
+#$caliber_trace_field_name        = 'CaliberTraces'
+$caliber_trace_field_name        = 'Externalreference'
 
 # Cached Caliber Requirement to Rally Story OID data
 $story_oids_from_reqname         = "story_oids_by_reqname.csv"
@@ -76,9 +77,19 @@ def cache_story_oid(header, row)
 end
 
 def create_traces_text_from_traces_array(traces_array)
+    rally_host = $my_base_url.split("/")[-2]
+    detail_url_prefix = "https://#{rally_host}/#/detail/userstory"
     traces_markup = '<p><b>Caliber TRACES</b></p><br>'
     trace_counter = 1
     traces_array.each do | this_trace |
+
+        story_oid = @story_oid_by_reqname[this_trace]
+	if !story_oid.nil? then
+	    this_trace_name = this_trace
+            story_url_detail ' "#{detail_url_prefix}/#{story_oid}"
+	    this_trace = "<a href=\"#{story_detail_url}\">#{this_trace_name}</a>"
+	end
+
         traces_markup += trace_counter.to_s + ". "
         traces_markup += this_trace
         traces_markup += '<br>'

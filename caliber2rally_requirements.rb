@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require 'base64'
 require 'csv'
 require 'nokogiri'
@@ -6,6 +8,7 @@ require 'rally_api'
 require 'logger'
 require './caliber_helper.rb'
 require './multi_io.rb'
+require 'debugger'
 
 # Rally Connection parameters
 $my_base_url                     = "https://rally1.rallydev.com/slm"
@@ -18,8 +21,8 @@ $max_attachment_length           = 5000000
 
 # Caliber parameters
 $caliber_file_name               = "hhc.xml"
-$caliber_id_field_name           = 'CaliberID'
-$caliber_image_directory         = "/images"
+$caliber_id_field_name           = 'Externalreference'
+$caliber_image_directory         = "foo"
 
 # Runtime preferences
 $max_import_count                = 100000
@@ -34,20 +37,21 @@ $my_output_file                  = "caliber_requirements.csv"
 $requirement_fields              =  %w{id hierarchy name project description validation purpose pre_condition basic_course post_condition exceptions remarks}
 
 # Output fields to store a CSV
-# allowing lookup of TestCase OID by Caliber TestCase ID
+# allowing lookup of Story OID by Caliber Requirement Name
 # (needed for traces import)
-$story_oid_output_csv            = "story_oids_by_testcaseid.csv"
+$story_oid_output_csv            = "story_oids_by_reqname.csv"
 $story_oid_output_fields         =  %w{reqname ObjectID}
-
-# JDF Project setting
-$caliber_project                 = "JDF-Zeus_Control-project"
-$jdf_zeus_control_project        = "JDF-Zeus_Control-project"
 
 if $my_delim == nil then $my_delim = "\t" end
 
 # Load (and maybe override with) my personal/private variables from a file...
-# my_vars = File.dirname(__FILE__) + "/my_vars_requirements.rb"
-# if FileTest.exist?( my_vars ) then require my_vars end
+my_vars = "./my_vars_requirements.rb"
+if FileTest.exist?( my_vars ) then 
+	print "Sourcing #{my_vars}...\n"
+	require my_vars
+else
+	print "File #{my_vars} not found...\n"
+end
 
 # HTML Mode vs. XML Mode
 # The following is needed to preserve newlines in formatting of UDAValues when
@@ -57,6 +61,7 @@ if $my_delim == nil then $my_delim = "\t" end
 # And reads the resulting input as HTML rather than XML
 caliber_file = File.open($caliber_file_name, 'rb')
 caliber_content = caliber_file.read
+
 caliber_content_html = caliber_content.gsub("\n", "&lt;br&gt;\n")
 
 if $html_mode then
@@ -151,6 +156,8 @@ $uda_value_name_post_condition           = "JDF Post-condition [Po]"
 $uda_value_name_exceptions               = "JDF Exceptions [Ex]"
 $uda_value_name_remarks                  = "JDF Remarks [Re]"
 $uda_value_name_open_issues              = "JDF Open Issues"
+$uda_value_name_input                    = "JDF Input [In]"
+$uda_value_name_output                   = "JDF Output [Ou]"
 
 
 # Record template hash for a requirement from Caliber
@@ -172,17 +179,6 @@ $caliber_requirement_record_template = {
     'open_issues'           => ""
 }
 
-$description_field_hash = {
-    'Caliber Purpose'         => 'caliber_purpose',
-    'Pre-condition'           => 'pre_condition',
-    'Basic course'            => 'basic_course',
-    'Post-condition'          => 'post_condition',
-    'Exceptions'              => 'exceptions',
-    'Remarks'                 => 'remarks',
-    'Description'             => 'description'
-}
-
-
 begin
 
 #==================== Connect to Rally and Import Caliber data ====================
@@ -202,8 +198,6 @@ begin
     config[:headers]        = $headers
 
     @rally = RallyAPI::RallyRestJson.new(config)
-    puts @rally.url
-    exit
 
     # Instantiate Logger
     log_file = File.open("caliber2rally.log", "a")
@@ -211,6 +205,9 @@ begin
     @logger = Logger.new MultiIO.new(STDOUT, log_file)
 
     @logger.level = Logger::INFO #DEBUG | INFO | WARNING | FATAL
+    if $preview_mode then
+        @logger.info "----PREVIEW MODE----"
+    end
 
     # Initialize Caliber Helper
     @caliber_helper = CaliberHelper.new(@rally, $caliber_project, $caliber_id_field_name,
@@ -246,7 +243,8 @@ begin
                 story_oid_data         = []
 
                 # Store fields that derive from Project and Requirement objects
-                this_requirement = $caliber_requirement_record_template
+                #this_requirement = $caliber_requirement_record_template
+                this_requirement			= {}
                 this_requirement['project']             = report['project']
                 this_requirement['hierarchy']           = requirement['hierarchy']
                 this_requirement['id']                  = requirement['id']
@@ -286,6 +284,10 @@ begin
                                 this_requirement['remarks']            = uda_value_value
                             when $uda_value_name_open_issues
                                 this_requirement['open_issues']        = uda_value_value
+			    when $uda_value_name_input
+                                this_requirement['input']              = uda_value_value
+			    when $uda_value_name_output
+                                this_requirement['output']             = uda_value_value
                         end
                     end
                 end

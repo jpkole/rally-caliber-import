@@ -191,6 +191,7 @@ begin
                     this_traceid          = jd_trace.search($jdtraceid_tag).first.text
                     this_tracename        = jd_trace.search($jdtracename_tag).first.text
 
+		    # May need to remove if testcases can/should link to requirements as well?
                     is_testcase = this_traceid.match(/^TC/)
 
                     if !is_testcase.nil? then
