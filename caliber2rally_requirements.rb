@@ -53,6 +53,7 @@ else
 	print "File #{my_vars} not found...\n"
 end
 
+
 # HTML Mode vs. XML Mode
 # The following is needed to preserve newlines in formatting of UDAValues when
 # Imported into Rally. Caliber export uses newlines in UDAValue attributes as formatting.
@@ -209,6 +210,22 @@ begin
         @logger.info "----PREVIEW MODE----"
     end
 
+    # Report vars
+    @logger.info "Running #{$PROGRAM_NAME} with the following settings:
+		$my_base_url             = #{$my_base_url}
+		$my_username             = #{$my_username}
+		$my_workspace            = #{$my_workspace}
+		$my_project              = #{$my_project}
+		$caliber_file_name       = #{$caliber_file_name}
+		$caliber_image_directory = #{$caliber_image_directory}
+		$caliber_id_field_name   = #{$caliber_id_field_name}
+		$max_import_count        = #{$max_import_count}
+		$my_output_file          = #{$my_output_file}
+		$description_field_hash  = #{$description_field_hash}
+		$import_to_rally         = #{$import_to_rally}
+		$stitch_hierarchy        = #{$stitch_hierarchy}
+		$import_images_flag      = #{$import_images_flag}"
+
     # Initialize Caliber Helper
     @caliber_helper = CaliberHelper.new(@rally, $caliber_project, $caliber_id_field_name,
         $description_field_hash, $caliber_image_directory, @logger, nil)
@@ -292,7 +309,7 @@ begin
                     end
                 end
 
-                @logger.info "Finished Reading Caliber Requirement ID: #{req_id}; Hierarchy: #{req_hierarchy}; Project: #{req_project}"
+                @logger.info "    Finished Reading Caliber Requirement ID: #{req_id}; Hierarchy: #{req_hierarchy}; Project: #{req_project}"
 
                 # Dummy story used only when testing
                 story = {
@@ -314,7 +331,7 @@ begin
 
                 # Get the Parent hierarchy ID for this Caliber Requirement
                 parent_hierarchy_id = @caliber_helper.get_parent_hierarchy_id(this_requirement)
-                @logger.info "Parent Hierarchy ID: #{parent_hierarchy_id}"
+                @logger.info "    Parent Hierarchy ID: #{parent_hierarchy_id}"
 
                 # Store the requirements Parent Hierarchy ID for use in stitching
                 @caliber_parent_hash[req_hierarchy] = parent_hierarchy_id

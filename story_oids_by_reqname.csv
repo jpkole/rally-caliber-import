@@ -1,67 +1,67 @@
 reqname	ObjectID
-GENERAL_REQUIREMENTS	4856792
-System overview	4856806
-Arm rest controller	4856820
-Boom and boom tilt control joystick	4856834
-EJM1,EJM2 and BJM2 sending periods	4857349
-Steering joystick	4857363
-Voting algorithm	4857377
-BJM3 sending period	4857391
-Buttons	4857405
-Drive direction switch	4857419
-LED control	4857433
-Parameter handling	4857447
-Calibration	4857461
-Fault monitoring	4857475
-SAFETY	4857489
-Parameter validity	4857503
-Buttons at start up	4857517
-Steering joystick	4857531
-Boom and pilar tilt joysticks	4857545
-Button down too long time	4857559
-Four or more buttons pressed simultaneously	4857573
-Armrest tilt switch	4857587
-Secondary steering controller	4857601
-Steering joystick	4857615
-Voting algorithm	4857629
-Valve outputs	4857643
-Calibration	4857657
-Parameter handling	4857671
-States	4857685
-Primary Normal	4857699
-Primary Safe	4857713
-Secondary Safe	4857727
-Stop Request	4857741
-PWM stability	4857755
-Version number reading	4857769
-GENERAL REQUIREMENTS	4857783
-System overview	4857798
-Arm rest controller	4857813
-Boom and boom tilt control joystick	4857828
-Steering joystick	4857843
-Buttons	4857858
-Drive direction switch	4857873
-LED control	4857888
-Parameter handling	4857903
-New Requirement	4857918
-Calibration	4857933
-Fault monitoring	4857948
-SAFETY	4857963
-Parameter validity	4857978
-Buttons at start up	4857993
-Steering joystick	4858008
-Boom and pilar tilt joysticks	4858023
-Button down toolong time	4858038
-Four or more buttons pressed simultaneously	4858053
-Armrest tilt switch	4858068
-Secondary steering controller	4858083
-Steering joystick	4858098
-Voting algorithm	4858113
-Valve outputs	4858128
-Calibration	4858143
-Parameter handling	4858158
-States	4858173
-Primary Normal	4858188
-Primary Safe	4858203
-Secondary Safe	4858218
-Stop Request	4858233
+GENERAL_REQUIREMENTS	4835774
+System overview	4835785
+Arm rest controller	4835796
+Boom and boom tilt control joystick	4835807
+EJM1,EJM2 and BJM2 sending periods	4835818
+Steering joystick	4835829
+Voting algorithm	4835840
+BJM3 sending period	4835851
+Buttons	4835862
+Drive direction switch	4835873
+LED control	4835884
+Parameter handling	4835895
+Calibration	4835906
+Fault monitoring	4835917
+SAFETY	4835928
+Parameter validity	4835939
+Buttons at start up	4835950
+Steering joystick	4835961
+Boom and pilar tilt joysticks	4835972
+Button down too long time	4835983
+Four or more buttons pressed simultaneously	4835994
+Armrest tilt switch	4836005
+Secondary steering controller	4836016
+Steering joystick	4836027
+Voting algorithm	4836038
+Valve outputs	4836049
+Calibration	4836060
+Parameter handling	4836071
+States	4836082
+Primary Normal	4836093
+Primary Safe	4836104
+Secondary Safe	4836115
+Stop Request	4836126
+PWM stability	4836137
+Version number reading	4836148
+GENERAL REQUIREMENTS	4836159
+System overview	4836171
+Arm rest controller	4836183
+Boom and boom tilt control joystick	4836195
+Steering joystick	4836207
+Buttons	4836219
+Drive direction switch	4836231
+LED control	4836243
+Parameter handling	4836255
+New Requirement	4836267
+Calibration	4836279
+Fault monitoring	4836291
+SAFETY	4836303
+Parameter validity	4836315
+Buttons at start up	4836327
+Steering joystick	4836339
+Boom and pilar tilt joysticks	4836351
+Button down toolong time	4836363
+Four or more buttons pressed simultaneously	4836375
+Armrest tilt switch	4836387
+Secondary steering controller	4836399
+Steering joystick	4836411
+Voting algorithm	4836423
+Valve outputs	4836435
+Calibration	4836447
+Parameter handling	4836459
+States	4836471
+Primary Normal	4836483
+Primary Safe	4836495
+Secondary Safe	4836507
+Stop Request	4836519

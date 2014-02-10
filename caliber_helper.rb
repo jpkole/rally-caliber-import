@@ -36,7 +36,6 @@ class CaliberHelper
         else
             @logger.error "Unrecognized mimetype '#{file_ext}' found."
         end
-        debugger
     end
 
     # turns 0E2050EC-A2BD-4432-92A3-5B74027FC4AE.JPG (caliber name) into:
@@ -78,7 +77,7 @@ class CaliberHelper
         attachment_fields["Size"]                  = attachment_data_hash[:size]
         attachment = @rally.create(:attachment, attachment_fields)
 
-        @logger.info "Imported #{attachment_data_hash[:name]} and attached to Rally Story with ObjectD: #{attachment_data_hash[:artifactoid]}."
+        @logger.info "    Imported #{attachment_data_hash[:name]} and attached to Rally Story with ObjectD: #{attachment_data_hash[:artifactoid]}"
         return attachment
     end
 
@@ -101,7 +100,7 @@ class CaliberHelper
         update_fields = {}
         update_fields["Description"] = new_description
         updated_story = @rally.update("hierarchicalrequirement", story_oid, update_fields)
-        @logger.info "Updated Rally Story ObjectID: #{story_oid} with embedded images."
+        @logger.info "    Updated Rally Story ObjectID: #{story_oid} with embedded images."
 
     end
 
@@ -111,12 +110,12 @@ class CaliberHelper
     # - Creates an attachment in Rally corresponding to the image from Caliber
     # - Stitches Rally's image URL back into Rally Artifact description <img src="" tags
     #   to effect "in-lining" of the images in the Rally Artifact description
-    def import_images(artifacts_with_images_hash)
+    def import_images(artifacts_with_images_hash) #{
         @logger.info "Starting post-service to import Caliber images for requirements that have embedded images."
         artifacts_with_images_hash.each_pair do | this_artifact_oid, this_caliber_image_data |
 
-            this_image_list         = this_caliber_image_data["files"]
-            this_image_id_list      = this_caliber_image_data["ids"]
+            this_image_list            = this_caliber_image_data["files"]
+            this_image_id_list         = this_caliber_image_data["ids"]
             this_artifact_description  = this_caliber_image_data["description"]
             this_artifact_ref          = this_caliber_image_data["ref"]
 
@@ -125,14 +124,15 @@ class CaliberHelper
             # Array with relative URL's to Rally-embedded attachments
             new_attachment_sources = []
 
-            this_image_list.each do | this_image_file |
+            this_image_list.each do | this_image_file | #{
+                @logger.info "Processing image file #{index+1}: #{File.basename(this_image_file)}..."
                 if File.exist?(this_image_file) then
                     image_bytes = File.open(this_image_file, 'rb') { | file | file.read }
                     image_id = this_image_id_list[index]
                     attachment_name, mimetype = get_image_metadata(this_image_file, image_id)
 
                     if mimetype.nil? then
-                        @logger.warn "Invalid mime-type encountered! Skipped importing image file #{this_image_file} to Rally Description on Artifact with ObjectID: #{this_artifact_oid}."
+                        @logger.warn "Invalid mime-type encountered! Skipped importing image file #{this_image_file} to Rally Description on Artifact with ObjectID: #{this_artifact_oid}"
                         next
                     end
                     if image_bytes.length > @max_attachment_length then
@@ -156,22 +156,22 @@ class CaliberHelper
                         # So that we can stitch it back into the Description to "in-line" the image
                         new_attachment_sources.push(attachment_src_url)
                     rescue => ex
-                        @logger.error "Error occurred trying to create attachment from #{this_image_file} for Rally Artifact with ObjectID: #{this_artifact_oid}."
+                        @logger.error "Error occurred trying to create attachment from #{this_image_file} for Rally Artifact with ObjectID: #{this_artifact_oid}"
                         @logger.error ex.message
                         @logger.error ex.backtrace
                     end
                 else
-                    @logger.warn "Caliber image file: #{this_image_file} not found. Skipped importing image to Rally Description on Artifact with ObjectID: #{this_artifact_oid}."
+                    @logger.warn "Caliber image file: #{this_image_file} not found. Skipped importing image to Rally Description on Artifact with ObjectID: #{this_artifact_oid}"
                 end
                 index += 1
-            end
+            end #} end of "this_image_list.each do | this_image_file |"
 
             # Stitch the attachment url into Rally Descritpion and replace embedded
             # <img src="file:\\\blah\blah1\blah2.jpg"
             # tags of the Rally Description with new URL data from actual attachment in Rally
             fix_description_images(this_artifact_oid, this_artifact_description, new_attachment_sources)
         end
-    end
+    end #} end of "def import_images(artifacts_with_images_hash)"
 
     # Caliber hierarchy id's look like: 1.1.1, as an example
     # The parent requirement of 1.1.1 would be 1.1
@@ -188,7 +188,7 @@ class CaliberHelper
         else
             parent_id_string = @no_parent_id
         end
-        @logger.info "hierarchy_id: #{hierarchy_id} has parent_id: #{parent_id_string}."
+        @logger.info "    hierarchy_id: #{hierarchy_id} has parent_id: #{parent_id_string}."
         return parent_id_string
     end
 
@@ -293,7 +293,7 @@ class CaliberHelper
         req_project = requirement['project']
         req_description = requirement['description']
 
-        @logger.info "Processing Caliber Requirement ID: #{req_id}; Hierarchy: #{req_hierarchy}; Project: #{req_project}"
+        @logger.info "    Processing Caliber Requirement ID: #{req_id}; Hierarchy: #{req_hierarchy}; Project: #{req_project}"
 
         story = {}
         story["Name"]                   = make_name(requirement, :requirement)
@@ -305,7 +305,8 @@ class CaliberHelper
             story = @rally.create("hierarchicalrequirement", story)
             story.read
             story_oid = story['ObjectID']
-            @logger.info "Successfully Created Rally Story: ObjectID #{story_oid}; from CaliberID: #{req_id}."
+            story_fid = story['FormattedID']
+            @logger.info "    Successfully Created Rally Story: #{story_fid}; OID: #{story_oid}; from CaliberID: #{req_id}"
             return story
         rescue => ex
             @logger.error "Error occurred creating Rally Story from Caliber Requirement ID: #{req_id}. Not imported."
@@ -347,7 +348,7 @@ class CaliberHelper
             testcase = @rally.create("testcase", testcase_fields)
             testcase.read
             testcase_oid = testcase['ObjectID']
-            @logger.info "Successfully Created Rally TestCase: ObjectID #{testcase_oid}; from CaliberID: #{testcase_id}."
+            @logger.info "Successfully Created Rally TestCase: ObjectID #{testcase_oid}; from CaliberID: #{testcase_id}"
             return testcase
         rescue => ex
             @logger.error "Error occurred creating Rally TestCase from Caliber TestCase ID: #{testcase_id}. Not imported."
@@ -381,18 +382,20 @@ class CaliberHelper
             if this_parent_hierarchy_id != @no_parent_id then
                 child_story = rally_story_hierarchy_hash[this_hierarchy_id]
                 child_story_oid = child_story['ObjectID']
+                child_story_fid = child_story['FormattedID']
                 parent_story = rally_story_hierarchy_hash[this_parent_hierarchy_id]
                 parent_story_oid = parent_story['ObjectID']
+                parent_story_fid = parent_story['FormattedID']
 
-                @logger.info "Parenting Child Hierarchy ID: #{this_hierarchy_id} with Story ObjectID: #{child_story_oid} to: "
-                @logger.info "         Parent Hierarchy ID: #{this_parent_hierarchy_id} with Story ObjectID: #{parent_story_oid}."
+                @logger.info "Parenting Child Hierarchy ID: #{this_hierarchy_id} with Story: #{child_story_fid}; OID: #{child_story_oid} to: "
+                @logger.info "         Parent Hierarchy ID: #{this_parent_hierarchy_id} with Story: #{parent_story_fid}; OID: #{parent_story_oid}"
                 update_fields = {}
                 update_fields["Parent"] = parent_story._ref
                 begin
                     @rally.update("hierarchicalrequirement", child_story_oid, update_fields)
-                    @logger.info "Successfully Parented Rally Story: ObjectID #{child_story_oid}; to Story: #{parent_story_oid}."
+                    @logger.info "         Successfully Parented Rally Story: #{child_story_fid}; OID: #{child_story_oid}; to Story: #{parent_story_fid}; OID: #{parent_story_oid}"
                 rescue => ex
-                    @logger.error "Error occurred attempting to Parent Rally Story: ObjectID #{child_story_oid}; to Story: #{parent_story_oid}."
+                    @logger.error "         Error occurred attempting to Parent Rally Story: ObjectID #{child_story_oid}; to Story: #{parent_story_oid}"
                     @logger.error ex.message
                     @logger.error ex.backtrace
                 end
@@ -415,7 +418,7 @@ class CaliberHelper
                 parent_testcase_oid = parent_testcase['ObjectID']
 
                 @logger.info "Linking Child Hierarchy ID: #{this_hierarchy_id} with TestCase ObjectID: #{child_testcase_oid} to: "
-                @logger.info "        Parent Hierarchy ID: #{this_parent_hierarchy_id} with TestCase ObjectID: #{parent_testcase_oid}."
+                @logger.info "        Parent Hierarchy ID: #{this_parent_hierarchy_id} with TestCase ObjectID: #{parent_testcase_oid}"
 
                 parent_web_link = {}
                 parent_web_link["LinkID"] = parent_testcase_oid
@@ -426,9 +429,9 @@ class CaliberHelper
                 begin
 
                     @rally.update("testcase", child_testcase_oid, update_fields)
-                    @logger.info "Successfully Linked Rally TestCase: ObjectID #{child_testcase_oid}; to TestCase: #{parent_testcase_oid}."
+                    @logger.info "Successfully Linked Rally TestCase: ObjectID #{child_testcase_oid}; to TestCase: #{parent_testcase_oid}"
                 rescue => ex
-                    @logger.error "Error occurred attempting to Link Rally TestCase: ObjectID #{child_testcase_oid}; to TestCase: #{parent_testcase_oid}."
+                    @logger.error "Error occurred attempting to Link Rally TestCase: ObjectID #{child_testcase_oid}; to TestCase: #{parent_testcase_oid}"
                     @logger.error ex.message
                     @logger.error ex.backtrace
                 end
