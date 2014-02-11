@@ -102,7 +102,8 @@ $jdtracename_tag                                  = "JDtraceName"
 def cache_testcase_oid(header, row)
     testcase_id                 = row[header[0]].strip
     testcase_oid                = row[header[1]].strip
-    testcase_name               = row[header[2]].strip
+    testcase_fid                = row[header[2]].strip
+    testcase_name               = row[header[3]].strip
 
     if !testcase_id.eql? nil then
         @testcase_oid_by_caliber_testcase_id[testcase_id] = testcase_oid.to_s
@@ -116,7 +117,8 @@ end
 def cache_story_oid(header, row)
     req_name               = row[header[0]].strip
     story_oid              = row[header[1]].strip
-    req_id                 = row[header[2]].strip
+    story_fid              = row[header[2]].strip
+    req_id                 = row[header[3]].strip
 
     if !req_id.eql? nil then
         @story_oid_by_reqid[req_id] = story_oid.to_s
@@ -189,7 +191,7 @@ def update_testcase_with_caliber_traces(testcase_oid, testcase_id, traces_text)
     update_fields[$caliber_trace_field_name] = traces_text
     begin
         @rally.update("testcase", testcase_oid, update_fields)
-        @logger.info "Successfully Imported Caliber Traces for Rally TestCase: ObjectID #{testcase_oid}."
+        @logger.info "    Successfully Imported Caliber Traces for Rally TestCase: ObjectID #{testcase_oid}."
     rescue => ex
         @logger.error "Error occurred attempting to Import Caliber Traces to Rally Story: ObjectID #{testcase_oid}."
         @logger.error ex.message
@@ -223,6 +225,41 @@ begin
     @logger = Logger.new MultiIO.new(STDOUT, log_file)
 
     @logger.level = Logger::INFO #DEBUG | INFO | WARNING | FATAL
+
+    # Report vars
+    @logger.info "Running #{$PROGRAM_NAME} with the following settings:
+		$my_base_url                     = #{$my_base_url}
+		$my_username                     = #{$my_username}
+		$wsapi_version                   = #{$wsapi_version}
+		$my_workspace                    = #{$my_workspace}
+		$my_project                      = #{$my_project}
+		$max_attachment_length           = #{$max_attachment_length}
+		$caliber_file_req                = #{$caliber_file_req}
+		$caliber_file_req_traces         = #{$caliber_file_req_traces}
+		$caliber_file_tc                 = #{$caliber_file_tc}
+		$caliber_file_tc_traces          = #{$caliber_file_tc_traces}
+		$caliber_image_directory         = #{$caliber_image_directory}
+		$caliber_id_field_name           = #{$caliber_id_field_name}
+		$caliber_weblink_field_name      = #{$caliber_weblink_field_name}
+		$caliber_req_traces_field_name   = #{$caliber_req_traces_field_name}
+		$caliber_tc_traces_field_name    = #{$caliber_tc_traces_field_name}
+		$max_import_count                = #{$max_import_count}
+		$html_mode                       = #{$html_mode}
+		$preview_mode                    = #{$preview_mode}
+		$no_parent_id                    = #{$no_parent_id}
+		$csv_requirements                = #{$csv_requirements}
+		$csv_requirement_fields          = #{$csv_requirement_fields}
+		$csv_story_oids_by_req           = #{$csv_story_oids_by_req}
+		$csv_story_oids_by_req_fields    = #{$csv_story_oids_by_req_fields}
+		$csv_testcases                   = #{$csv_testcases}
+		$csv_testcase_fields             = #{$csv_testcase_fields}
+		$csv_testcase_oid_output         = #{$csv_testcase_oid_output}
+		$csv_testcase_oid_output_fields  = #{$csv_testcase_oid_output_fields}
+		$cal2ral_req_log                 = #{$cal2ral_req_log}
+		$cal2ral_req_traces_log          = #{$cal2ral_req_traces_log}
+		$cal2ral_tc_log                  = #{$cal2ral_tc_log}
+		$cal2ral_tc_traces_log           = #{$cal2ral_tc_traces_log}
+		$description_field_hash          = #{$description_field_hash}"
 
     ############################
     # Hash to provide a lookup from Caliber TestCase ID -> Rally TestCase OID

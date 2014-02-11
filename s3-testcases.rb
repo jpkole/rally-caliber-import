@@ -215,22 +215,38 @@ begin
 
     # Report vars
     @logger.info "Running #{$PROGRAM_NAME} with the following settings:
-                $my_base_url                    = #{$my_base_url}
-                $my_username                    = #{$my_username}
-                $my_workspace                   = #{$my_workspace}
-                $my_project                     = #{$my_project}
-                $caliber_file_name              = #{$caliber_file_name}
-                $caliber_image_directory        = #{$caliber_image_directory}
-                $caliber_id_field_name          = #{$caliber_id_field_name}
-		$caliber_weblink_field_name     = #{$caliber_weblink_field_name}
-                $max_import_count               = #{$max_import_count}
-                $my_output_file                 = #{$my_output_file}
-  		$csv_testcase_fields            = #{$csv_testcase_fields}
-                $import_to_rally                = #{$import_to_rally}
-                $stitch_hierarchy               = #{$stitch_hierarchy}
-                $import_images_flag             = #{$import_images_flag}
-                $csv_testcase_oid_output        = #{$csv_testcase_oid_output}
-                $csv_testcase_oid_output_fields = #{$csv_testcase_oid_output_fields}"
+		$my_base_url                     = #{$my_base_url}
+		$my_username                     = #{$my_username}
+		$wsapi_version                   = #{$wsapi_version}
+		$my_workspace                    = #{$my_workspace}
+		$my_project                      = #{$my_project}
+		$max_attachment_length           = #{$max_attachment_length}
+		$caliber_file_req                = #{$caliber_file_req}
+		$caliber_file_req_traces         = #{$caliber_file_req_traces}
+		$caliber_file_tc                 = #{$caliber_file_tc}
+		$caliber_file_tc_traces          = #{$caliber_file_tc_traces}
+		$caliber_image_directory         = #{$caliber_image_directory}
+		$caliber_id_field_name           = #{$caliber_id_field_name}
+		$caliber_weblink_field_name      = #{$caliber_weblink_field_name}
+		$caliber_req_traces_field_name   = #{$caliber_req_traces_field_name}
+		$caliber_tc_traces_field_name    = #{$caliber_tc_traces_field_name}
+		$max_import_count                = #{$max_import_count}
+		$html_mode                       = #{$html_mode}
+		$preview_mode                    = #{$preview_mode}
+		$no_parent_id                    = #{$no_parent_id}
+		$csv_requirements                = #{$csv_requirements}
+		$csv_requirement_fields          = #{$csv_requirement_fields}
+		$csv_story_oids_by_req           = #{$csv_story_oids_by_req}
+		$csv_story_oids_by_req_fields    = #{$csv_story_oids_by_req_fields}
+		$csv_testcases                   = #{$csv_testcases}
+		$csv_testcase_fields             = #{$csv_testcase_fields}
+		$csv_testcase_oid_output         = #{$csv_testcase_oid_output}
+		$csv_testcase_oid_output_fields  = #{$csv_testcase_oid_output_fields}
+		$cal2ral_req_log                 = #{$cal2ral_req_log}
+		$cal2ral_req_traces_log          = #{$cal2ral_req_traces_log}
+		$cal2ral_tc_log                  = #{$cal2ral_tc_log}
+		$cal2ral_tc_traces_log           = #{$cal2ral_tc_traces_log}
+		$description_field_hash          = #{$description_field_hash}"
 
     # Initialize Caliber Helper
     @caliber_helper = CaliberHelper.new(@rally, $caliber_project, $caliber_id_field_name,
@@ -390,6 +406,7 @@ begin
                 # So we can use this information later when importing traces
                 testcase_oid_data << testcase_tag
                 testcase_oid_data << testcase["ObjectID"]
+                testcase_oid_data << testcase["FormattedID"]
                 testcase_oid_data << testcase_name
                 # Post-pend to CSV
                 testcase_oid_csv  << CSV::Row.new($csv_testcase_oid_output_fields, testcase_oid_data)

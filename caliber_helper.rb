@@ -190,7 +190,7 @@ class CaliberHelper
         else
             parent_id_string = @no_parent_id
         end
-        @logger.info "    hierarchy_id: #{hierarchy_id} has parent_id: #{parent_id_string}."
+        @logger.info "    hierarchy_id: #{hierarchy_id} has parent_id: #{parent_id_string}"
         return parent_id_string
     end
 
