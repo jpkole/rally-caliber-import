@@ -24,12 +24,12 @@ $caliber_file_tc                 = "../from-marks-dropbox/jdf_testcase_zeuscontr
 $caliber_file_tc_traces          = "../from-marks-dropbox/jdf_testcase_traces_zeuscontrol.xml"	# 04-Testcases-Traces
 $caliber_image_directory         = "../from-marks-dropbox/images"
 
-$caliber_id_field_name           = "CaliberID"			# US and TC - type String
-$caliber_weblink_field_name      = "CaliberTCParentLink"	# TC - type String
-$caliber_req_traces_field_name   = "Externalreference"		# US - type Text
-$caliber_tc_traces_field_name    = "Externalreference"		# TC - type Text
+$caliber_id_field_name           = "CaliberID"		# US and TC - type String
+$caliber_weblink_field_name      = "CaliberTCParent"	# TC - type String
+$caliber_req_traces_field_name   = "Externalreference"	# US - type Text
+$caliber_tc_traces_field_name    = "Externalreference"	# TC - type Text
 
-$max_import_count                = 500
+$max_import_count                = 5000
 
 # Runtime preferences
 $html_mode                       = true
