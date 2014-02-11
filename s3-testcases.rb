@@ -421,7 +421,7 @@ begin
                 end
             end
         end
-    end }# end of "caliber_data.search($report_tag).each do | report |"
+    end #} end of "caliber_data.search($report_tag).each do | report |"
 
     # Only import into Rally if we're not in "preview_mode" for testing
     if $preview_mode then
