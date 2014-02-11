@@ -54,7 +54,8 @@ TO DO:	01) Look at caliber2rally_testcase_traces.rb and examine the regex that
 	    		must have a custom field, type string, named: CaliberID
 		On TestCases:
 	    		must have a custom field, type string, named: Externalreference
-	    		must have a custom field, type string, named: CaliberTCParentLink
+	    		must have a custom field, type Weblink, named: CaliberTCParentLink
+				https://audemo.rallydev.com/#/detail/testcase/${id}
 	    		must have a custom field, type string, named: CaliberID
 --------------------------------------------------------------------------------
 06) Import procedure for Requirements:

@@ -429,7 +429,6 @@ class CaliberHelper
                 update_fields = {}
                 update_fields[@caliber_weblink_field_name] = parent_web_link
                 begin
-
                     @rally.update("testcase", child_testcase_oid, update_fields)
                     @logger.info "    Successfully Linked Rally TestCase: ObjectID #{child_testcase_oid}; to TestCase: #{parent_testcase_oid}"
                 rescue => ex

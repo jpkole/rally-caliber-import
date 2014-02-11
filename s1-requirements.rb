@@ -264,12 +264,12 @@ begin
         report.search($requirement_type_tag).each do | req_type |
             req_type.search($requirement_tag).each do | requirement |
 
+		debugger
                 # Data - holds output for CSV
                 requirement_data = []
                 story_oid_data   = []
 
                 # Store fields that derive from Project and Requirement objects
-                #this_requirement = $caliber_requirement_record_template
                 this_requirement			= {}
                 this_requirement['project']             = report['project']
                 this_requirement['hierarchy']           = requirement['hierarchy']

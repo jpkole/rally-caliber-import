@@ -145,10 +145,10 @@ def create_traces_markup_from_traces_array(traces_array) #{
             testcase_oid = @testcase_oid_by_caliber_testcase_id[this_traceid]
 
             if testcase_oid.nil? then
-                @logger.warn "No Rally TestCase ObjectID found for Caliber TestCase ID: #{this_traceid}. Skipping linkage of this Trace."
+                @logger.warn "No Rally TestCase ObjectID found for Caliber TestCase ID: #{this_traceid} - skipping linkage of this Trace."
                 this_trace = @testcase_name_by_caliber_testcase_id[this_traceid] || this_traceid
             else
-                @logger.info "Rally TestCase ObjectID: #{testcase_oid} found for Caliber TestCase ID: #{this_traceid}. Linking Trace to TestCase: #{testcase_oid}"
+                @logger.info "Rally TestCase ObjectID: #{testcase_oid} found for Caliber TestCase ID: #{this_traceid} - linking Trace to TestCase: #{testcase_oid}"
                 this_trace_name = @testcase_name_by_caliber_testcase_id[testcase_oid] || this_traceid
 
                 detail_url = "#{testcase_detail_url_prefix}/#{testcase_oid}"
@@ -164,10 +164,10 @@ def create_traces_markup_from_traces_array(traces_array) #{
             story_oid = @story_oid_by_reqid[this_traceid]
 
             if story_oid.nil? then
-                @logger.warn "No Rally Story ObjectID found for Caliber Requirement ID: #{this_traceid}. Skipping linkage of this Trace."
+                @logger.warn "No Rally Story ObjectID found for Caliber Requirement ID: #{this_traceid} - skipping linkage of this Trace."
                 this_trace = @req_name_by_reqid[this_traceid] || this_traceid
             else
-                @logger.info "Rally Story ObjectID: #{story_oid} found for Caliber Requirement ID: #{this_traceid}. Linking Trace to Story: #{story_oid}"
+                @logger.info "Rally Story ObjectID: #{story_oid} found for Caliber Requirement ID: #{this_traceid} - linking Trace to Story: #{story_oid}"
                 this_trace_name = @req_name_by_reqid[this_traceid] || this_traceid
 
                 detail_url = "#{story_detail_url_prefix}/#{story_oid}"
@@ -185,15 +185,15 @@ end #} end of "def create_traces_markup_from_traces_array(traces_array)"
 # Take Caliber traces array, process and combine field data and import into corresponding Rally Story
 def update_testcase_with_caliber_traces(testcase_oid, testcase_id, traces_text)
 
-    @logger.info "Updating Rally TestCase ObjectID: #{testcase_oid} with Caliber Traces from TestCase: #{testcase_id}"
+    @logger.info "Updating Rally TestCase ObjectID: #{testcase_oid} with Traces from Caliber TestCase: #{testcase_id}"
 
-    update_fields                            = {}
-    update_fields[$caliber_trace_field_name] = traces_text
+    update_fields                                = {}
+    update_fields[$caliber_tc_traces_field_name] = traces_text
     begin
         @rally.update("testcase", testcase_oid, update_fields)
-        @logger.info "    Successfully Imported Caliber Traces for Rally TestCase: ObjectID #{testcase_oid}."
+        @logger.info "    Successfully Imported Caliber Traces for Rally TestCase: ObjectID #{testcase_oid}"
     rescue => ex
-        @logger.error "Error occurred attempting to Import Caliber Traces to Rally Story: ObjectID #{testcase_oid}."
+        @logger.error "Error occurred attempting to Import Caliber Traces to Rally Story: ObjectID #{testcase_oid}"
         @logger.error ex.message
         @logger.error ex.backtrace
     end

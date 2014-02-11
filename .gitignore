@@ -5,7 +5,7 @@ s2-requirement_traces.log
 s3-testcases.log
 s4-testcase_traces.log
 
-caliber_requirements.csv
-caliber_testcases.csv
-story_oids_by_reqname.csv
-testcase_oids_by_testcaseid.csv
+s1-requirements.csv
+s1-story_oids_by_reqname.csv
+s3-testcase_oids_by_testcaseid.csv
+s3-testcases.csv

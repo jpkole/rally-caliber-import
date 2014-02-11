@@ -150,30 +150,30 @@ $uda_value_name_include                  = "JDF Include"
 $uda_value_name_testing_status           = "JDF Testing Status"
 $uda_value_name_test_running             = "JDF Test Running"
 
-# Record template hash for a requirement from Caliber
-# Hash fields are in same order as CSV output format
-
-$caliber_testcase_record_template = {
-    'id'                    => 0,
-    'hierarchy'             => 0,
-    'tag'                   => "",
-    'name'                  => "",
-    'project'               => "",
-    'source'                => "",
-    'purpose'               => "",
-    'pre_condition'         => "",
-    'testing_course'        => "",
-    'post_condition'        => "",
-    'machine_type'          => "",
-    'software_load'         => "",
-    'content_status'        => "",
-    'remarks'               => "",
-    'validation'            => "",
-    'description'           => "",
-    'include'               => "",
-    'testing_status'        => "",
-    'test_running'          => ""
-}
+#-JPK-old## Record template hash for a requirement from Caliber
+#-JPK-old## Hash fields are in same order as CSV output format
+#-JPK-old#
+#-JPK-old#$caliber_testcase_record_template = {
+#-JPK-old#    'id'                    => 0,
+#-JPK-old#    'hierarchy'             => 0,
+#-JPK-old#    'tag'                   => "",
+#-JPK-old#    'name'                  => "",
+#-JPK-old#    'project'               => "",
+#-JPK-old#    'source'                => "",
+#-JPK-old#    'purpose'               => "",
+#-JPK-old#    'pre_condition'         => "",
+#-JPK-old#    'testing_course'        => "",
+#-JPK-old#    'post_condition'        => "",
+#-JPK-old#    'machine_type'          => "",
+#-JPK-old#    'software_load'         => "",
+#-JPK-old#    'content_status'        => "",
+#-JPK-old#    'remarks'               => "",
+#-JPK-old#    'validation'            => "",
+#-JPK-old#    'description'           => "",
+#-JPK-old#    'include'               => "",
+#-JPK-old#    'testing_status'        => "",
+#-JPK-old#    'test_running'          => ""
+#-JPK-old#}
 
 $description_field_hash = {
     'Source [So]'             => 'source',
@@ -364,7 +364,7 @@ begin
 
                 # Get the Parent hierarchy ID for this Caliber Requirement
                 parent_hierarchy_id = @caliber_helper.get_parent_hierarchy_id(this_testcase)
-                @logger.info "    Parent Hierarchy ID: #{parent_hierarchy_id}"
+                #@logger.info "    Parent Hierarchy ID: #{parent_hierarchy_id}"
 
                 # Store the requirements Parent Hierarchy ID for use in stitching
                 @caliber_parent_hash[testcase_hierarchy] = parent_hierarchy_id
