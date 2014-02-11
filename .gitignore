@@ -1,1 +1,9 @@
 my_vars.rb
+caliber2rally_req_traces.log
+caliber2rally_requirements.log
+caliber2rally_tc.log
+caliber2rally_tc_traces.log
+caliber_requirements.csv
+caliber_testcases.csv
+story_oids_by_reqname.csv
+testcase_oids_by_testcaseid.csv
