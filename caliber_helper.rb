@@ -42,9 +42,9 @@ class CaliberHelper
     # img961.jpg, image/jpg
     # (img961 is the ID in the Caliber XML)
     def get_image_metadata(image_file, image_id)
-        image_filename = File.basename(image_file)
-        filename_split = image_filename.split("\.")
-        file_extension = filename_split[-1].downcase
+        image_filename      = File.basename(image_file)
+        filename_split      = image_filename.split("\.")
+        file_extension      = filename_split[-1].downcase
         new_attachment_name = "#{image_id}.#{file_extension}"
         attachment_mimetype = get_mimetype_from_extension(file_extension)
         return image_filename, attachment_mimetype
@@ -70,24 +70,24 @@ class CaliberHelper
 
         # Now create Rally Attachment and wire it up to Story
         attachment_fields = {}
-        attachment_fields["Name"]                  = attachment_data_hash[:name]
-        attachment_fields["ContentType"]           = attachment_data_hash[:mimetype]
-        attachment_fields["Content"]               = attachment_content
-        attachment_fields["Artifact"]              = attachment_data_hash[:artifact]
-        attachment_fields["Size"]                  = attachment_data_hash[:size]
+        attachment_fields["Name"]        = attachment_data_hash[:name]
+        attachment_fields["ContentType"] = attachment_data_hash[:mimetype]
+        attachment_fields["Content"]     = attachment_content
+        attachment_fields["Artifact"]    = attachment_data_hash[:artifact]
+        attachment_fields["Size"]        = attachment_data_hash[:size]
         attachment = @rally.create(:attachment, attachment_fields)
 
-        @logger.info "    Imported #{attachment_data_hash[:name]} and attached to Rally Story with ObjectD: #{attachment_data_hash[:artifactoid]}"
+        @logger.info "    Imported #{attachment_data_hash[:name]} and attached to Rally Artifact with ObjectID: #{attachment_data_hash[:artifactoid]}"
         return attachment
     end
 
     # Loops through Description on Rally Story and replaces embedded <img src="file:\\\blah\blah1\blah2.jpg"
     # References with <img src="/slm/attachment/12345678910/blah2.jpg" type of references once we've imported
     # the embedded images to Rally as attachments
-    def fix_description_images(story_oid, story_description, rally_attachment_sources)
+    def fix_description_images(artifact_ref, artifact_description, rally_attachment_sources)
 
         index = 0
-        description_doc = Nokogiri::HTML(story_description)
+        description_doc = Nokogiri::HTML(artifact_description)
         description_doc.css('img').each do | img |
             img.set_attribute('src', rally_attachment_sources[index])
             index += 1
@@ -97,10 +97,12 @@ class CaliberHelper
         # Rip out <html><body> tags
         new_description = process_description_body(new_description)
 
+	artifact_type = artifact_ref.split("/")[-2]
+	artifact_oid  = artifact_ref.split("/")[-1].split("\.")[-2]
         update_fields = {}
         update_fields["Description"] = new_description
-        updated_story = @rally.update("hierarchicalrequirement", story_oid, update_fields)
-        @logger.info "    Updated Rally Story ObjectID: #{story_oid} with embedded images."
+        updated_artifact = @rally.update(artifact_type, artifact_oid, update_fields)
+        @logger.info "    Updated Rally Artifact ObjectID: #{artifact_oid} with embedded images."
 
     end
 
@@ -169,7 +171,7 @@ class CaliberHelper
             # Stitch the attachment url into Rally Descritpion and replace embedded
             # <img src="file:\\\blah\blah1\blah2.jpg"
             # tags of the Rally Description with new URL data from actual attachment in Rally
-            fix_description_images(this_artifact_oid, this_artifact_description, new_attachment_sources)
+            fix_description_images(this_artifact_ref, this_artifact_description, new_attachment_sources)
         end
     end #} end of "def import_images(artifacts_with_images_hash)"
 

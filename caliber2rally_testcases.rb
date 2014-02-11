@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require 'base64'
 require 'csv'
 require 'nokogiri'
@@ -6,6 +8,7 @@ require 'rally_api'
 require 'logger'
 require './caliber_helper.rb'
 require './multi_io.rb'
+require 'debugger'
 
 # Rally Connection parameters
 $my_base_url                     = "https://rally1.rallydev.com/slm"
@@ -17,7 +20,7 @@ $my_project                      = "My Project"
 $max_attachment_length           = 5000000
 
 # Caliber parameters
-$caliber_file_name               = "jdf_testcase_zeuscontrol.xml"
+$caliber_file_tc                 = "jdf_testcase_zeuscontrol.xml"
 $caliber_id_field_name           = 'CaliberID'
 $caliber_weblink_field_name      = 'CaliberTCParentLink'
 $caliber_image_directory         = "/images"
@@ -31,25 +34,27 @@ $preview_mode                    = false
 $no_parent_id                    = "-9999"
 
 # Output parameters
-$my_output_file                  = "caliber_testcases.csv"
+$my_output_file_TC               = "caliber_testcases.csv"
 
 $testcase_fields                 =  %w{id hierarchy name project source purpose pre_condition testing_course post_condition machine_type software_load content_status remarks validation description include testing_status test_running}
 
 # Output fields to store a CSV
 # allowing lookup of TestCase OID by Caliber TestCase ID
 # (needed for traces import)
-$testcase_oid_output_csv            = "testcase_oids_by_testcaseid.csv"
-$testcase_oid_output_fields         =  %w{testcase_id ObjectID}
-
-# JDF Project setting
-$caliber_project                 = "JDF-Zeus_Control-project"
-$jdf_zeus_control_project        = "JDF-Zeus_Control-project"
+$testcase_oid_output_csv         = "testcase_oids_by_testcaseid.csv"
+$testcase_oid_output_fields      =  %w{testcase_id ObjectID testcase_name}
 
 if $my_delim == nil then $my_delim = "\t" end
 
 # Load (and maybe override with) my personal/private variables from a file...
-# my_vars = File.dirname(__FILE__) + "/my_vars_testcases.rb"
-# if FileTest.exist?( my_vars ) then require my_vars end
+my_vars = "./my_vars.rb"
+if FileTest.exist?( my_vars ) then 
+    print "Sourcing #{my_vars}...\n"
+    require my_vars
+else
+    print "File #{my_vars} not found...\n"
+end
+
 
 # HTML Mode vs. XML Mode
 # The following is needed to preserve newlines in formatting of UDAValues when
@@ -57,16 +62,16 @@ if $my_delim == nil then $my_delim = "\t" end
 # When importing straight XML, the newlines are ignored completely
 # Rally (and Nokogiri, really) needs markup. This step replaces newlines with <br>
 # And reads the resulting input as HTML rather than XML
-caliber_file = File.open($caliber_file_name, 'rb')
+caliber_file = File.open($caliber_file_tc, 'rb')
 caliber_content = caliber_file.read
-caliber_content_html = caliber_content.gsub("\n", "&lt;br&gt;\n")
+caliber_content_html = caliber_content.gsub("\n", "&lt;br/&gt;\n")
 
 if $html_mode then
     caliber_data = Nokogiri::HTML(caliber_content_html, 'UTF-8') do | config |
         config.strict
     end
 else
-    caliber_data = Nokogiri::XML(File.open($caliber_file_name), 'UTF-8') do | config |
+    caliber_data = Nokogiri::XML(File.open($caliber_file_tc), 'UTF-8') do | config |
         config.strict
     end
 end
@@ -198,7 +203,7 @@ begin
 
     #Setting custom headers
     $headers                            = RallyAPI::CustomHttpHeader.new()
-    $headers.name                       = "Caliber Requirement Importer"
+    $headers.name                       = "Caliber Testcase Importer"
     $headers.vendor                     = "Rally Technical Services"
     $headers.version                    = "0.50"
 
@@ -213,18 +218,37 @@ begin
     @rally = RallyAPI::RallyRestJson.new(config)
 
     # Instantiate Logger
-    log_file = File.open("caliber2rally.log", "a")
+    log_file = File.open($cal2ral_tc_log, "a")
     log_file.sync = true
     @logger = Logger.new MultiIO.new(STDOUT, log_file)
 
     @logger.level = Logger::INFO #DEBUG | INFO | WARNING | FATAL
+
+    # Report vars
+    @logger.info "Running #{$PROGRAM_NAME} with the following settings:
+                $my_base_url                = #{$my_base_url}
+                $my_username                = #{$my_username}
+                $my_workspace               = #{$my_workspace}
+                $my_project                 = #{$my_project}
+                $caliber_file_name          = #{$caliber_file_name}
+                $caliber_image_directory    = #{$caliber_image_directory}
+                $caliber_id_field_name      = #{$caliber_id_field_name}
+		$caliber_weblink_field_name = #{$caliber_weblink_field_name}
+                $max_import_count           = #{$max_import_count}
+                $my_output_file             = #{$my_output_file}
+  		$testcase_fields            = #{$testcase_fields}
+                $import_to_rally            = #{$import_to_rally}
+                $stitch_hierarchy           = #{$stitch_hierarchy}
+                $import_images_flag         = #{$import_images_flag}
+                $testcase_oid_output_csv    = #{$testcase_oid_output_csv}
+                $testcase_oid_output_fields = #{$testcase_oid_output_fields}"
 
     # Initialize Caliber Helper
     @caliber_helper = CaliberHelper.new(@rally, $caliber_project, $caliber_id_field_name,
         $description_field_hash, $caliber_image_directory, @logger, $caliber_weblink_field_name)
 
     # Output CSV of TestCase data
-    testcase_csv = CSV.open($my_output_file, "wb", {:col_sep => $my_delim})
+    testcase_csv = CSV.open($my_output_file_TC, "wb", {:col_sep => $my_delim})
     testcase_csv << $testcase_fields
 
     # Output CSV of TestCase OID's by Caliber Requirement Name
@@ -357,10 +381,10 @@ begin
                     description_with_images = this_testcase['description']
                     image_file_objects, image_file_ids = @caliber_helper.get_caliber_image_files(description_with_images)
                     caliber_image_data = {
-                        "files"           => image_file_objects,
-                        "ids"             => image_file_ids,
-                        "description"     => description_with_images,
-                        "ref"        => testcase["_ref"]
+                        "files"       => image_file_objects,
+                        "ids"         => image_file_ids,
+                        "description" => description_with_images,
+                        "ref"         => testcase["_ref"]
                     }
                     @rally_testcases_with_images_hash[testcase["ObjectID"].to_s] = caliber_image_data
                 end
@@ -377,6 +401,7 @@ begin
                 # So we can use this information later when importing traces
                 testcase_oid_data << testcase_tag
                 testcase_oid_data << testcase["ObjectID"]
+                testcase_oid_data << testcase_name
                 # Post-pend to CSV
                 testcase_oid_csv  << CSV::Row.new($testcase_oid_output_fields, testcase_oid_data)
 

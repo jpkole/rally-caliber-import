@@ -20,8 +20,8 @@ $my_project                      = "Scratch"
 $max_attachment_length           = 5000000
 
 # Caliber parameters
-$caliber_file_name               = "hhc.xml"
-$caliber_id_field_name           = 'Externalreference'
+$caliber_file_req                = "hhc.xml"
+$caliber_id_field_name           = "CaliberID"
 $caliber_image_directory         = "foo"
 
 # Runtime preferences
@@ -33,19 +33,19 @@ $preview_mode                    = false
 $no_parent_id                    = "-9999"
 
 # Output parameters
-$my_output_file                  = "caliber_requirements.csv"
+$my_output_file_US               = "caliber_requirements.csv"
 $requirement_fields              =  %w{id hierarchy name project description validation purpose pre_condition basic_course post_condition exceptions remarks}
 
 # Output fields to store a CSV
 # allowing lookup of Story OID by Caliber Requirement Name
 # (needed for traces import)
 $story_oid_output_csv            = "story_oids_by_reqname.csv"
-$story_oid_output_fields         =  %w{reqname ObjectID}
+$story_oid_output_fields         =  %w{reqname ObjectID CaliberID}
 
 if $my_delim == nil then $my_delim = "\t" end
 
 # Load (and maybe override with) my personal/private variables from a file...
-my_vars = "./my_vars_requirements.rb"
+my_vars = "./my_vars.rb"
 if FileTest.exist?( my_vars ) then 
 	print "Sourcing #{my_vars}...\n"
 	require my_vars
@@ -60,17 +60,17 @@ end
 # When importing straight XML, the newlines are ignored completely
 # Rally (and Nokogiri, really) needs markup. This step replaces newlines with <br>
 # And reads the resulting input as HTML rather than XML
-caliber_file = File.open($caliber_file_name, 'rb')
+caliber_file = File.open($caliber_file_req, 'rb')
 caliber_content = caliber_file.read
 
-caliber_content_html = caliber_content.gsub("\n", "&lt;br&gt;\n")
+caliber_content_html = caliber_content.gsub("\n", "&lt;br/&gt;\n")
 
 if $html_mode then
     caliber_data = Nokogiri::HTML(caliber_content_html, 'UTF-8') do | config |
         config.strict
     end
 else
-    caliber_data = Nokogiri::XML(File.open($caliber_file_name), 'UTF-8') do | config |
+    caliber_data = Nokogiri::XML(File.open($caliber_file_req), 'UTF-8') do | config |
         config.strict
     end
 end
@@ -201,7 +201,7 @@ begin
     @rally = RallyAPI::RallyRestJson.new(config)
 
     # Instantiate Logger
-    log_file = File.open("caliber2rally.log", "a")
+    log_file = File.open($cal2ral_req_log, "a")
     log_file.sync = true
     @logger = Logger.new MultiIO.new(STDOUT, log_file)
 
@@ -231,7 +231,7 @@ begin
         $description_field_hash, $caliber_image_directory, @logger, nil)
 
     # Output CSV of Requirement data
-    requirements_csv = CSV.open($my_output_file, "wb", {:col_sep => $my_delim})
+    requirements_csv = CSV.open($my_output_file_US, "wb", {:col_sep => $my_delim})
     requirements_csv << $requirement_fields
 
     # Output CSV of Story OID's by Caliber Requirement Name
@@ -257,7 +257,7 @@ begin
 
                 # Data - holds output for CSV
                 requirement_data = []
-                story_oid_data         = []
+                story_oid_data   = []
 
                 # Store fields that derive from Project and Requirement objects
                 #this_requirement = $caliber_requirement_record_template
@@ -373,6 +373,7 @@ begin
                 # So we can use this information later when importing traces
                 story_oid_data << req_name
                 story_oid_data << story["ObjectID"]
+                story_oid_data << req_id
                 # Post-pend to CSV
                 story_oid_csv  << CSV::Row.new($story_oid_output_fields, story_oid_data)
 

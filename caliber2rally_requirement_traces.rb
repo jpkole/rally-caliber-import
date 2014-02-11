@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require 'base64'
 require 'csv'
 require 'nokogiri'
@@ -16,27 +18,28 @@ $my_project                      = "My Project"
 $max_attachment_length           = 5000000
 
 # Caliber parameters
-$caliber_file_name               = "hhc_traces.xml"
-#$caliber_trace_field_name        = 'CaliberTraces'
-$caliber_trace_field_name        = 'Externalreference'
+$caliber_file_req_traces         = "hhc_traces.xml"
+$caliber_req_traces_field_name   = 'Externalreference'
 
 # Cached Caliber Requirement to Rally Story OID data
-$story_oids_from_reqname         = "story_oids_by_reqname.csv"
+$story_oid_output_csv            = "story_oids_by_reqname.csv"
 
 # Runtime preferences
 $max_import_count                = 100000
 $preview_mode                    = false
 
-# JDF Project setting
-$jdf_zeus_control_project        = "JDF-Zeus_Control-project"
-
 if $my_delim == nil then $my_delim = "\t" end
 
 # Load (and maybe override with) my personal/private variables from a file...
-# my_vars = File.dirname(__FILE__) + "/my_vars_requirements_traces.rb"
-# if FileTest.exist?( my_vars ) then require my_vars end
+my_vars = "./my_vars.rb"
+if FileTest.exist?( my_vars ) then
+        print "Sourcing #{my_vars}...\n"
+        require my_vars
+else
+        print "File #{my_vars} not found...\n"
+end
 
-caliber_data = Nokogiri::XML(File.open($caliber_file_name), 'UTF-8') do | config |
+caliber_data = Nokogiri::XML(File.open($caliber_file_req_traces), 'UTF-8') do | config |
     config.strict
 end
 
@@ -79,20 +82,20 @@ end
 def create_traces_text_from_traces_array(traces_array)
     rally_host = $my_base_url.split("/")[-2]
     detail_url_prefix = "https://#{rally_host}/#/detail/userstory"
-    traces_markup = '<p><b>Caliber TRACES</b></p><br>'
+    traces_markup = '<p><b>Caliber TRACES</b></p><br/>'
     trace_counter = 1
     traces_array.each do | this_trace |
 
         story_oid = @story_oid_by_reqname[this_trace]
 	if !story_oid.nil? then
 	    this_trace_name = this_trace
-            story_url_detail ' "#{detail_url_prefix}/#{story_oid}"
-	    this_trace = "<a href=\"#{story_detail_url}\">#{this_trace_name}</a>"
+            story_url_detail = "#{detail_url_prefix}/#{story_oid}"
+	    this_trace = "<a href=\"#{story_url_detail}\">#{this_trace_name}</a>"
 	end
 
         traces_markup += trace_counter.to_s + ". "
         traces_markup += this_trace
-        traces_markup += '<br>'
+        traces_markup += '<br/>'
         trace_counter += 1
     end
     return traces_markup
@@ -103,8 +106,8 @@ def update_story_with_caliber_traces(story_oid, req_name, traces_text)
 
     @logger.info "Updating Rally Story ObjectID: #{story_oid} with Caliber Traces from Requirement: #{req_name}"
 
-    update_fields                               = {}
-    update_fields[$caliber_trace_field_name]    = traces_text
+    update_fields                                 = {}
+    update_fields[$caliber_req_traces_field_name] = traces_text
     begin
         @rally.update("hierarchicalrequirement", story_oid, update_fields)
         @logger.info "Successfully Imported Caliber Traces for Rally Story: ObjectID #{story_oid}."
@@ -121,7 +124,7 @@ begin
 
 #Setting custom headers
     $headers                = RallyAPI::CustomHttpHeader.new()
-    $headers.name           = "Caliber Traces Importer"
+    $headers.name           = "Caliber Requirement Traces Importer"
     $headers.vendor         = "Rally Technical Services"
     $headers.version        = "0.50"
 
@@ -136,7 +139,7 @@ begin
     @rally = RallyAPI::RallyRestJson.new(config)
 
     # Instantiate Logger
-    log_file = File.open("caliber2rally.log", "a")
+    log_file = File.open($cal2ral_req_traces_log, "a")
     log_file.sync = true
     @logger = Logger.new MultiIO.new(STDOUT, log_file)
 
@@ -146,7 +149,7 @@ begin
     @story_oid_by_reqname = {}
 
     # Read in cached reqname -> Story OID mapping from file
-    input  = CSV.read($story_oids_from_reqname,  {:col_sep => $my_delim})
+    input  = CSV.read($story_oid_output_csv,  {:col_sep => $my_delim})
 
     header = input.first #ignores first line
     rows   = []
@@ -155,7 +158,7 @@ begin
 
     # Proceed through rows in input CSV and store reqname -> story OID lookup
     # in a hash
-    @logger.info "Reading/caching requirement name -> Story OID mapping from #{$story_oids_from_reqname} file..."
+    @logger.info "Reading/caching requirement name -> Story OID mapping from #{$story_oid_output_csv} file..."
 
     rows.each do |row|
         cache_story_oid(header, row)
@@ -166,9 +169,9 @@ begin
     import_count = 0
     caliber_data.search($report_tag).each do | report |
         report.search($traceability_tag).each do | traceability |
-            req_name                                   = traceability['name']
-            trace_array                                = []
-            story_oid                                  = @story_oid_by_reqname[req_name]
+            req_name          = traceability['name']
+            trace_array       = []
+            story_oid         = @story_oid_by_reqname[req_name]
 
             if story_oid.nil? then
                 @logger.warn "No Rally Story ObjectID found for Caliber Requirement named: #{req_name}. Skipping import of traces for this requirement."
@@ -203,9 +206,9 @@ begin
 
     # Only import into Rally if we're not in "preview_mode" for testing
     if $preview_mode then
-        @logger.info "Finished Processing Caliber Requirements for import to Rally. Total Stories Processed: #{import_count}."
+        @logger.info "Finished Processing Caliber Requirement Traces for import to Rally. Total Traces Processed: #{import_count}."
     else
-        @logger.info "Finished Importing Caliber Requirements to Rally. Total Stories Created: #{import_count}."
+        @logger.info "Finished Importing Caliber Requirement Traces to Rally. Total Traces Created: #{import_count}."
     end
 
 end

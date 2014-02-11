@@ -1,2488 +1,0 @@
-id	hierarchy	name	project	description	validation	purpose	pre_condition	basic_course	post_condition	exceptions	remarks
-JDF Hera	1	31595	GENERAL_REQUIREMENTS	""	""	""	""	""	""		
-JDF Hera	1.1	31596	System overview	""	""	""	""	""	""		
-JDF Hera	1.2	31597	Arm rest controller	""	""	Describes sensors and actuators connected to arm rest controller left (ACL) and right (ACR)	""	""	""		
-JDF Hera	1.2.1	31600	Boom and boom tilt control joystick	""	"TEST 1. ALARM LIMITS, LEFT JOYSTICK X<br>
-<br>
-1. Connect a potentiometer to the left boom joystick signal line, such that you can adjust the voltage on the left joystick X axis from 0 to 5000 ±100mV.<br>
-<br>
-2. Set the potentiometer output voltage to 2500 ±50mV<br>
-<br>
-3. Verify that the armrest calibration values are set to default (min. 124, zero 512, max. 900 ).<br>
-<br>
-4. Start up the system<br>
-<br>
-5. Check from the EJM1 message, that the left joystick X value is 0, and the direction status bit is set to neutral.<br>
-<br>
-6. Adjust the potentiometer voltage to approx. 2790 ±56mV. Verify from the EJM1 message, that the left joystick X value starts to increase from value 1, and that the direction status bit gets set to LEFT.<br>
-<br>
-7. Adjust the potentiometer voltage to approx. 4400 ±88mV, and check that the joystick value is roughly 1000.<br>
-<br>
-8. Keep adjusting the potentiometer voltage higher, until an alarm for the potentiometer voltage too high appears. Check that the voltage is roughly 4880 ±98mV.<br>
-<br>
-9. Check that the direction bit value for left is set to ""2"", indicating error.<br>
-<br>
-10. Adjust the potentiometer voltage back to 2500 ±50mV, and check that the alarm gets inactive.<br>
-<br>
-11. Adjust the potentiometer voltage to approx. 2200 ±44mV. Verify from the EJM1 message, that the left joystick X value starts to increase from value 1, and that the direction status bit gets set to RIGHT.<br>
-<br>
-12. Adjust the potentiometer voltage to approx. 610 ±12mV, and check that the joystick value is roughly 1000.<br>
-<br>
-13. Keep adjusting the potentiometer voltage lower, until an alarm for the potentiometer voltage too low appears. Check that the voltage is roughly 117 ±2mV.<br>
-<br>
-14. Check that the direction bit value for right is set to ""2"", indicating error.<br>
-<br>
-<br>
-TEST 2. ALARM LIMITS, LEFT JOYSTICK Y<br>
-<br>
-1. Connect a potentiometer to the left boom joystick signal line, such that you can adjust the voltage on the left joystick Y axis from 0 to 5000 ±100mV.<br>
-<br>
-2. Set the potentiometer output voltage to 2500 ±50mV<br>
-<br>
-3. Verify that the armrest calibration values are set to default (min. 124, zero 512, max. 900 ).<br>
-<br>
-4. Start up the system<br>
-<br>
-5. Check from the EJM1 message, that the left joystick Y value is 0, and the direction status bit is set to neutral.<br>
-<br>
-6. Adjust the potentiometer voltage to approx. 2790 ±56mV. Verify from the EJM1 message, that the left joystick Y value starts to increase from value 1, and that the direction status bit gets set to DOWN.<br>
-<br>
-7. Adjust the potentiometer voltage to approx. 4400 ±88mV, and check that the joystick value is roughly 1000.<br>
-<br>
-8. Keep adjusting the potentiometer voltage higher, until an alarm for the potentiometer voltage too high appears. Check that the voltage is roughly 4880 ±98mV.<br>
-<br>
-9. Check that the direction bit value for left is set to ""2"", indicating error.<br>
-<br>
-10. Adjust the potentiometer voltage back to 2500 ±50mV, and check that the alarm gets inactive.<br>
-<br>
-11. Adjust the potentiometer voltage to approx. 2200 ±44mV. Verify from the EJM1 message, that the left joystick Y value starts to increase from value 1, and that the direction status bit gets set to UP.<br>
-<br>
-12. Adjust the potentiometer voltage to approx. 610 ±12mV, and check that the joystick value is roughly 1000.<br>
-<br>
-13. Keep adjusting the potentiometer voltage lower, until an alarm for the potentiometer voltage too low appears. Check that the voltage is roughly 117 ±2mV.<br>
-<br>
-14. Check that the direction bit value for right is set to ""2"", indicating error.<br>
-<br>
-<br>
-TEST 3. ALARM LIMITS, LEFT JOYSTICK Z<br>
-<br>
-1. Connect a potentiometer to the left boom joystick signal line, such that you can adjust the voltage on the left joystick Z axis from 0 to 5000 ±100mV.<br>
-<br>
-2. Set the potentiometer output voltage to 2500 ±50mV<br>
-<br>
-3. Verify that the armrest calibration values are set to default (min. 124, zero 512, max. 900 ).<br>
-<br>
-4. Start up the system<br>
-<br>
-5. Check from the EJM1 message, that the left joystick Z (theta) value is 0, and the direction status bit is set to neutral.<br>
-<br>
-6. Adjust the potentiometer voltage to approx. 2790 ±56mV. Verify from the EJM1 message, that the left joystick Z value starts to increase from value 1, and that the direction status bit gets set to CLOCKWISE.<br>
-<br>
-7. Adjust the potentiometer voltage to approx. 4400 ±88mV, and check that the joystick value is roughly 1000.<br>
-<br>
-8. Keep adjusting the potentiometer voltage higher, until an alarm for the potentiometer voltage too high appears. Check that the voltage is roughly 4880 ±98mV.<br>
-<br>
-9. Check that the direction bit value for left is set to ""2"", indicating error.<br>
-<br>
-10. Adjust the potentiometer voltage back to 2500 ±50mV, and check that the alarm gets inactive.<br>
-<br>
-11. Adjust the potentiometer voltage to approx. 2200 ±44mV. Verify from the EJM1 message, that the left joystick Z value starts to increase from value 1, and that the direction status bit gets set to COUNTERCLOCKWISE.<br>
-<br>
-12. Adjust the potentiometer voltage to approx. 610 ±12mV, and check that the joystick value is roughly 1000.<br>
-<br>
-13. Keep adjusting the potentiometer voltage lower, until an alarm for the potentiometer voltage too low appears. Check that the voltage is roughly 117 ±2mV.<br>
-<br>
-14. Check that the direction bit value for right is set to ""2"", indicating error.<br>
-<br>
-<br>
-TEST 4. ALARM LIMITS, RIGHT JOYSTICK X<br>
-<br>
-1. Connect a potentiometer to the right boom joystick signal line, such that you can adjust the voltage on the right joystick X axis from 0 to 5000 ±100mV.<br>
-<br>
-2. Set the potentiometer output voltage to 2500 ±50mV<br>
-<br>
-3. Verify that the armrest calibration values are set to default (min. 124, zero 512, max. 900 ).<br>
-<br>
-4. Start up the system<br>
-<br>
-5. Check from the EJM2 message, that the right joystick X value is 0, and the direction status bit is set to neutral.<br>
-<br>
-6. Adjust the potentiometer voltage to approx. 2790 ±56mV. Verify from the EJM1 message, that the right joystick X value starts to increase from value 1, and that the direction status bit gets set to LEFT.<br>
-<br>
-7. Adjust the potentiometer voltage to approx. 4400 ±88mV, and check that the joystick value is roughly 1000.<br>
-<br>
-8. Keep adjusting the potentiometer voltage higher, until an alarm for the potentiometer voltage too high appears. Check that the voltage is roughly 4880 ±98mV.<br>
-<br>
-9. Check that the direction bit value for left is set to ""2"", indicating error.<br>
-<br>
-10. Adjust the potentiometer voltage back to 2500 ±50mV, and check that the alarm gets inactive.<br>
-<br>
-11. Adjust the potentiometer voltage to approx. 2200 ±44mV. Verify from the EJM1 message, that the right joystick X value starts to increase from value 1, and that the direction status bit gets set to RIGHT.<br>
-<br>
-12. Adjust the potentiometer voltage to approx. 610 ±12mV, and check that the joystick value is roughly 1000.<br>
-<br>
-13. Keep adjusting the potentiometer voltage lower, until an alarm for the potentiometer voltage too low appears. Check that the voltage is roughly 117 ±2mV.<br>
-<br>
-14. Check that the direction bit value for right is set to ""2"", indicating error.<br>
-<br>
-<br>
-TEST 5. ALARM LIMITS, RIGHT JOYSTICK Y<br>
-<br>
-1. Connect a potentiometer to the right boom joystick signal line, such that you can adjust the voltage on the right joystick Y axis from 0 to 5000 ±100mV.<br>
-<br>
-2. Set the potentiometer output voltage to 2500 ±50mV<br>
-<br>
-3. Verify that the armrest calibration values are set to default (min. 124, zero 512, max. 900 ).<br>
-<br>
-4. Start up the system<br>
-<br>
-5. Check from the EJM1 message, that the right joystick Y value is 0, and the direction status bit is set to neutral.<br>
-<br>
-6. Adjust the potentiometer voltage to approx. 2790 ±56mV. Verify from the EJM1 message, that the right joystick Y value starts to increase from value 1, and that the direction status bit gets set to DOWN.<br>
-<br>
-7. Adjust the potentiometer voltage to approx. 4400 ±88mV, and check that the joystick value is roughly 1000.<br>
-<br>
-8. Keep adjusting the potentiometer voltage higher, until an alarm for the potentiometer voltage too high appears. Check that the voltage is roughly 4880 ±98mV.<br>
-<br>
-9. Check that the direction bit value for left is set to ""2"", indicating error.<br>
-<br>
-10. Adjust the potentiometer voltage back to 2500 ±50mV, and check that the alarm gets inactive.<br>
-<br>
-11. Adjust the potentiometer voltage to approx. 2200 ±44mV. Verify from the EJM1 message, that the right joystick Y value starts to increase from value 1, and that the direction status bit gets set to UP.<br>
-<br>
-12. Adjust the potentiometer voltage to approx. 610 ±12mV, and check that the joystick value is roughly 1000.<br>
-<br>
-13. Keep adjusting the potentiometer voltage lower, until an alarm for the potentiometer voltage too low appears. Check that the voltage is roughly 117 ±2mV.<br>
-<br>
-14. Check that the direction bit value for right is set to ""2"", indicating error.<br>
-<br>
-<br>
-TEST 6. ALARM LIMITS, RIGHT JOYSTICK Z<br>
-<br>
-1. Connect a potentiometer to the right boom joystick signal line, such that you can adjust the voltage on the right joystick Z axis from 0 to 5000 ±100mV.<br>
-<br>
-2. Set the potentiometer output voltage to 2500 ±50mV<br>
-<br>
-3. Verify that the armrest calibration values are set to default (min. 124, zero 512, max. 890 ).<br>
-<br>
-4. Start up the system<br>
-<br>
-5. Check from the EJM1 message, that the right joystick Z (theta) value is 0, and the direction status bit is set to neutral.<br>
-<br>
-6. Adjust the potentiometer voltage to approx. 2790 ±56mV. Verify from the EJM1 message, that the right joystick Z value starts to increase from value 1, and that the direction status bit gets set to CLOCKWISE.<br>
-<br>
-7. Adjust the potentiometer voltage to approx. 4400 ±88mV, and check that the joystick value is roughly 1000.<br>
-<br>
-8. Keep adjusting the potentiometer voltage higher, until an alarm for the potentiometer voltage too high appears. Check that the voltage is roughly 4880 ±98mV.<br>
-<br>
-9. Check that the direction bit value for left is set to ""2"", indicating error.<br>
-<br>
-10. Adjust the potentiometer voltage back to 2500 ±50mV, and check that the alarm gets inactive.<br>
-<br>
-11. Adjust the potentiometer voltage to approx. 2200 ±44mV. Verify from the EJM1 message, that the right joystick Z value starts to increase from value 1, and that the direction status bit gets set to COUNTERCLOCKWISE.<br>
-<br>
-12. Adjust the potentiometer voltage to approx. 610 ±12mV, and check that the joystick value is roughly 1000.<br>
-<br>
-13. Keep adjusting the potentiometer voltage lower, until an alarm for the potentiometer voltage too low appears. Check that the voltage is roughly 117 ±2mV.<br>
-<br>
-14. Check that the direction bit value for right is set to ""2"", indicating error.<br>
-<br>
-<br>
-TEST 7. BOOM TILT CONTROL JOYSTICK TEST<br>
-<br>
-1. Connect a potentiometer to the boom tilt joystick signal line, such that you can adjust the voltage on the boom tilt joystick input from 0 to 5000 ±100mV.<br>
-<br>
-2. Set the potentiometer output voltage to 2500 ±50mV<br>
-<br>
-3. Verify that the armrest calibration values are set to default (min. 220, zero 512, max. 800 ).<br>
-<br>
-4. Start up the system<br>
-<br>
-5. Check from the BJM2 message, that the joystick 2 X-axis position value is 0, and the direction status bit is set to neutral.<br>
-<br>
-6. Adjust the potentiometer voltage to approx. 2790 ±56mV. Verify from the EJM1 message, that the joystick 2 X-axis position value starts to increase from value 1, and that the direction status bit gets set to FORWARD.<br>
-<br>
-7. Adjust the potentiometer voltage to approx. 4400 ±88mV, and check that the joystick value is roughly 1000.<br>
-<br>
-8. Keep adjusting the potentiometer voltage higher, until an alarm for the potentiometer voltage too high appears. Check that the voltage is roughly 4880 ±98mV.<br>
-<br>
-9. Check that the direction bit value for left is set to ""2"", indicating error.<br>
-<br>
-10. Adjust the potentiometer voltage back to 2500 ±50mV, and check that the alarm gets inactive.<br>
-<br>
-11. Adjust the potentiometer voltage to approx. 2200 ±44mV. Verify from the BJM2 message, that the joystick 2 X-axis position value starts to increase from value 1, and that the direction status bit gets set to BACK.<br>
-<br>
-12. Adjust the potentiometer voltage to approx. 610 ±12mV, and check that the joystick value is roughly 1000.<br>
-<br>
-13. Keep adjusting the potentiometer voltage lower, until an alarm for the potentiometer voltage too low appears. Check that the voltage is roughly 117 ±2mV.<br>
-<br>
-14. Check that the direction bit value for right is set to ""2"", indicating error.<br>
-<br>
-<br>
-TEST 8. FILTERING TEST<br>
-<br>
-1. Set SLOW and FAST filter off (parameter to 0).<br>
-<br>
-2. Use CANalyzator to check that BOOM joystick X, Y and Z axels on both LEFT and RIGHT joysticks signal response is step-alike to step-alike movement.<br>
-<br>
-3. Set SLOW joystick filter parameter to it's default value 900 for both LEFT and RIGHT joysticks.<br>
-<br>
-4. Use step-alike movements to test that signal response is as fast as before but now curve's last corner is smoother as the movement reaches it's maximum.<br>
-<br>
-5. Deviate the joystick about to the middle of it's left or right range and with fast but small movements check that vibration of the joystick signal is filtered out.<br>
-<br>
-6. Set FAST filters (left and right) to it's default 600 and check that response to joystick movement is now filtered also for the fast changes, compare to step 4 curves.<br>
-<br>
-7. Set SLOW to 1020 and FAST to 150 for both LEFT and RIGHT and check that fast movement is now more responsive than in step 6 but slow filtering is much slower (use small vibrative movement to test)<br>
-<br>
-8. Set filtering values back to defaults SLOW(s) to 900 and FAST(s) to 600."	ACL/R reads signals from the joysticks, filters them and sends them to other controllers.	A. Controller is in normal operating mode.	""	""		
-JDF Hera	1.2.1.1	32985	EJM1,EJM2 and BJM2 sending periods	""	"TEST 1. Sending periods of EJM1, EJM2 and BJM2<br>
-<br>
-1. Prepare the CANalyzer to log on-line joystick signals<br>
-<br>
-2. Start up the system and do not touch any joysticks<br>
-<br>
-3. Check that EJM1, EJM2 and BJM2 are send periodically on every 80 ms.<br>
-<br>
-4. Turn left boom joystick on one direction and see on CANalyzer that EJM1 sending period is changed to 20 ms.<br>
-<br>
-5. Release the joystick and see on CANalyzer that EJM1 sending period is now 80 ms.<br>
-<br>
-6. As define on steps 4 and 5 go through all x, y and z directions (six cases) of the left boom joystick and verify that sending period changes as descriped.<br>
-<br>
-7. Do the same steps 4, 5 and 6 for the right boom joystick and check EJM2 sending periods.<br>
-<br>
-8. Do the same steps 4 and 5 for the extra joystick (only x-direction) and check that BJM2 joystick message sending period changes also as descriped.<br>
-<br>
-9. Do a mixed-up test; use as many joysticks as possible at the same time.<br>
-<br>
-10. Check that during the joystick usage the sending periods of joystick messages are 20 ms.<br>
-<br>
-11. Release all joysticks.<br>
-<br>
-12. Check that the sending periods are now 80 ms."	Sending periods changes according joystick(s) activity	Joysticks are in normal mode	""	""		
-JDF Hera	1.2.2	31601	Steering joystick	""	"TEST 1. POTENTIOMETER INPUT READING AND SCALING (Table test using separate potentiometers)<br>
-<br>
-1. Start up the system to Primary Normal state.<br>
-<br>
-2. Set steering joystick values to defaults; min to 180, max to 850 and zero point to 512.<br>
-<br>
-3. Switch off potentiometer 2 and 3 signals.<br>
-<br>
-4. Set the potentiometer 1 value to 890 ±18mV. Check that the steering value is 1000, and steering RIGHT position status is active.<br>
-<br>
-5. Set the potentiometer 1 value to 2500 ±50mV. Check that the steering value is 0, and steering NEUTRAL position status is active.<br>
-<br>
-6. Set the potentiometer 1 value to 4150 ±83mV. Check that the steering value is 1000, and steering LEFT position status is active.<br>
-<br>
-7. Switch off potentiometer 1 and 3 signals, activate signal 2.<br>
-<br>
-8. Set the potentiometer 2 value to 880 ±18mV. Check that the steering value is 1000, and steering RIGHT position status is active.<br>
-<br>
-9. Set the potentiometer 2 value to 2500 ±50mV. Check that the steering value is 0, and steering NEUTRAL position status is active.<br>
-<br>
-10. Set the potentiometer 2 value to 4150 ±83mV. Check that the steering value is 1000, and steering LEFT position status is active.<br>
-<br>
-11. Switch off potentiometer 1 and 2 signals, activate signal 3.<br>
-<br>
-12. Set the potentiometer 3 value to 880 ±18mV. Check that the steering value is 1000, and steering RIGHT position status is active.<br>
-<br>
-13. Set the potentiometer 3 value to 2500 ±50mV. Check that the steering value is 0, and steering NEUTRAL position status is active.<br>
-<br>
-14. Set the potentiometer 3 value to 4150 ±83mV. Check that the steering value is 1000, and steering LEFT position status is active."	""	""	""	""		
-JDF Hera	1.2.2.1	31747	Voting algorithm	""	"TEST 1. POTENTIOMETER 1 ALARM LIMITS (Table test using separate potentiometers)<br>
-<br>
-1. Set all three potentiometer voltages to 2500 ±50mV.<br>
-<br>
-2. Start up the system to Primary Normal state.<br>
-<br>
-3. Change potentiometer 1 voltage slowly lower, until the alarm for the potentiometer 1 signal too low gets active.<br>
-<br>
-4. Check the potentiometer 1 voltage, it should be approx. 117 ±2mV<br>
-<br>
-5. Check the steering signal output. It must be 0.<br>
-<br>
-6. Change the potentiometer 1 voltage slowly lower until it reaches zero. Check that the alarm stays active and steering value stays at 0.<br>
-<br>
-7. Change the value of the potentiometer 2 to 1500 mV. The steering signal value should be 165, and steering direction should be RIGHT.<br>
-<br>
-8. Change potentiometer 2 value back to 2500 ±50mV.<br>
-<br>
-9. Change the potentiometer 1 voltage slowly higher, until the alarm gets inactive.<br>
-<br>
-10. Check the potentiometer 1 voltage, it should be approx. 117 ±2mV<br>
-<br>
-11. Change potentiometer 1 voltage slowly higher, until the alarm for the potentiometer 1 signal too high gets active.<br>
-<br>
-12. Check the potentiometer 1 voltage, it should be approx. 4880 ±98mV<br>
-<br>
-13. Change the potentiometer 1 voltage slowly higher until it reaches 5000 ±100mV. Check that the alarm stays active.<br>
-<br>
-14. Change the potentiometer 1 voltage slowly lower, until the alarm gets inactive.<br>
-<br>
-15. Check the potentiometer 1 voltage, it should be approx. 4880 ±98mV<br>
-<br>
-<br>
-TEST 2. POTENTIOMETER 2 ALARM LIMITS (Table test using separate potentiometers)<br>
-<br>
-1. Set all three potentiometer voltages to 2500 ±50mV.<br>
-<br>
-2. Start up the system to Primary Normal state.<br>
-<br>
-3. Change potentiometer 2 voltage slowly lower, until the alarm for the potentiometer 2 signal too low gets active.<br>
-<br>
-4. Check the potentiometer 2 voltage, it should be approx. 117 ±2mV<br>
-<br>
-5. Check the steering signal output. It must be 0.<br>
-<br>
-6. Change the potentiometer 2 voltage slowly lower until it reaches zero. Check that the alarm stays active and steering value stays at 0.<br>
-<br>
-7. Change the value of the potentiometer 1 to 1500 mV. The steering signal value should be 165, and steering direction should be RIGHT.<br>
-<br>
-8. Change potentiometer 1 value back to 2500 ±50mV.<br>
-<br>
-9. Change the potentiometer 2 voltage slowly higher, until the alarm gets inactive.<br>
-<br>
-10. Check the potentiometer 2 voltage, it should be approx. 117 ±2mV<br>
-<br>
-11. Change potentiometer 2 voltage slowly higher, until the alarm for the potentiometer 2 signal too high gets active.<br>
-<br>
-12. Check the potentiometer 2 voltage, it should be approx. 4880 ±98mV<br>
-<br>
-13. Change the potentiometer 2 voltage slowly higher until it reaches 5000 ±100mV. Check that the alarm stays active.<br>
-<br>
-14. Change the potentiometer 2 voltage slowly lower, until the alarm gets inactive.<br>
-<br>
-15. Check the potentiometer 2 voltage, it should be approx. 4880 ±98mV<br>
-<br>
-<br>
-TEST 3. POTENTIOMETER 3 ALARM LIMITS (Table test using separate potentiometers)<br>
-<br>
-1. Set all three potentiometer voltages to 2500 ±50mV.<br>
-<br>
-2. Start up the system to Primary Normal state.<br>
-<br>
-3. Change potentiometer 3 voltage slowly lower, until the alarm for the potentiometer 3 signal too low gets active.<br>
-<br>
-4. Check the potentiometer 3 voltage, it should be approx. 117 ±2mV<br>
-<br>
-5. Check the steering signal output. It must be 0.<br>
-<br>
-6. Change the potentiometer 3 voltage slowly lower until it reaches zero. Check that the alarm stays active and steering value stays at 0.<br>
-<br>
-7. Change the value of the potentiometer 2 to 1500 mV. The steering signal value should be 165, and steering direction should be RIGHT.<br>
-<br>
-8. Change potentiometer 2 value back to 2500 ±50mV.<br>
-<br>
-9. Change the potentiometer 3 voltage slowly higher, until the alarm gets inactive.<br>
-<br>
-10. Check the potentiometer 3 voltage, it should be approx. 117 ±2mV<br>
-<br>
-11. Change potentiometer 3 voltage slowly higher, until the alarm for the potentiometer 3 signal too high gets active.<br>
-<br>
-12. Check the potentiometer 3 voltage, it should be approx. 4880 ±98mV<br>
-<br>
-13. Change the potentiometer 3 voltage slowly higher until it reaches 5000 ±100mV. Check that the alarm stays active.<br>
-<br>
-14. Change the potentiometer 3 voltage slowly lower, until the alarm gets inactive.<br>
-<br>
-15. Check the potentiometer 3 voltage, it should be approx. 4880 ±98mV<br>
-<br>
-<br>
-TEST 4. TWO SIGNALS (2 & 3) OUTSIDE ALARM LIMITS (Table test using separate potentiometers)<br>
-<br>
-1. Set all three potentiometer voltages to 2500 ±50mV.<br>
-<br>
-2. Start up the system to Primary Normal state.<br>
-<br>
-3. Change potentiometer 3 voltage slowly lower, until the alarm for the potentiometer 3 signal too low gets active.<br>
-<br>
-4. Check the potentiometer 3 voltage, it should be approx. 117 ±2mV<br>
-<br>
-5. Check the steering signal output. It must be 0.<br>
-<br>
-6. Change potentiometer 2 voltage slowly lower, until the alarm for the potentiometer 2 signal too low gets active.<br>
-<br>
-7. Check the potentiometer 2 voltage, it should be approx. 117 ±2mV<br>
-<br>
-8. Check the steering signal output. It must be 0.<br>
-<br>
-9. Check by rotating potentiometer 1 that it responds to the control.<br>
-<br>
-<br>
-TEST 5. TWO SIGNALS (1 & 3) OUTSIDE ALARM LIMITS (Table test using separate potentiometers)<br>
-<br>
-1. Set all three potentiometer voltages to 2500 ±50mV.<br>
-<br>
-2. Start up the system to Primary Normal state.<br>
-<br>
-3. Change potentiometer 3 voltage slowly lower, until the alarm for the potentiometer 3 signal too low gets active.<br>
-<br>
-4. Check the potentiometer 3 voltage, it should be approx. 117 ±2mV<br>
-<br>
-5. Check the steering signal output. It must be 0.<br>
-<br>
-6. Change potentiometer 1 voltage slowly lower, until the alarm for the potentiometer 1 signal too low gets active.<br>
-<br>
-7. Check the potentiometer 1 voltage, it should be approx. 117 ±2mV<br>
-<br>
-8. Check the steering signal output. It must be 0.<br>
-<br>
-9. Check by rotating potentiometer 2 that it responds to the control.<br>
-<br>
-<br>
-TEST 6. TWO SIGNALS (1 & 2) OUTSIDE ALARM LIMITS (Table test using separate potentiometers)<br>
-<br>
-1. Set all three potentiometer voltages to 2500 ±50mV.<br>
-<br>
-2. Start up the system to Primary Normal state.<br>
-<br>
-3. Change potentiometer 2 voltage slowly lower, until the alarm for the potentiometer 2 signal too low gets active.<br>
-<br>
-4. Check the potentiometer 2 voltage, it should be approx. 117 ±2mV<br>
-<br>
-5. Check the steering signal output. It must be 0.<br>
-<br>
-6. Change potentiometer 1 voltage slowly lower, until the alarm for the potentiometer 1 signal too low gets active.<br>
-<br>
-7. Check the potentiometer 1 voltage, it should be approx. 117 ±2mV<br>
-<br>
-8. Check the steering signal output. It must be 0.<br>
-<br>
-9. Check by rotating potentiometer 3 that it responds to the control.<br>
-<br>
-<br>
-TEST 7. ALL SIGNALS OUTSIDE ALARM LIMITS (Table test using separate potentiometers)<br>
-<br>
-1. Set all three potentiometer voltages to 2500 ±50mV.<br>
-<br>
-2. Start up the system to Primary Normal state.<br>
-<br>
-3. Change potentiometer 1 voltage slowly lower, until the alarm for the potentiometer 1 signal too low gets active.<br>
-<br>
-4. Check the potentiometer 1 voltage, it should be approx. 117 ±2mV<br>
-<br>
-5. Check the steering signal output. It must be 0.<br>
-<br>
-6. Change potentiometer 2 voltage slowly lower, until the alarm for the potentiometer 2 signal too low gets active.<br>
-<br>
-7. Check the potentiometer 2 voltage, it should be approx. 117 ±2mV<br>
-<br>
-8. Check the steering signal output. It must be 0.<br>
-<br>
-9. Change potentiometer 3 voltage slowly lower, until the alarm for the potentiometer 3 signal too low gets active.<br>
-<br>
-10. Check the potentiometer 3 voltage, it should be approx. 117 ±2mV<br>
-<br>
-11. Check the steering signal output. It must be 0.<br>
-<br>
-<br>
-TEST 8. VOTING, POTENTIOMETER 1 (Table test using separate potentiometers)<br>
-<br>
-1. Set all three potentiometer voltages to 2500 ±50mV.<br>
-<br>
-2. Verify that the voting window is set to the default value (50).<br>
-<br>
-3. Verify that the joystick calibration values are set to default values (min. 180, zero point 512, max. 850)<br>
-<br>
-4. Start up the system to Primary Normal state.<br>
-<br>
-5. Change potentiometer 1 voltage slowly lower, until an alarm for potentiometer 1 signal being discarded in voting appears.<br>
-<br>
-6. Check the voltage of the potentiometer 1. It should be approx. 2260 ±45mV.<br>
-<br>
-7. Check the steering signal output. It must be 0.<br>
-<br>
-8. Change the value of the potentiometer 2 to 1500 mV. The steering signal value should be 97, and steering direction should be RIGHT.<br>
-<br>
-9. Change potentiometer 2 value back to 2500 ±50mV.<br>
-<br>
-10. Change potentiometer 1 voltage slowly higher, and verify that the alarm gets inactive.<br>
-<br>
-11. Change potentiometer 1 voltage slowly higher, until the alarm appears again.<br>
-<br>
-12. Check the voltage of the potentiometer 1. It should be approx. 2740 ±55mV.<br>
-<br>
-13. Check the steering signal output. It must be 0.<br>
-<br>
-<br>
-TEST 9. VOTING, POTENTIOMETER 2 (Table test using separate potentiometers)<br>
-<br>
-1. Set all three potentiometer voltages to 2500 ±50mV.<br>
-<br>
-2. Verify that the voting window is set to the default value (50).<br>
-<br>
-3. Start up the system to Primary Normal state.<br>
-<br>
-4. Change potentiometer 2 voltage slowly lower, until an alarm for potentiometer 2 signal being discarded in voting appears.<br>
-<br>
-5. Check the voltage of the potentiometer 2. It should be approx. 2260 ±45mV.<br>
-<br>
-6. Change potentiometer 2 voltage slowly higher, and verify that the alarm gets inactive.<br>
-<br>
-7. Change potentiometer 2 voltage slowly higher, until the alarm appears again.<br>
-<br>
-8. Check the voltage of the potentiometer 2. It should be approx. 2740 ±55mV.<br>
-<br>
-<br>
-TEST 10. VOTING, POTENTIOMETER 3 (Table test using separate potentiometers)<br>
-<br>
-1. Set all three potentiometer voltages to 2500 ±50mV.<br>
-<br>
-2. Verify that the voting window is set to the default value (50).<br>
-<br>
-3. Start up the system to Primary Normal state.<br>
-<br>
-4. Change potentiometer 3 voltage slowly lower, until an alarm for potentiometer 3 signal being discarded in voting appears.<br>
-<br>
-5. Check the voltage of the potentiometer 3. It should be approx. 2260 ±45mV.<br>
-<br>
-6. Change potentiometer 3 voltage slowly higher, and verify that the alarm gets inactive.<br>
-<br>
-7. Change potentiometer 3 voltage slowly higher, until the alarm appears again.<br>
-<br>
-8. Check the voltage of the potentiometer 3. It should be approx. 2740 ±55mV."	""	""	""	""		
-JDF Hera	1.2.2.2	32986	BJM3 sending period	""	"TEST 1. Sending periods of BJM3<br>
-<br>
-1. Prepare the CANalyzer to log on-line steering joystick signal<br>
-<br>
-2. Start up the system and do not touch steering joystick<br>
-<br>
-3. Check that BJM3 is send periodically on every 80 ms.<br>
-<br>
-4. Turn steering joystick left and see on CANalyzer that BJM3 sending period is changed to 20 ms.<br>
-<br>
-5. Release the joystick and see on CANalyzer that BJM3 sending period is now 80 ms.<br>
-<br>
-6.Turn steering joystick right and see on CANalyzer that BJM3 sending period is changed to 20 ms.<br>
-<br>
-7.Release the joystick and see on CANalyzer that BJM3 sending period is again 80 ms."	Sending periods changes according joystick activity	Joysticks are in normal mode	""	""		
-JDF Hera	1.2.3	31602	Buttons	""	"TEST 1. BUTTON DATA<br>
-<br>
-1. Verify that correct bits in the KBM1 and KBM2 messages are set by pressing each button on the keypads, and comparing the bit set in the CAN messages to the table in REQ20991.<br>
-<br>
-<br>
-TEST 2. BUTTON RESPONSE TIME<br>
-<br>
-1. Monitor CAN data such that you can measure the transmission interval of KBM1 and KBM2 messages.<br>
-<br>
-2. Press a button on each side keypad rapidly, and check that the button press is sent at minimum 20 ms interval.<br>
-<br>
-3. Verify that button presses are sent every 40 ms when no buttons are being pressed."	""	""	""	""		
-JDF Hera	1.2.4	31603	Drive direction switch	""	"TEST 1. DIRECTIONS<br>
-<br>
-1. Put the drive direction switch to center position (both inputs off). Verify that the bits in KBM2 message are off.<br>
-<br>
-2. Put the drive direction switch to forward position. Verify that the correct bit is set in KBM2 message.<br>
-<br>
-3. Put the drive direction switch to backwards position. Verify that the correct bit is set in KBM2 message.<br>
-<br>
-4. Connect a jumper wire such that both inputs are active at the same time. Verify that the bits in KBM2 message are off, and an alarm is sent.<br>
-<br>
-<br>
-TEST 2. CABLE DISCONNECT<br>
-<br>
-1. Put the drive direction switch to forward position. Verify that the correct bit is set in KBM2 message.<br>
-<br>
-2. Disconnect the drive direction switch cable. Verify that the bits in KBM2 message are off."	""	""	""	""		
-JDF Hera	1.2.5	31604	LED control	""	"TEST LEDS ON/OFF AND BRIGHTNESS<br>
-<br>
-1. Check that LED parameter is default 100 for both LEFT and RIGHT side<br>
-<br>
-2. Put headlights on<br>
-<br>
-3. Check that LEDs are very bright on direct sight (handpanel silicon removed)<br>
-<br>
-4. Change the intensity parameter first to 75 then to 50 then to 25 then to 10 and finally to zero. Check that LEDs intensity decreases on every step and finally LEDs are very dim when set to 0."	""	""	""	""		
-JDF Hera	1.2.6	31605	Parameter handling	""	"TEST 1. PARAMETER SENDING IN STARTUP (Table test with debugger)<br>
-<br>
-1. Start up the system.<br>
-<br>
-2. Adjust the ACL parameters to non-default values, and write down the parameter values. Use values that can be verified also by system behaviour (adjust joystick values so that you can see that the parameters are correct from the joystick value).<br>
-<br>
-3. Prepare CANalyzer for logging the parameter CAN messages, or prepare for capturing a CAN log.<br>
-<br>
-4. Restart the system.<br>
-<br>
-5. Capture a CAN log from the start-up. Verify from the CAN log that all parameter values that are sent, are exactly the same as set in phase 2.<br>
-<br>
-6. Verify the operation of the ACL parameter flags in ACL status message. When ACL starts up, the ""INVALID PARAMETERS"" flag must be set. After ACL has received new parameters, the flag must be cleared. When ACL is in parameter receive state, the flag ""SET PARAMETER STATE"" must be set, and when the first parameter is received by ACL, the flag ""RECEIVING PARAMETERS"" must be set.<br>
-<br>
-7. Verify from joystick values ACL is using the new parameter values.<br>
-<br>
-<br>
-TEST 2. PARAMETER CHANGE IN NORMAL OPERATION<br>
-<br>
-1. Start up the system.<br>
-<br>
-2. Adjust ACL left joystick X minimum value parameter. Verify from CAN bus that the new parameter value is sent.<br>
-<br>
-3. Check that ACL changes state back to normal after receiving new parameter.<br>
-<br>
-4. Verify from joystick value that ACL is using the new parameter value.<br>
-<br>
-5. Adjust all ACL parameters, one by one, and verify that all parameters can be adjusted, and the new values are sent after each change, and that the parameters take effect.<br>
-<br>
-6. Verify the parameter limits for all parameters. Check that an alarm for a parameter exceeding the limits is sent.<br>
-<br>
-<br>
-TEST 3. CHECKSUM FAILURE<br>
-<br>
-1. Verify ACL parameter checksum verification by sending an invalid checksum. This can be done by sending a log file to CAN bus for the parameter transfer, with the checksum value replaced with an invalid value.<br>
-<br>
-<br>
-TEST 4. PARAMETER SENDING IN STARTUP (Table test with debugger)<br>
-<br>
-1. Start up the system.<br>
-<br>
-2. Adjust the ACR parameters to non-default values, and write down the parameter values. Use values that can be verified also by system behaviour (adjust joystick values so that you can see that the parameters are correct from the joystick value).<br>
-<br>
-3. Prepare CANalyzer for logging the parameter CAN messages, or prepare for capturing a CAN log.<br>
-<br>
-4. Restart the system.<br>
-<br>
-5. Capture a CAN log from the start-up. Verify from the CAN log that all parameter values that are sent, are exactly the same as set in phase 2.<br>
-<br>
-6. Verify the operation of the ACR parameter flags in ACR status message. When ACR starts up, the ""INVALID PARAMETERS"" flag must be set. After ACR has received new parameters, the flag must be cleared. When ACR is in parameter receive state, the flag ""SET PARAMETER STATE"" must be set, and when the first parameter is received by ACR, the flag ""RECEIVING PARAMETERS"" must be set.<br>
-<br>
-7. Verify from joystick values ACR is using the new parameter values.<br>
-<br>
-<br>
-TEST 5. PARAMETER CHANGE IN NORMAL OPERATION<br>
-<br>
-1. Start up the system.<br>
-<br>
-2. Adjust ACR left joystick X minimum value parameter. Verify from CAN bus that the new parameter value is sent.<br>
-<br>
-3. Check that ACR changes state back to normal after receiving new parameter.<br>
-<br>
-4. Verify from joystick value that ACR is using the new parameter value.<br>
-<br>
-5. Adjust all ACR parameters, one by one, and verify that all parameters can be adjusted, and the new values are sent after each change, and that the parameters take effect.<br>
-<br>
-6. Verify the parameter limits for all parameters. Check that an alarm for a parameter exceeding the limits is sent.<br>
-<br>
-<br>
-TEST 6. CHECKSUM FAILURE<br>
-<br>
-1. Verify ACR parameter checksum verification by sending an invalid checksum. This can be done by sending a log file to CAN bus for the parameter transfer, with the checksum value replaced with an invalid value."	""	""	""	""		
-JDF Hera	1.2.7	31606	Calibration	""	"TEST 1. NORMAL CALIBRATION, LEFT JOYSTICK (Table test)<br>
-<br>
-1. Start up the system<br>
-<br>
-2. Set all the joystick parameters to default values <br>
-<br>
-3. Check the joystick values at all mechanical stops to verify that the calibration is not correct (the values will not reach 1000, or the value goes to 1000 before the joystick has reached the mechanical stop).<br>
-<br>
-4. Start left main joystick calibration<br>
-<br>
-5. Verify from ACL status message that ACL has set the ""SET_PARAMETER_STATE"" flag, and that it is sending raw analog values (joystick value ~512).<br>
-<br>
-6. Turn the left joystick to all mechanical stops. Verify that the raw analog values sent by ACL match with the values shown in the PC screen. Write down the minimum and maximum values.<br>
-<br>
-7. Return the joystick to the middle position. Write down the center position value, and check that it matches the PC center point value.<br>
-<br>
-8. Press ""Save"" button in PC.<br>
-<br>
-9. Verify from ACL status message that ACL has cleared the ""SET_PARAMETER_STATE"" flag, and that it is sending scaled joystick values (joystick value 0).<br>
-<br>
-10. Check that CAB sends the new parameters to ACL. Verify that the minimum values are 10 units greater and maximum values are 10 units less than written down in step 2. Check that zero point value is the same as written down in steps 6 and 7.<br>
-<br>
-11. After ACL has received new parameters, and returned to normal operating mode, check that the joystick value is scaled between 0 and 1000 to both directions.<br>
-<br>
-12. Check from the EJM1 message that the joystick direction bits are set correctly (left and right direction).<br>
-<br>
-<br>
-TEST 2. NORMAL CALIBRATION, RIGHT JOYSTICK (Table test)<br>
-<br>
-1. Start up the system<br>
-<br>
-2. Set all the joystick parameters to default values <br>
-<br>
-3. Check the joystick values at all mechanical stops to verify that the calibration is not correct (the values will not reach 1000, or the value goes to 1000 before the joystick has reached the mechanical stop).<br>
-<br>
-4. Start right main joystick calibration<br>
-<br>
-5. Verify from ACR status message that ACR has set the ""SET_PARAMETER_STATE"" flag, and that it is sending raw analog values (joystick value ~512).<br>
-<br>
-6. Turn the right joystick to all mechanical stops. Verify that the raw analog values sent by ACR match with the values shown in the PC screen. Write down the minimum and maximum values.<br>
-<br>
-7. Return the joystick to the middle position. Write down the center position value, and check that it matches the PC center point value.<br>
-<br>
-8. Press ""Save"" button in PC.<br>
-<br>
-9. Verify from ACR status message that ACR has cleared the ""SET_PARAMETER_STATE"" flag, and that it is sending scaled joystick values (joystick value 0).<br>
-<br>
-10. Check that CAB sends the new parameters to ACR. Verify that the minimum values are 10 units greater and maximum values are 10 units less than written down in step 2. Check that zero point value is the same as written down in steps 6 and 7.<br>
-<br>
-11. After ACR has received new parameters, and returned to normal operating mode, check that the joystick value is scaled between 0 and 1000 to both directions.<br>
-<br>
-12. Check from the EJM2 message that the joystick direction bits are set correctly (left and right direction).<br>
-<br>
-<br>
-TEST 3. LOST PC CONNECTION DURING CALIBRATION, LEFT (Table test)<br>
-<br>
-1. Set the left joystick parameters to default values<br>
-<br>
-2. Check the joystick values at both mechanical stops to verify that the calibration is not correct (the values will not reach 1000, or the value goes to 1000 before the joystick has reached the mechanical stop). Write down the joystick values at each end.<br>
-<br>
-3. Start left main joystick calibration<br>
-<br>
-4. Turn the joystick to all mechanical stops.  Write down the minimum and maximum values.<br>
-<br>
-5. Shut down the PC client software by killing the process.<br>
-<br>
-6. Verify from the ACL status message, that ACL will exit calibration mode, and will restore the normal operating mode.<br>
-<br>
-7. Check the joystick values at both mechanical stops. Verify that the values are the same as written down in step 2.<br>
-<br>
-<br>
-TEST 4. LOST PC CONNECTION DURING CALIBRATION, RIGHT (Table test)<br>
-<br>
-1. Set the right joystick parameters to default values<br>
-<br>
-2. Check the joystick values at both mechanical stops to verify that the calibration is not correct (the values will not reach 1000, or the value goes to 1000 before the joystick has reached the mechanical stop). Write down the joystick values at each end.<br>
-<br>
-3. Start right main joystick calibration<br>
-<br>
-4. Turn the joystick to all mechanical stops.  Write down the minimum and maximum values.<br>
-<br>
-5. Shut down the PC client software by killing the process.<br>
-<br>
-6. Verify from the ACR status message, that ACR will exit calibration mode, and will restore the normal operating mode.<br>
-<br>
-7. Check the joystick values at both mechanical stops. Verify that the values are the same as written down in step 2.<br>
-<br>
-<br>
-TEST 5. CANCELING CALIBRATION, LEFT (Table test)<br>
-<br>
-1. Set the left joystick parameters to default values (min. 124, zero point 512, max. 900)<br>
-<br>
-2. Check the joystick values at both mechanical stops to verify that the calibration is not correct (the values will not reach 1000, or the value goes to 1000 before the joystick has reached the mechanical stop). Write down the joystick values at each end.<br>
-<br>
-3. Start left main joystick calibration<br>
-<br>
-4. Turn the joystick to both mechanical stops.  Write down the minimum and maximum values.<br>
-<br>
-5. Press ""Cancel"" on the PC GUI.<br>
-<br>
-6. Verify from the ACL status message, that ACL will exit calibration mode, and will restore the normal operating mode.<br>
-<br>
-7. Check the joystick values at both mechanical stops. Verify that the values are the same as written down in step 2.<br>
-<br>
-<br>
-TEST 6. CANCELING CALIBRATION, RIGHT (Table test)<br>
-<br>
-1. Set the right joystick parameters to default values (min. 124, zero point 512, max. 900)<br>
-<br>
-2. Check the joystick values at both mechanical stops to verify that the calibration is not correct (the values will not reach 1000, or the value goes to 1000 before the joystick has reached the mechanical stop). Write down the joystick values at each end.<br>
-<br>
-3. Start right main joystick calibration<br>
-<br>
-4. Turn the joystick to both mechanical stops.  Write down the minimum and maximum values.<br>
-<br>
-5. Press ""Cancel"" on the PC GUI.<br>
-<br>
-6. Verify from the ACR status message, that ACR will exit calibration mode, and will restore the normal operating mode.<br>
-<br>
-7. Check the joystick values at both mechanical stops. Verify that the values are the same as written down in step 2.<br>
-<br>
-<br>
-TEST 7. NORMAL CALIBRATION, BOOM TILT JOYSTICK (Table test)<br>
-<br>
-1. Start up the system<br>
-<br>
-2. Set all the tilt joystick parameters to default values <br>
-<br>
-3. Check the joystick values at all mechanical stops to verify that the calibration is not correct (the values will not reach 1000, or the value goes to 1000 before the joystick has reached the mechanical stop).<br>
-<br>
-4. Start boom tilt joystick calibration<br>
-<br>
-5. Verify from ACR status message that ACR has set the ""SET_PARAMETER_STATE"" flag, and that it is sending raw analog values (joystick value ~512).<br>
-<br>
-6. Turn the tilt joystick to all mechanical stops. Verify that the raw analog values sent by ACL match with the values shown in the PC screen. Write down the minimum and maximum values.<br>
-<br>
-7. Return the joystick to the middle position. Write down the center position value, and check that it matches the PC center point value.<br>
-<br>
-8. Press ""Save"" button in PC.<br>
-<br>
-9. Verify from ACR status message that ACR has cleared the ""SET_PARAMETER_STATE"" flag, and that it is sending scaled joystick values (joystick value 0).<br>
-<br>
-10. Check that CAB sends the new parameters to ACR. Verify that the minimum values are 10 units greater and maximum values are 10 units less than written down in step 2. Check that zero point value is the same as written down in steps 6 and 7.<br>
-<br>
-11. After ACR has received new parameters, and returned to normal operating mode, check that the joystick value is scaled between 0 and 1000 to both directions.<br>
-<br>
-12. Check from the BJM2 message that the joystick direction bits are set correctly (left and right direction).<br>
-<br>
-<br>
-TEST 8. LOST PC CONNECTION DURING CALIBRATION, TILT (Table test)<br>
-<br>
-1. Set the tilt joystick parameters to default values<br>
-<br>
-2. Check the joystick values at both mechanical stops to verify that the calibration is not correct (the values will not reach 1000, or the value goes to 1000 before the joystick has reached the mechanical stop). Write down the joystick values at each end.<br>
-<br>
-3. Start boom tilt joystick calibration<br>
-<br>
-4. Turn the joystick to all mechanical stops.  Write down the minimum and maximum values.<br>
-<br>
-5. Shut down the PC client software by killing the process.<br>
-<br>
-6. Verify from the ACR status message, that ACR will exit calibration mode, and will restore the normal operating mode.<br>
-<br>
-7. Check the joystick values at both mechanical stops. Verify that the values are the same as written down in step 2.<br>
-<br>
-<br>
-TEST 9. CANCELING CALIBRATION, TILT (Table test)<br>
-<br>
-1. Set the tilt joystick parameters to default values (min. 220, zero point 512, max. 800)<br>
-<br>
-2. Check the joystick values at both mechanical stops to verify that the calibration is not correct (the values will not reach 1000, or the value goes to 1000 before the joystick has reached the mechanical stop). Write down the joystick values at each end.<br>
-<br>
-3. Start boom tilt joystick calibration<br>
-<br>
-4. Turn the joystick to both mechanical stops.  Write down the minimum and maximum values.<br>
-<br>
-5. Press ""Cancel"" on the PC GUI.<br>
-<br>
-6. Verify from the ACR status message, that ACR will exit calibration mode, and will restore the normal operating mode.<br>
-<br>
-7. Check the joystick values at both mechanical stops. Verify that the values are the same as written down in step 2.<br>
-<br>
-<br>
-TEST 10. NORMAL CALIBRATION, STEERING JOYSTICK (Table test)<br>
-<br>
-1. Start up the system<br>
-<br>
-2. Set all the steering joystick parameters to default values (min. 180, zero point 512, max. 850)<br>
-<br>
-3. Check the joystick values at all mechanical stops to verify that the calibration is not correct (the values will not reach 1000, or the value goes to 1000 before the joystick has reached the mechanical stop).<br>
-<br>
-4. Start the joystick calibration<br>
-<br>
-5. Verify from ACL status message that ACL has set the ""SET_PARAMETER_STATE"" flag, and that it is sending raw analog values (joystick value ~512).<br>
-<br>
-6. Turn the joystick to mechanical ends. Verify that the raw analog values sent by ACL match with the values shown in the PC screen. Write down the minimum and maximum values.<br>
-<br>
-7. Return the joystick to the middle position. Write down the center position value, and check that it matches the PC center point value.<br>
-<br>
-8. Press ""Save"" button in PC.<br>
-<br>
-9. Verify from ACL status message that ACL has cleared the ""SET_PARAMETER_STATE"" flag, and that it is sending scaled joystick values (joystick value 0).<br>
-<br>
-10. Check that CAB sends the new parameters to ACL. Verify that the minimum values are 10 units greater and maximum values are 10 units less than written down in step 2. Check that zero point value is the same as written down in steps 6 and 7.<br>
-<br>
-11. After ACL has received new parameters, and returned to normal operating mode, check that the joystick value is scaled between 0 and 1000 to both directions.<br>
-<br>
-12. Check from the BJM1 message that the joystick direction bits are set correctly (left and right direction).<br>
-<br>
-<br>
-TEST 11. CANCELING CALIBRATION, STEERING (Table test)<br>
-<br>
-1. Set the steering joystick parameters to default values (min. 180, zero point 512, max. 850)<br>
-<br>
-2. Check the joystick values at both mechanical stops to verify that the calibration is not correct (the values will not reach 1000, or the value goes to 1000 before the joystick has reached the mechanical stop). Write down the joystick values at each end.<br>
-<br>
-3. Start the joystick calibration<br>
-<br>
-4. Turn the joystick to both mechanical ends.  Write down the minimum and maximum values.<br>
-<br>
-5. Press ""Cancel"" on the PC GUI.<br>
-<br>
-6. Verify from the ACL status message, that ACL will exit calibration mode, and will restore the normal operating mode.<br>
-<br>
-7. Check the joystick values at both mechanical stops. Verify that the values are the same as written down in step 2."	""	""	""	""		
-JDF Hera	1.2.8	31645	Fault monitoring	""	"TEST 1. LOW INPUT VOLTAGE<br>
-<br>
-1. Start up the system with normal input voltage to ACL and ACR (24V)<br>
-<br>
-2. Adjust the ACL input voltage lower, until an alarm for the input voltage being too low is sent. <br>
-<br>
-3. Check that the undervoltage indication bit is set in the ACL status message.<br>
-<br>
-4. Adjust the ACR input voltage lower, until an alarm for the input voltage being too low is sent. <br>
-<br>
-5. Check that the undervoltage indication bit is set in the ACR status message.<br>
-<br>
-<br>
-TEST 2. HIGH INPUT VOLTAGE<br>
-<br>
-1. Start up the system with normal input voltage to ACL and ACR (24V)<br>
-<br>
-2. Adjust the ACL input voltage higher, until an alarm for the input voltage being too high is sent. <br>
-<br>
-3. Check that the overvoltage indication bit is set in the ACL status message.<br>
-<br>
-4. Adjust the ACR input voltage higher, until an alarm for the input voltage being too high is sent. <br>
-<br>
-5. Check that the overvoltage indication bit is set in the ACR status message."	""	""	""	""		
-JDF Hera	1.3	31598	SAFETY	""	""	""	""	""	""		
-JDF Hera	1.3.1	31607	Parameter validity	""	"TEST 1. PARAMETER RECEIVING AT STARTUP (dubugger test)<br>
-<br>
-1. Prepare debugger to be able to connect to left main board<br>
-<br>
-2. Set all left panel parameters to non default values e.g. deviation of defaults by one for example<br>
-<br>
-3. Shut down the system, wait for CAN to go down and start up<br>
-<br>
-4. One-by-one check all parameters that they are excatly what was set by CAB module parameters (off by one)<br>
-<br>
-5. Repeat steps 1-4 to right board too<br>
-<br>
-TEST 2. PARAMETER RECEIVING ON CHANGE (dubugger test)<br>
-<br>
-1. Prepare debugger to be able to connect to left main board<br>
-<br>
-2. Change all left parameters on-by-one and check that the correct value is recieved by the board<br>
-<br>
-3. Prepare debugger to be able to connect to right main board<br>
-<br>
-4. Change all right parameters on-by-one and check that the correct value is recieved by the board"	""	""	""	""		
-JDF Hera	1.3.2	31608	Buttons at start up	""	"TEST 1. BUTTON PRESSED AT STARTUP<br>
-<br>
-1. Ensure that boom goes on when pressing boom button (preconditions for boom operations are OK)<br>
-<br>
-2. Switch off the power<br>
-<br>
-3. Hold boom button down and turn power on (RUN1)<br>
-<br>
-4. See that boom does not go on and ""button-pressed-on-startup"": SPN 523001 FMI 31 error is send from ACL<br>
-<br>
-5. Release the button. Check that the error goes off.<br>
-<br>
-6. Press the boom button again. Check that boom activates normally."	""	""	""	""		
-JDF Hera	1.3.3	31609	Steering joystick	""	""	""	""	""	""		
-JDF Hera	1.3.4	31610	Boom and pilar tilt joysticks	""	""	""	""	""	""		
-JDF Hera	1.3.5	31611	Button down too long time	""	"TEST 1. BUTTON PRESSED TOO LONG<br>
-<br>
-1. Switch on the power<br>
-<br>
-2. Hold any button down for over 60 seconds.<br>
-<br>
-4. See that ""button-pressed-over-60-seconds"" SPN 523002 FMI 31 error is send from ACL<br>
-<br>
-5. Release the button. Check that the error goes off."	""	""	""	""		
-JDF Hera	1.3.6	31622	Four or more buttons pressed simultaneously	""	"TEST 1. TOO MANY BUTTONS PRESSED AT THE SAME TIME<br>
-<br>
-1. Switch on the power<br>
-<br>
-2. Hold any four buttons down at the same time.<br>
-<br>
-3. See that ""too-many-buttons-pressed"" SPN 523003 FMI 31 error is send from ACL<br>
-<br>
-4. Release one of the buttons. Check that the error goes off."	""	""	""	""		
-JDF Hera	1.3.7	31624	Armrest tilt switch	""	"TEST 1. CHECK APPROXIMATE ANGLES OF HANDPANEL TILT ANGLE SAFETY FEATURE ACTIVATION<br>
-<br>
-1. Switch on the power.<br>
-<br>
-2. Check that parameter CAB:7115:ARMREST_TILT_UP_DETECTION_ENABLED is set to 1<br>
-<br>
-3. Check that parameters CAB:7116:ARMREST_TILT_DOWN_DETECTION_DELAY and CAB:7117:ARMREST_TILT_UP_DETECTION_DELAY are both 900 (ms)<br>
-<br>
-4. See that left and right panels are on level (normal operation alignment)<br>
-<br>
-5. Activate boom to be able to detect automatic boom de-activation<br>
-<br>
-6. Lift left handpanel straight backwards slowly and see when boom de-activates<br>
-<br>
-7. Check that de-activation happen at higher angle than 45 degrees but before 90 degrees is achieved. It should be somewhere around 70 degrees."	""	""	""	""		
-JDF Hera	1.4	31599	Secondary steering controller	""	""	Secondary steering controller test cases.	""	""	""		
-JDF Hera	1.4.1	31612	Steering joystick	""	"TEST 1. POTENTIOMETER INPUT READING AND SCALING (Table test using separate potentiometers)<br>
-<br>
-1. Start up the system to Primary Normal state.<br>
-<br>
-2. Set steering joystick min, max and zero point values to default values.<br>
-<br>
-3. Switch off potentiometer 2 and 3 signals.<br>
-<br>
-4. Set the potentiometer 1 value to 890 mV. Check that the steering value is 1000, and steering RIGHT position status is active.<br>
-<br>
-5. Set the potentiometer 1 value to 2540 mV. Check that the steering value is 0, and steering NEUTRAL position status is active.<br>
-<br>
-6. Set the potentiometer 1 value to 4220 mV. Check that the steering value is 1000, and steering LEFT position status is active.<br>
-<br>
-7. Set the potentiometer 1 value to maximum (about 5080 mV). Change potentiometer slowly to 0 mV and use CANalyzator to analyze that the signal changes constantly without clitches and relatively smoothly as the potentiometer is turned.<br>
-<br>
-8. Switch off potentiometer 1 and 3 signals, activate signal 2.<br>
-<br>
-9. Set the potentiometer 2 value to 890 mV. Check that the steering value is 1000, and steering RIGHT position status is active.<br>
-<br>
-10. Set the potentiometer 2 value to 2540 mV. Check that the steering value is 0, and steering NEUTRAL position status is active.<br>
-<br>
-11. Set the potentiometer 2 value to 4220 mV. Check that the steering value is 1000, and steering LEFT position status is active.<br>
-<br>
-12. Set the potentiometer 2 value to maximum (about 5080 mV). Change potentiometer slowly to 0 mV and use CANalyzator to analyze that the signal changes constantly without clitches and relatively smoothly as the potentiometer is turned.<br>
-<br>
-13. Switch off potentiometer 1 and 2 signals, activate signal 3.<br>
-<br>
-14. Set the potentiometer 3 value to 890 mV. Check that the steering value is 1000, and steering RIGHT position status is active.<br>
-<br>
-15. Set the potentiometer 3 value to 2540 mV. Check that the steering value is 0, and steering NEUTRAL position status is active.<br>
-<br>
-16. Set the potentiometer 3 value to 4220 mV. Check that the steering value is 1000, and steering LEFT position status is active.<br>
-<br>
-17. Set the potentiometer 3 value to maximum (about 5080 mV). Change potentiometer slowly to 0 mV and use CANalyzator to analyze that the signal changes constantly without clitches and relatively smoothly as the potentiometer is turned.<br>
-<br>
-TEST 2. JOYSTICK INPUT READING AND CONSISTENCY (Table test using actual steering joystick)<br>
-<br>
-1. Start up the system to Primary Normal state.<br>
-<br>
-2. Set steering joystick min, max and zero point values to default values.<br>
-<br>
-3. Turn the joystick very slowly to LEFT untill mechanical end is reached and use CANalyzator to analyze that the signal changes constantly without clitches and relatively smoothly as the joystick is turned.<br>
-<br>
-4. Turn the joystick very slowly to MIDDLE (stays there automatically) and use CANalyzator to analyze that the signal changes constantly without clitches and relatively smoothly as the joystick is turned.<br>
-<br>
-5. Turn the joystick very slowly to RIGHT untill mechanical end is reached and use CANalyzator to analyze that the signal changes constantly without clitches and relatively smoothly as the joystick is turned.<br>
-<br>
-6. Turn the joystick very slowly to MIDDLE (stays there automatically) and use CANalyzator to analyze that the signal changes constantly without clitches and relatively smoothly as the joystick is turned."	SSC reads signals from the joystick outputs and filters them. The data is used for steering control in Secondary Safe mode.	A. Controller is in STANDBY (Primary Normal / Primary Safe) operation mode or Secondary Safe mode	""	""		
-JDF Hera	1.4.1.1	31647	Voting algorithm	""	"TEST 1. POTENTIOMETER 1 ALARM LIMITS (Table test using separate potentiometers)<br>
-<br>
-1. Set all three potentiometer voltages to 2500 ±50mV.<br>
-<br>
-2. Start up the system to Primary Normal state.<br>
-<br>
-3. Change potentiometer 1 voltage slowly lower, until the alarm for the potentiometer 1 signal too low gets active.<br>
-<br>
-4. Check the potentiometer 1 voltage, it should be approx. 117 ±2mV<br>
-<br>
-5. Check the steering signal output. It must be 0.<br>
-<br>
-6. Change the potentiometer 1 voltage slowly lower until it reaches zero. Check that the alarm stays active and steering value stays at 0.<br>
-<br>
-7. Change the value of the potentiometer 2 to 1500 mV. The steering signal value should be 165, and steering direction should be RIGHT.<br>
-<br>
-8. Change potentiometer 2 value back to 2500 ±50mV.<br>
-<br>
-9. Change the potentiometer 1 voltage slowly higher, until the alarm gets inactive.<br>
-<br>
-10. Check the potentiometer 1 voltage, it should be approx. 117 ±2mV<br>
-<br>
-11. Change potentiometer 1 voltage slowly higher, until the alarm for the potentiometer 1 signal too high gets active.<br>
-<br>
-12. Check the potentiometer 1 voltage, it should be approx. 4880 ±98mV<br>
-<br>
-13. Change the potentiometer 1 voltage slowly higher until it reaches 5000 ±100mV. Check that the alarm stays active.<br>
-<br>
-14. Change the potentiometer 1 voltage slowly lower, until the alarm gets inactive.<br>
-<br>
-15. Check the potentiometer 1 voltage, it should be approx. 4880 ±98mV<br>
-<br>
-<br>
-TEST 2. POTENTIOMETER 2 ALARM LIMITS (Table test using separate potentiometers)<br>
-<br>
-1. Set all three potentiometer voltages to 2500 ±50mV.<br>
-<br>
-2. Start up the system to Primary Normal state.<br>
-<br>
-3. Change potentiometer 2 voltage slowly lower, until the alarm for the potentiometer 2 signal too low gets active.<br>
-<br>
-4. Check the potentiometer 2 voltage, it should be approx. 117 ±2mV<br>
-<br>
-5. Check the steering signal output. It must be 0.<br>
-<br>
-6. Change the potentiometer 2 voltage slowly lower until it reaches zero. Check that the alarm stays active and steering value stays at 0.<br>
-<br>
-7. Change the value of the potentiometer 1 to 1500 mV. The steering signal value should be 165, and steering direction should be RIGHT.<br>
-<br>
-8. Change potentiometer 1 value back to 2500 ±50mV.<br>
-<br>
-9. Change the potentiometer 2 voltage slowly higher, until the alarm gets inactive.<br>
-<br>
-10. Check the potentiometer 2 voltage, it should be approx. 117 ±2mV<br>
-<br>
-11. Change potentiometer 2 voltage slowly higher, until the alarm for the potentiometer 2 signal too high gets active.<br>
-<br>
-12. Check the potentiometer 2 voltage, it should be approx. 4880 ±98mV<br>
-<br>
-13. Change the potentiometer 2 voltage slowly higher until it reaches 5000 ±100mV. Check that the alarm stays active.<br>
-<br>
-14. Change the potentiometer 2 voltage slowly lower, until the alarm gets inactive.<br>
-<br>
-15. Check the potentiometer 2 voltage, it should be approx. 4880 ±98mV<br>
-<br>
-<br>
-TEST 3. POTENTIOMETER 3 ALARM LIMITS (Table test using separate potentiometers)<br>
-<br>
-1. Set all three potentiometer voltages to 2500 ±50mV.<br>
-<br>
-2. Start up the system to Primary Normal state.<br>
-<br>
-3. Change potentiometer 3 voltage slowly lower, until the alarm for the potentiometer 3 signal too low gets active.<br>
-<br>
-4. Check the potentiometer 3 voltage, it should be approx. 117 ±2mV<br>
-<br>
-5. Check the steering signal output. It must be 0.<br>
-<br>
-6. Change the potentiometer 3 voltage slowly lower until it reaches zero. Check that the alarm stays active and steering value stays at 0.<br>
-<br>
-7. Change the value of the potentiometer 2 to 1500 mV. The steering signal value should be 165, and steering direction should be RIGHT.<br>
-<br>
-8. Change potentiometer 2 value back to 2500 ±50mV.<br>
-<br>
-9. Change the potentiometer 3 voltage slowly higher, until the alarm gets inactive.<br>
-<br>
-10. Check the potentiometer 3 voltage, it should be approx. 117 ±2mV<br>
-<br>
-11. Change potentiometer 3 voltage slowly higher, until the alarm for the potentiometer 3 signal too high gets active.<br>
-<br>
-12. Check the potentiometer 3 voltage, it should be approx. 4880 ±98mV<br>
-<br>
-13. Change the potentiometer 3 voltage slowly higher until it reaches 5000 ±100mV. Check that the alarm stays active.<br>
-<br>
-14. Change the potentiometer 3 voltage slowly lower, until the alarm gets inactive.<br>
-<br>
-15. Check the potentiometer 3 voltage, it should be approx. 4880 ±98mV<br>
-<br>
-<br>
-TEST 4. TWO SIGNALS (2 & 3) OUTSIDE ALARM LIMITS (Table test using separate potentiometers)<br>
-<br>
-1. Set all three potentiometer voltages to 2500 ±50mV.<br>
-<br>
-2. Start up the system to Primary Normal state.<br>
-<br>
-3. Change potentiometer 3 voltage slowly lower, until the alarm for the potentiometer 3 signal too low gets active.<br>
-<br>
-4. Check the potentiometer 3 voltage, it should be approx. 117 ±2mV<br>
-<br>
-5. Check the steering signal output. It must be 0.<br>
-<br>
-6. Change potentiometer 2 voltage slowly lower, until the alarm for the potentiometer 2 signal too low gets active.<br>
-<br>
-7. Check the potentiometer 2 voltage, it should be approx. 117 ±2mV<br>
-<br>
-8. Check the steering signal output. It must be 0.<br>
-<br>
-9. Check by rotating potentiometer 1 that it responds to the control.<br>
-<br>
-<br>
-TEST 5. TWO SIGNALS (1 & 3) OUTSIDE ALARM LIMITS (Table test using separate potentiometers)<br>
-<br>
-1. Set all three potentiometer voltages to 2500 ±50mV.<br>
-<br>
-2. Start up the system to Primary Normal state.<br>
-<br>
-3. Change potentiometer 3 voltage slowly lower, until the alarm for the potentiometer 3 signal too low gets active.<br>
-<br>
-4. Check the potentiometer 3 voltage, it should be approx. 117 ±2mV<br>
-<br>
-5. Check the steering signal output. It must be 0.<br>
-<br>
-6. Change potentiometer 1 voltage slowly lower, until the alarm for the potentiometer 1 signal too low gets active.<br>
-<br>
-7. Check the potentiometer 1 voltage, it should be approx. 117 ±2mV<br>
-<br>
-8. Check the steering signal output. It must be 0.<br>
-<br>
-9. Check by rotating potentiometer 2 that it responds to the control.<br>
-<br>
-<br>
-TEST 6. TWO SIGNALS (1 & 2) OUTSIDE ALARM LIMITS (Table test using separate potentiometers)<br>
-<br>
-1. Set all three potentiometer voltages to 2500 ±50mV.<br>
-<br>
-2. Start up the system to Primary Normal state.<br>
-<br>
-3. Change potentiometer 2 voltage slowly lower, until the alarm for the potentiometer 2 signal too low gets active.<br>
-<br>
-4. Check the potentiometer 2 voltage, it should be approx. 117 ±2mV<br>
-<br>
-5. Check the steering signal output. It must be 0.<br>
-<br>
-6. Change potentiometer 1 voltage slowly lower, until the alarm for the potentiometer 1 signal too low gets active.<br>
-<br>
-7. Check the potentiometer 1 voltage, it should be approx. 117 ±2mV<br>
-<br>
-8. Check the steering signal output. It must be 0.<br>
-<br>
-9. Check by rotating potentiometer 3 that it responds to the control.<br>
-<br>
-<br>
-TEST 7. ALL SIGNALS OUTSIDE ALARM LIMITS (Table test using separate potentiometers)<br>
-<br>
-1. Set all three potentiometer voltages to 2500 ±50mV.<br>
-<br>
-2. Start up the system to Primary Normal state.<br>
-<br>
-3. Change potentiometer 1 voltage slowly lower, until the alarm for the potentiometer 1 signal too low gets active.<br>
-<br>
-4. Check the potentiometer 1 voltage, it should be approx. 117 ±2mV<br>
-<br>
-5. Check the steering signal output. It must be 0.<br>
-<br>
-6. Change potentiometer 2 voltage slowly lower, until the alarm for the potentiometer 2 signal too low gets active.<br>
-<br>
-7. Check the potentiometer 2 voltage, it should be approx. 117 ±2mV<br>
-<br>
-8. Check the steering signal output. It must be 0.<br>
-<br>
-9. Change potentiometer 3 voltage slowly lower, until the alarm for the potentiometer 3 signal too low gets active.<br>
-<br>
-10. Check the potentiometer 3 voltage, it should be approx. 117 ±2mV<br>
-<br>
-11. Check the steering signal output. It must be 0.<br>
-<br>
-<br>
-TEST 8. VOTING, POTENTIOMETER 1 (Table test using separate potentiometers)<br>
-<br>
-1. Set all three potentiometer voltages to 2500 ±50mV.<br>
-<br>
-2. Verify that the voting window is set to the default value (50).<br>
-<br>
-3. Verify that the joystick calibration values are set to default values (min. 180, zero point 512, max. 850)<br>
-<br>
-4. Start up the system to Primary Normal state.<br>
-<br>
-5. Change potentiometer 1 voltage slowly lower, until an alarm for potentiometer 1 signal being discarded in voting appears.<br>
-<br>
-6. Check the voltage of the potentiometer 1. It should be approx. 2260 ±45mV.<br>
-<br>
-7. Check the steering signal output. It must be 0.<br>
-<br>
-8. Change the value of the potentiometer 2 to 1500 mV. The steering signal value should be 97, and steering direction should be RIGHT.<br>
-<br>
-9. Change potentiometer 2 value back to 2500 ±50mV.<br>
-<br>
-10. Change potentiometer 1 voltage slowly higher, and verify that the alarm gets inactive.<br>
-<br>
-11. Change potentiometer 1 voltage slowly higher, until the alarm appears again.<br>
-<br>
-12. Check the voltage of the potentiometer 1. It should be approx. 2740 ±55mV.<br>
-<br>
-13. Check the steering signal output. It must be 0.<br>
-<br>
-<br>
-TEST 9. VOTING, POTENTIOMETER 2 (Table test using separate potentiometers)<br>
-<br>
-1. Set all three potentiometer voltages to 2500 ±50mV.<br>
-<br>
-2. Verify that the voting window is set to the default value (50).<br>
-<br>
-3. Start up the system to Primary Normal state.<br>
-<br>
-4. Change potentiometer 2 voltage slowly lower, until an alarm for potentiometer 2 signal being discarded in voting appears.<br>
-<br>
-5. Check the voltage of the potentiometer 2. It should be approx. 2260 ±45mV.<br>
-<br>
-6. Change potentiometer 2 voltage slowly higher, and verify that the alarm gets inactive.<br>
-<br>
-7. Change potentiometer 2 voltage slowly higher, until the alarm appears again.<br>
-<br>
-8. Check the voltage of the potentiometer 2. It should be approx. 2740 ±55mV.<br>
-<br>
-<br>
-TEST 10. VOTING, POTENTIOMETER 3 (Table test using separate potentiometers)<br>
-<br>
-1. Set all three potentiometer voltages to 2500 ±50mV.<br>
-<br>
-2. Verify that the voting window is set to the default value (50).<br>
-<br>
-3. Start up the system to Primary Normal state.<br>
-<br>
-4. Change potentiometer 3 voltage slowly lower, until an alarm for potentiometer 3 signal being discarded in voting appears.<br>
-<br>
-5. Check the voltage of the potentiometer 3. It should be approx. 2260 ±45mV.<br>
-<br>
-6. Change potentiometer 3 voltage slowly higher, and verify that the alarm gets inactive.<br>
-<br>
-7. Change potentiometer 3 voltage slowly higher, until the alarm appears again.<br>
-<br>
-8. Check the voltage of the potentiometer 3. It should be approx. 2740 ±55mV."	Voting algorithm for selecting the steering signal to be used for control	A. SSC is in normal operating mode (STANDBY / Secondary Safe)	""	""		
-JDF Hera	1.4.2	31613	Valve outputs	""	"TEST 1. STANDBY CURRENT AND OPEN CIRCUIT ALARM (Table test)<br>
-<br>
-1. Connect an ampere meter to the SSC valve 1 output. Connect the meter between the wiring harness connector and the valve connector.<br>
-<br>
-2. Start up the system in Primary Normal state.<br>
-<br>
-3. Check that the valve current driven to the SSC valve 1 output is 150 mA.<br>
-<br>
-4. Pull away either one of the primary steering valve connectors. The system must enter Secondary Safe state.<br>
-<br>
-5. Check that the valve current driven to the SSC valve 1 output is 150 mA.<br>
-<br>
-6. Open the SSC valve 1 connector to break the circuit. Check that an alarm for open circuit in the valve output 1 is sent. Reconnect the valve connector.<br>
-<br>
-7. Check that the valve current driven to the SSC valve 1 output is 150 mA.<br>
-<br>
-8. Shut down the system and reconnect the valve connectors.<br>
-<br>
-9. Start up the system in Primary Normal state.<br>
-<br>
-10. Check that the valve current driven to the SSC valve 2 output is 150 mA.<br>
-<br>
-11. Pull away either one of the primary steering valve connectors. The system must enter Secondary Safe state.<br>
-<br>
-12. Check that the valve current driven to the SSC valve 2 output is 150 mA.<br>
-<br>
-13. Open the SSC valve 2 connector to break the circuit. Check that an alarm for open circuit in the valve output 2 is sent. Reconnect the valve connector.<br>
-<br>
-14. Check that the valve current driven to the SSC valve 2 output is 150 mA.<br>
-<br>
-15. Shut down the system.<br>
-<br>
-<br>
-TEST 2. TARGET CURRENT CALCULATION (Table test)<br>
-<br>
-1. Check that the valve current parameters are set to the default values (min 300, max 600).<br>
-<br>
-2. Start up the system in Primary Normal state.<br>
-<br>
-3. Calibrate the steering joystick, if it is not calibrated yet.<br>
-<br>
-4. Pull away either one of the primary steering valve connectors. The system must enter Secondary Safe state.<br>
-<br>
-5. Check that the valve current to the SSC valve output 1 (left) is 150 mA.<br>
-<br>
-6. Push the joystick slowly to the left, until the SSC joystick value in the status message is above zero.<br>
-<br>
-7. Check SSC valve output 1 current, it should be approx. 300 mA.<br>
-<br>
-8. Push the joystick slowly toward the full left position. Check that the current changes linearly, proportional to the joystick position.<br>
-<br>
-9. Check that the joystick value at the end position is 1000.<br>
-<br>
-10. Check SSC valve output 1 current, it should be approx. 600 mA.<br>
-<br>
-11. Check SSC valve output 2 current, it should be approx. 150 mA.<br>
-<br>
-12. Return the joystick in the middle position.<br>
-<br>
-13. Check that the valve current to the SSC valve output 2 (right) is 150 mA.<br>
-<br>
-14. Push the joystick slowly to the right, until the SSC joystick value in the status message is above zero.<br>
-<br>
-15. Check SSC valve output 2 current, it should be approx. 300 mA.<br>
-<br>
-16. Push the joystick slowly toward the full right position. Check that the current changes linearly, proportional to the joystick position.<br>
-<br>
-17. Check that the joystick value at the end position is 1000.<br>
-<br>
-18. Check SSC valve output 2 current, it should be approx. 600 mA.<br>
-<br>
-19. Check SSC valve output 1 current, it should be approx. 150 mA.<br>
-<br>
-<br>
-TEST 3. SHORT-CIRCUIT TEST<br>
-<br>
-1. Not implemented, because the hardware does not support short-circuit detection. HW has internal short-circuit protection.<br>
-<br>
-<br>
-TEST 4. PWM FREQUENCY (Table test)<br>
-<br>
-1. Start up the system in Primary Normal state.<br>
-<br>
-2. Check that the PWM frequency of both SSC valve outputs is about 125 Hz.<br>
-<br>
-3. Pull away either one of the primary steering valve connectors. The system must enter Secondary Safe state.<br>
-<br>
-4. Check that the PWM frequency of both SSC valve outputs is about 125 Hz.<br>
-<br>
-<br>
-TEST 5. CURRENT ERROR (Table test)<br>
-<br>
-1. Connect a  an ampere meter in series with the SSC valve outputs to be able to measure current going through the valves.<br>
-<br>
-2. Connect a power resistor of 40 ohms in series to left valve circuit.<br>
-<br>
-3. Start up the system in Primary Normal state.<br>
-<br>
-4. Turn the joystick left untill a current error alarm is sent.<br>
-<br>
-5. Check the SSC left valve current. The current should be about 410 mA.<br>
-<br>
-6. Check the SSC left valve CAN signal, it should be ~530.<br>
-<br>
-7. Let the joystick slowely tovards to middle point and when the current starts to decrease check the CAN signal, it should be ~500.<br>
-<br>
-8. Remove the resistor and restore the left valve circuit to normal condition.<br>
-<br>
-9. Now check that when driving the left valve CAN signal to value 666 it equals to ~500mA and CAN signal 500 equals to ~400mA."	Steering proportional valves are controlled in secondary safe mode according to the steering joystick value.	"A. Controller is in Secondary Safe mode.<br>
-<br>
-B. Steering joystick value has been read and voting is done."	""	""		
-JDF Hera	1.4.3	31614	Calibration	""	"TEST 1. NORMAL CALIBRATION (Table test)<br>
-<br>
-1. Start up the system in Primary Normal mode<br>
-<br>
-2. Set the steering joystick parameters to default values (min. 180, zero point 512, max. 850)<br>
-<br>
-3. Check the joystick values at both mechanical stops to verify that the calibration is not correct (the values will not reach 1000, or the value goes to 1000 before the joystick has reached the mechanical stop).<br>
-<br>
-4. Start steering joystick calibration<br>
-<br>
-5. Verify from SSC status message that SSC has set the ""SET_PARAMETER_STATE"" flag, and that it is sending raw analog values (joystick value ~512).<br>
-<br>
-6. Turn the joystick to both mechanical stops. Verify that the raw analog values sent by SSC match with the values shown in the PC screen. Write down the minimum and maximum values.<br>
-<br>
-7. Return the joystick to the middle position. Write down the center position value, and check that it matches the PC center point value.<br>
-<br>
-8. Press ""Save"" button in PC.<br>
-<br>
-9. Verify from SSC status message that SSC has cleared the ""SET_PARAMETER_STATE"" flag, and that it is sending scaled joystick values (joystick value 0).<br>
-<br>
-10. Check that CAB sends the new parameters to SSC. Check that the minimum, maximum and zero point values are the same as written down in steps 6 and 7.<br>
-<br>
-11. After SSC has received new parameters, and returned to normal operating mode, check that the joystick value is scaled between 0 and 1000 to both directions.<br>
-<br>
-12. Check from the BJM message that the joystick direction bits are set correctly (left and right direction).<br>
-<br>
-<br>
-TEST 2. LOST PC CONNECTION DURING CALIBRATION (Table test)<br>
-<br>
-1. Set the steering joystick parameters to default values (min. 180, zero point 512, max. 850)<br>
-<br>
-2. Check the joystick values at both mechanical stops to verify that the calibration is not correct (the values will not reach 1000, or the value goes to 1000 before the joystick has reached the mechanical stop). Write down the joystick values at each end.<br>
-<br>
-3. Start steering joystick calibration<br>
-<br>
-4. Turn the joystick to both mechanical stops.  Write down the minimum and maximum values.<br>
-<br>
-5. Shut down the PC client software by killing the process.<br>
-<br>
-6. Verify from the SSC status message, that SSC will exit calibration mode, and will restore the normal operating mode.<br>
-<br>
-7. Check the joystick values at both mechanical stops. Verify that the values are the same as written down in step 2.<br>
-<br>
-<br>
-TEST 3. CANCELING CALIBRATION (Table test)<br>
-<br>
-1. Set the steering joystick parameters to default values (min. 180, zero point 512, max. 850)<br>
-<br>
-2. Check the joystick values at both mechanical stops to verify that the calibration is not correct (the values will not reach 1000, or the value goes to 1000 before the joystick has reached the mechanical stop). Write down the joystick values at each end.<br>
-<br>
-3. Start steering joystick calibration<br>
-<br>
-4. Turn the joystick to both mechanical stops.  Write down the minimum and maximum values.<br>
-<br>
-5. Press ""Cancel"" on the PC GUI.<br>
-<br>
-6. Verify from the SSC status message, that SSC will exit calibration mode, and will restore the normal operating mode.<br>
-<br>
-7. Check the joystick values at both mechanical stops. Verify that the values are the same as written down in step 2."	To make on-line adjustment of the parameter values possible for the operator. This is effective way to get productive boom parameter values.	A. Operator has entered steering joystick calibration page in PC	""	""		
-JDF Hera	1.4.4	31615	Parameter handling	""	"TEST 1. PARAMETER SENDING IN STARTUP (Table test with debugger)<br>
-<br>
-1. Start up the system in Primary Normal state.<br>
-<br>
-2. Adjust the SSC parameters to non-default values, and write down the parameter values. Use values that can be verified also by system behaviour (adjust valve current such that they can be measured to be right; adjust joystick values so that you can see that the parameters are correct from the joystick value).<br>
-<br>
-3. Prepare CANalyzer for logging the parameter CAN messages, or prepare for capturing a CAN log.<br>
-<br>
-4. Restart the system.<br>
-<br>
-5. Capture a CAN log from the start-up. Verify from the CAN log that all parameter values that are sent, are exactly the same as set in phase 2.<br>
-<br>
-6. Verify the operation of the SSC parameter flags in SSC status message. When SSC starts up, the ""INVALID PARAMETERS"" flag must be set. After SSC has received new parameters, the flag must be cleared. When SSC is in parameter receive state, the flag ""SET PARAMETER STATE"" must be set, and when the first parameter is received by SSC, the flag ""RECEIVING PARAMETERS"" must be set.<br>
-<br>
-7. Set the system in Secondary Safe state.<br>
-<br>
-8. Verify with the debugger that SSC is using the new parameter values.<br>
-<br>
-9. Verify from joystick value and valve currents that SSC is using the new parameter values.<br>
-<br>
-<br>
-TEST 2. PARAMETER CHANGE IN PRIMARY NORMAL STATE<br>
-<br>
-1. Start up the system in Primary Normal state.<br>
-<br>
-2. Adjust SSC valve minimum current parameter. Verify from CAN bus that the new parameter value is sent.<br>
-<br>
-3. Check that SSC changes state back to normal after receiving new parameter.<br>
-<br>
-4. Set the system in Secondary Safe state.<br>
-<br>
-5. Verify with the debugger that SSC is using the new parameter values.<br>
-<br>
-6. Verify from joystick value and valve currents that SSC is using the new parameter values.<br>
-<br>
-7. Restart the system.<br>
-<br>
-8. Adjust all SSC parameters, one by one, and verify that all parameters can be adjusted, and the new values are sent after each change.<br>
-<br>
-9. Verify the parameter limits for all parameters. Check that an alarm for a parameter exceeding the limits is sent.<br>
-<br>
-<br>
-TEST 3. PARAMETER CHANGE IN SECONDARY SAFE STATE<br>
-<br>
-1. Start up the system in Primary Normal state.<br>
-<br>
-2. Set the system in Secondary Safe state.<br>
-<br>
-3. Try adjusting SSC parameters, and verify that SSC does not change it's state to ""SET PARAMETER STATE"". Verify that SSC keeps controlling the valve outputs all the time.<br>
-<br>
-<br>
-TEST 4. CHECKSUM FAILURE<br>
-<br>
-Verify SSC parameter checksum verification by sendind an invalid checksum. This can be done by sending a log file to CAN bus for the parameter transfer, with the checksum value replaced with an invalid value.<br>
-<br>
-<br>
-TEST 5. DEFAULT PARAMETER VALUES (Machine test)<br>
-<br>
-1. Disconnect and then reconnect CAB module from CAN bus.<br>
-<br>
-2. Start up the system, and verify that SSC is in Secondary Safe state<br>
-<br>
-3. Testdrive the machine and verify that SSC is using default valve currents (min:300mA max:600mA). Steering should approximatelly match the driving response of the primary steering system."	CAB controller sends the parameters to SSC, which stores the parameters, and calculates a checksum. The checksum is compared with the checksum sent by CAB.	A. SSC is in Primary Normal (STANDBY) state.	""	""		
-JDF Hera	1.4.5	31616	States	""	""	CAB will include a state machine for the fault tolerant steering. SSC will implement states Primary Normal (SSC in standby) and Secondary Safe (SSC active).	""	""	""		
-JDF Hera	1.4.5.1	31617	Primary Normal	""	"TEST 1. JOYSTICK MONITORING (Table test)<br>
-<br>
-1. Start up the system in Primary Normal mode.<br>
-<br>
-2. Cut off potentiometer 1 signal, and check that an alarm for the potentiomer 1 signal being too low is sent.<br>
-<br>
-3. Check that the SSC joystick signal stays at 0.<br>
-<br>
-4. Check that CAB changes state to Primary Safe. <br>
-<br>
-5. Check that SSC mode remains in STANDBY, and that SSC does not control valves.<br>
-<br>
-6. Reconnect potentiometer 1 signal. Check that CAB state stays in Primary Safe.<br>
-<br>
-7. Restart system.<br>
-<br>
-8. Cut off potentiometer 2 signal, and check that an alarm for the potentiomer 2 signal being too low is sent.<br>
-<br>
-9. Check that the SSC joystick signal stays at 0.<br>
-<br>
-10. Check that CAB changes state to Primary Safe.<br>
-<br>
-11. Check that SSC mode remains in STANDBY, and that SSC does not control valves.<br>
-<br>
-12. Reconnect potentiometer 2 signal. Check that CAB state stays in Primary Safe.<br>
-<br>
-13. Restart system.<br>
-<br>
-14. Cut off potentiometer 3 signal, and check that an alarm for the potentiomer 3 signal being too low is sent.<br>
-<br>
-15. Check that the SSC joystick signal stays at 0.<br>
-<br>
-16. Check that CAB changes state to Primary Safe.<br>
-<br>
-17. Check that SSC mode remains in STANDBY, and that SSC does not control valves.<br>
-<br>
-18. Reconnect potentiometer 3 signal. Check that CAB state stays in Primary Safe.<br>
-<br>
-<br>
-TEST 2. VALVE OUTPUT MONITORING (Table test)<br>
-<br>
-1. Start up the system in Primary Normal mode.<br>
-<br>
-2. Check that both SSC valve outputs are driving 150 mA monitoring current.<br>
-<br>
-3. Remove SSC valve output 1 connector. Check that alarm for the SSC valve output 1 current being too low is sent.<br>
-<br>
-4. Check that CAB changes state to Primary Safe<br>
-<br>
-5. Check that SSC mode remains in STANDBY, and that SSC does not control valves.<br>
-<br>
-6. Reconnect SSC valve output 1 connector. Check that CAB state stays in Primary Safe, and SSC state remains in STANDBY.<br>
-<br>
-7. Restart system.<br>
-<br>
-8. Remove SSC valve output 2 connector. Check that alarm for the SSC valve output 2 current being too low is sent.<br>
-<br>
-9. Check that CAB changes state to Primary Safe<br>
-<br>
-10. Check that SSC mode remains in STANDBY, and that SSC does not control valves.<br>
-<br>
-11. Reconnect SSC valve output 2 connector. Check that CAB state stays in Primary Safe, and SSC state remains in STANDBY.<br>
-<br>
-<br>
-TEST 3. CAB STATUS CHANGE -> PRIMARY SAFE<br>
-<br>
-State change tested in previous test cases, no separate test needed.<br>
-<br>
-<br>
-TEST 4. CAB STATUS CHANGE -> SECONDARY SAFE (Table test with calibrated joysticks)<br>
-<br>
-1. Start up the system in Primary Normal mode.<br>
-<br>
-2. Cut off power from ACL. Check that an alarm for ACL missing is sent.<br>
-<br>
-3. Check that CAB changes state to Stop Request. Check that an alarm for state change is sent.<br>
-<br>
-4. Check that SSC changes state to Secondary Safe.<br>
-<br>
-5. Check from SSC status message that SSC joystick value stays at 0, and that both SSC valve outputs are driving 150 mA monitoring current.<br>
-<br>
-6. Check that SSC controls valves by turning the joystick in both directions. Check that the output current varies between the adjusted min and max values, and that joystick value changes between 0-1000.<br>
-<br>
-7. Reconnect power to ACL.<br>
-<br>
-8. Check that CAB remains in Stop Request state.<br>
-<br>
-9. Check that SSC remains in Secondary Safe state. <br>
-<br>
-10. Restart the system.<br>
-<br>
-11. Cut off power from BOC. Check that an alarm for BOC missing is sent.<br>
-<br>
-12. Check that CAB changes state to Secondary Safe. Check that an alarm for state change is sent.<br>
-<br>
-13. Check that SSC changes state to Secondary Safe.<br>
-<br>
-14. Reconnect power to BOC.<br>
-<br>
-15. Check that CAB remains in Secondary Safe state.<br>
-<br>
-16. Check that SSC remains in Secondary Safe state. <br>
-<br>
-17. Restart the system.<br>
-<br>
-18. Remove BOC steering output left connector. Check that an alarm for the steering left output current being too low is sent and then deactivated.<br>
-<br>
-19. Check that CAB changes state to Secondary Safe. Check that an alarm for state change is sent.<br>
-<br>
-20. Check that SSC changes state to Secondary Safe.<br>
-<br>
-21. Reconnect BOC steering left connector.<br>
-<br>
-22. Check that CAB remains in Secondary Safe state.<br>
-<br>
-23. Check that SSC remains in Secondary Safe state. <br>
-<br>
-24. Restart the system.<br>
-<br>
-25. Remove BOC steering output right connector. Check that an alarm for the steering right output current being too low is sent and then deactivated.<br>
-<br>
-26. Check that CAB changes state to Secondary Safe. Check that an alarm for state change is sent.<br>
-<br>
-27. Check that SSC changes state to Secondary Safe.<br>
-<br>
-28. Reconnect BOC steering right connector.<br>
-<br>
-29. Check that CAB remains in Secondary Safe state.<br>
-<br>
-30. Check that SSC remains in Secondary Safe state. <br>
-<br>
-<br>
-TEST 5. CAB STATUS MESSAGE TIMEOUT (Table test)<br>
-<br>
-1. Start up the system in Primary Normal mode.<br>
-<br>
-2. Cut off power from CAB. Check that the alarm for CAB missing is sent.<br>
-<br>
-3. Check that SSC changes state to Secondary Safe.<br>
-<br>
-4. Check from CAN log that the time from the CAB status message missing from bus to the SSC status change is approximately to the timeout value defined in SSC (400 ms).<br>
-<br>
-5. Check that SSC controls valves by turning the joystick in both directions. Check that the output current varies between the adjusted min and max values, and that joystick value changes between 0-1000.<br>
-<br>
-<br>
-TEST 6. VEHICLE BEHAVIOUR WHEN CHANGING STATE (Machine test)<br>
-<br>
-1. Start up the system in Primary Normal mode.<br>
-<br>
-2. Start engine and prepare for driving the machine on low gear.<br>
-<br>
-3. Start driving the machine slowly, and test that frame steering works correctly.<br>
-<br>
-4. Steer slightly to left, and cut off either one of the primary steering valve coil circuits (or generate watchdog to CAB).<br>
-<br>
-5. Check that SSC changes state to Secondary Safe<br>
-<br>
-6. Check that the steering doesn't jump, and that after the state change, the machine can be steered normally.<br>
-<br>
-7. Speed up the machine (drive faster), and check that the steering response is similar as with primary steering."	Primary Normal state is the normal operating state of the fault tolerant steering. SSC will be in STANDBY mode.	"A. SSC has started up correctly.<br>
-<br>
-B. CAB has started up correctly.<br>
-<br>
-C. There are no active faults in the fault tolerant steering system<br>
-"	""	""		
-JDF Hera	1.4.5.2	31618	Primary Safe	""	"TEST 1. JOYSTICK MONITORING (Table test)<br>
-<br>
-1. Set all joystick voltages to 2540 mV or set the joystick in the middle.<br>
-<br>
-2. Start up the system in Primary Normal state.<br>
-<br>
-3. Cut off steering joystick signal 1 to ACL.<br>
-<br>
-4. Check that CAB changes state to Primary Safe.<br>
-<br>
-5. Cut off steering joystick signal 2 to ACL.<br>
-<br>
-6. Check that CAB changes state to Secondary Safe.<br>
-<br>
-7. Reconnect the steering joystick 1 signal to ACL. Check that CAB state remains in Secondary Safe, and SSC continues to stay in Secondary Safe.<br>
-<br>
-8. Reconnect the steering joystick 2 signal to ACL. Check that CAB state remains in Secondary Safe, and SSC continues to stay in Secondary Safe.<br>
-<br>
-9. Restart the system.<br>
-<br>
-10. Disconnect SSC cable from the system. The system must enter Primary Safe state. Signal 3 is also lost this way.<br>
-<br>
-11. Cut off steering joystick signal 1 to ACL.<br>
-<br>
-12. Check that CAB changes state to Stop Request. BOC is controlling primary valves with the signal 2.<br>
-<br>
-<br>
-TEST 2. VALVE DRIVE (Table test)<br>
-<br>
-1. Connect normal steering joystick to the test system.<br>
-<br>
-2. Start up the system in Primary Normal state.<br>
-<br>
-3. Disconnect SSC cable from the system. The system must enter Primary Safe state.<br>
-<br>
-4. Check that BOC is controlling valves by monitoring the valve currents and steering.<br>
-<br>
-<br>
-TEST 3. CONTROLLER MONITORING (Table test)<br>
-<br>
-1. Start up the system in Primary Normal state.<br>
-<br>
-2. Disconnect SSC cable from the system. The system must enter Primary Safe state.<br>
-<br>
-3. Reconnect the SSC cable to the system. Check that CAB state remains in Primary Safe, and SSC does not control valves.<br>
-<br>
-4. Disconnect BOC from the CAN bus.<br>
-<br>
-5. Check that CAB state changes to Stop Request.<br>
-<br>
-6. Reconnect BOC to CAN bus.<br>
-<br>
-7. Check that CAB state stays at Stop Request, and SSC remains in Standby state and BOC steers the machine.<br>
-<br>
-8. Restart the system.<br>
-<br>
-9. Disconnect SSC cable from the system. The system must enter Primary Safe state.<br>
-<br>
-10. Reconnect the SSC cable to the system. Check that CAB state remains in Primary Safe, and SSC does not control valves.<br>
-<br>
-11. Disconnect ACL from the CAN bus.<br>
-<br>
-12. Check that CAB state changes to Stop Request.<br>
-<br>
-13. Reconnect ACL to CAN bus.<br>
-<br>
-14. Check that CAB state stays at Stop Request, and SSC remains in Standby state and BOC steers the machine.<br>
-<br>
-15. Restart the system.<br>
-<br>
-16. Disconnect SSC cable from the system. The system must enter Primary Safe state.<br>
-<br>
-17. Reconnect the SSC cable to the system. Check that CAB state remains in Primary Safe, and SSC does not control valves.<br>
-<br>
-18. Disconnect CAB from the CAN bus.<br>
-<br>
-19. Check that SSC state changes to Secondary Safe.<br>
-<br>
-20. Reconnect CAB to CAN bus.<br>
-<br>
-21. Check that CAB state is set to Secondary Safe, and SSC remains in Secondary Safe state."	Primary Safe state is a reduced-speed, normal operating state of the fault-tolerant steering.	A. CAB is in Primary Normal state	""	""		
-JDF Hera	1.4.5.3	31619	Secondary Safe	""	"TEST 1. JOYSTICK MONITORING (Table test)<br>
-<br>
-1. Set all joystick voltages to 2540 mV or set the joystick in the middle.<br>
-<br>
-2. Start up the system in Primary Normal state.<br>
-<br>
-3. Remove either one of the primary steering valve connectors. The CAB and SSC must enter Secondary Safe state.<br>
-<br>
-4. Check that the fault T3 alam is sent.<br>
-<br>
-5. Cut off steering joystick signal 1 to SSC.<br>
-<br>
-6. Check that CAB and SSC stays in Secondary Safe state.<br>
-<br>
-7. Reconnect the steering joystick 1 signal to SSC. Check that CAB and SSC stays in Secondary Safe.<br>
-<br>
-8. Reconnect the primary steering valve connector. Check that CAB and SSC stays in Secondary Safe.<br>
-<br>
-9. Restart the system.<br>
-<br>
-10. Remove either one of the primary steering valve connectors. The CAB and SSC must enter Secondary Safe state.<br>
-<br>
-11. Check that the fault T3 alam is sent.<br>
-<br>
-12. Cut off steering joystick signal 2 to SSC.<br>
-<br>
-13. Check that CAB and SSC stays in Secondary Safe state.<br>
-<br>
-14. Reconnect the steering joystick 2 signal to SSC. Check that CAB and SSC stays in Secondary Safe.<br>
-<br>
-15. Reconnect the primary steering valve connector. Check that CAB and SSC stays in Secondary Safe.<br>
-<br>
-16. Restart the system.<br>
-<br>
-17. Remove either one of the primary steering valve connectors. The CAB and SSC must enter Secondary Safe state.<br>
-<br>
-18. Check that the fault T3 alam is sent.<br>
-<br>
-19. Cut off steering joystick signal 3 to SSC.<br>
-<br>
-20. Check that CAB and SSC stays in Secondary Safe state.<br>
-<br>
-21. Reconnect the steering joystick 3 signal to SSC. Check that CAB and SSC stays in Secondary Safe.<br>
-<br>
-22. Reconnect the primary steering valve connector. Check that CAB and SSC stays in Secondary Safe.<br>
-<br>
-<br>
-TEST 2. VALVE DRIVE (Table test)<br>
-<br>
-1. Connect normal steering joystick to the test system.<br>
-<br>
-2. Start up the system in Primary Normal state.<br>
-<br>
-3. Disconnect either one of the primary steering valve connectors. The system must enter Secondary Safe state.<br>
-<br>
-4. Check that the SSC is controlling valves by monitoring the valve currents and steering.<br>
-<br>
-5. Check that BOC stops controlling primary steering valves (valve currents go to zero).<br>
-<br>
-6. Reconnect the primary steering valve connector. Check that CAB state remains in Secondary Safe and BOC doesn't control the primary valves, and that SSC continues to stay in Secondary Safe.<br>
-<br>
-<br>
-TEST 3. VEHICLE BEHAVIOUR WHEN ACL MISSING (Machine test)<br>
-<br>
-1. Start up the system in Primary Normal mode.<br>
-<br>
-2. Start engine and prepare for driving the machine on low gear.<br>
-<br>
-3. Start driving the machine slowly, and test that frame steering works correctly.<br>
-<br>
-4. Steer slightly to left, and cut off power from ACL (not from ACR).<br>
-<br>
-5. Check that SSC changes state to Secondary Safe<br>
-<br>
-6. Check that the steering doesn't jump, and that after the state change, the machine can be steered normally.<br>
-<br>
-7. Speed up the machine (drive faster), and check that the steering response is similar as with primary steering."	In Secondary Safe state, the secondary circuit controls the steering.	A. CAB is in Primary Normal or Primary Safe state	""	""		
-JDF Hera	1.4.5.4	31620	Stop Request	""	"TEST 1. SSC JOYSTICK MONITORING (Table test)<br>
-<br>
-1. Set all joystick voltages to 2540 mV or set the joystick in the middle.<br>
-<br>
-2. Start up the system in Primary Normal state.<br>
-<br>
-3. Remove either one of the primary steering valve connectors. The system must enter Secondary Safe state.<br>
-<br>
-4. Check that the fault T3 alam is sent.<br>
-<br>
-5. Remove the SSC steering joystick connector.<br>
-<br>
-6. Check that the fault T6 alam is sent.<br>
-<br>
-7. Check that CAB changes state to Stop Request, and sends alarm to stop the machine.<br>
-<br>
-8. Check that the joystick value is 0.<br>
-<br>
-9. Reconnect the steering joystick connector to SSC. Check that CAB state remains in Stop Request, and SSC continues to stay in Secondary Safe.<br>
-<br>
-10. Reconnect the primary steering valve connector. Check that CAB state remains in Stop Request, and SSC continues to stay in Secondary Safe.<br>
-<br>
-<br>
-TEST 2. ACL JOYSTICK MONITORING (Table test)<br>
-<br>
-1. Set all joystick voltages to 2540 mV or set the joystick in the middle.<br>
-<br>
-2. Start up the system in Primary Normal state.<br>
-<br>
-3. Disconnect SSC cable from the system. The system must enter Primary Safe state. Also signal 3 is lost this way.<br>
-<br>
-4. Check that the fault T2 alam is sent.<br>
-<br>
-5. Cut off steering joystick signal 1 to ACL.<br>
-<br>
-6. Check that the fault T5 alam is sent.<br>
-<br>
-7. Check that CAB changes state to Stop Request, and sends alarm to stop the machine. Check that BOC controls the primary valves with signal 2.<br>
-<br>
-8. Reconnect the steering joystick 1 signal to ACL. Check that CAB state remains in Stop Request. Check that BOC controls the primary valves with signals 1 and 2.<br>
-<br>
-9. Reconnect the SSC cable to the system. Check that CAB state remains in Stop Request, and SSC does not control valves. Check that BOC controls the primary valves with signals 1, 2 and 3.<br>
-<br>
-10. Restart the system.<br>
-<br>
-11. Disconnect SSC cable from the system. The system must enter Primary Safe state. Also signal 3 is lost this way.<br>
-<br>
-12. Check that the fault T2 alam is sent.<br>
-<br>
-13. Cut off steering joystick signal 2 to ACL.<br>
-<br>
-14. Check that the fault T5 alam is sent.<br>
-<br>
-15. Check that CAB changes state to Stop Request, and sends alarm to stop the machine. Check that BOC controls the primary valves with signal 1.<br>
-<br>
-16. Reconnect the steering joystick 2 signal to ACL. Check that CAB state remains in Stop Request. Check that BOC controls the primary valves with signals 1 and 2.<br>
-<br>
-17. Reconnect the SSC cable to the system. Check that CAB state remains in Stop Request, and SSC does not control valves. Check that BOC controls the primary valves with signals 1, 2 and 3.<br>
-<br>
-18. Restart the system.<br>
-<br>
-19. Disconnect SSC cable from the system. The system must enter Primary Safe state.  Also signal 3 is lost this way.<br>
-<br>
-20. Check that the fault T2 alam is sent.<br>
-<br>
-21. Cut off steering joystick signal 3 to ACL.<br>
-<br>
-23. Check that CAB stays in Primary Safe. Check that BOC controls the primary valves with signals 1 and 2.<br>
-<br>
-24. Reconnect the steering joystick 3 signal to ACL.<br>
-<br>
-25. Reconnect the SSC cable to the system. Check that BOC controls the primary valves with signals 1, 2 and 3. Check that SSC does not control valves.<br>
-<br>
-26. Restart the system.<br>
-<br>
-27. Disconnect SSC cable from the system. The system must enter Primary Safe state. Also signal 3 is lost this way.<br>
-<br>
-28. Check that the fault T2 alam is sent.<br>
-<br>
-29. Remove ACL steering joystick connector.<br>
-<br>
-30. Check that the fault T5 alam is sent.<br>
-<br>
-31. Check that CAB changes state to Stop Request, and sends alarm to stop the machine. Check that ACL steering signal is zero (NOTE! ACL related issue)<br>
-<br>
-32. Reconnect the steering joystick connector to ACL. Check that CAB state remains in Stop Request and BOC steers the machine.<br>
-<br>
-33. Reconnect the SSC cable to the system. Check that CAB state remains in Stop Request, and SSC does not control valves.<br>
-<br>
-<br>
-TEST 3. VALVE DRIVE, ENTER FROM PRIMARY SAFE (Table test)<br>
-<br>
-1. Connect normal steering joystick to the test system.<br>
-<br>
-2. Start up the system in Primary Normal state.<br>
-<br>
-3. Disconnect SSC cable from the system. The system must enter Primary Safe state. Also signal 3 is lost this way.<br>
-<br>
-4. Disconnect BOC valve connector 1 (left).<br>
-<br>
-5. Check that CAB changes state to Stop Request, and send alarm to stop the machine.<br>
-<br>
-6. Check that the BOC steering right output still works.<br>
-<br>
-7. Reconnect the BOC steering valve connector 1. Check that CAB state remains in Stop Request.<br>
-<br>
-8. Check that the BOC steering valve outputs work in both directions.<br>
-<br>
-9. Reconnect SSC cable to the system. The system must stay in Stop Request state.<br>
-<br>
-10. Check that SSC is not controlling valves.<br>
-<br>
-11. Restart the system.<br>
-<br>
-12. Disconnect SSC cable from the system. The system must enter Primary Safe state. Also signal 3 is lost this way.<br>
-<br>
-13. Disconnect BOC valve connector 2 (right).<br>
-<br>
-14. Check that CAB changes state to Stop Request, and send alarm to stop the machine.<br>
-<br>
-15. Check that the BOC steering left output still works.<br>
-<br>
-16. Reconnect the BOC steering valve connector 2. Check that CAB state remains in Stop Request.<br>
-<br>
-17. Check that the BOC steering valve outputs work in both directions.<br>
-<br>
-18. Reconnect SSC cable to the system. The system must stay in Stop Request state.<br>
-<br>
-19. Check that SSC is not controlling valves.<br>
-<br>
-<br>
-TEST 4. VALVE DRIVE, ENTER FROM SECONDARY SAFE (Table test)<br>
-<br>
-1. Connect normal steering joystick to the test system.<br>
-<br>
-2. Start up the system in Primary Normal state.<br>
-<br>
-3. Disconnect either one of the primary steering valve connectors. The system must enter Secondary Safe state.<br>
-<br>
-4. Disconnect SSC valve connector 1 (left).<br>
-<br>
-5. Check that CAB changes state to Stop Request, and send alarm to stop the machine.<br>
-<br>
-6. Check that the SSC steering right output still works.<br>
-<br>
-7. Reconnect the SSC steering valve connector 1. Check that CAB state remains in Stop Request, and SSC continues to stay in Secondary Safe.<br>
-<br>
-8. Check that the SSC steering valve outputs work in both directions.<br>
-<br>
-9. Reconnect the primary steering valve connector. Check that CAB state remains in Stop Request, and SSC continues to stay in Secondary Safe.<br>
-<br>
-10. Restart the system.<br>
-<br>
-11. Disconnect either one of the primary steering valve connectors. The system must enter Secondary Safe state.<br>
-<br>
-12. Disconnect SSC valve connector 2 (right).<br>
-<br>
-13. Check that CAB changes state to Stop Request, and send alarm to stop the machine.<br>
-<br>
-14. Check that the SSC steering left output still works.<br>
-<br>
-15. Reconnect the SSC steering valve connector 2. Check that CAB state remains in Stop Request, and SSC continues to stay in Secondary Safe.<br>
-<br>
-16. Check that the SSC steering valve outputs work in both directions.<br>
-<br>
-17. Reconnect the primary steering valve connector. Check that CAB state remains in Stop Request, and SSC continues to stay in Secondary Safe."	In Stop Request state, the control remains as in the previous state, but a stop request is given to the operator.	A. CAB is in Primary Safe or Secondary Safe state	""	""		
-JDF Hera	1.4.6	32070	PWM stability	""	"TEST 1. PWM HANDLER STABILITY (table test)<br>
-<br>
-1. Provide separate powersource i.e. laboratory power<br>
-<br>
-2. Disconnect SSC from other system, leave only SSC power and valve connector with valves connected.<br>
-<br>
-3. Connect power on and off several times with variable cycles (startup dissortion cycle) and check that after power up valve current on both valves stabilies to correct 150 mA.<br>
-<br>
-4. Disturb the system the same way by disconnecting and re-connecting valves, see that valve currents stabilises back to standby current (150 mA).<br>
-<br>
-5. Disturb the system the same way by short-cutting valves, see that valve currents stabilises back to standby current (150 mA)."	""	""	""	""		
-JDF Hera	1.5	34094	Version number reading	""	"TEST 1. READ VERSION NUMBER WITH SOFTING CAN CARD<br>
-<br>
-1. Connect Softing CAN card to CAN bus in simulator with handpanels active<br>
-<br>
-2. Start CanSniff and send command ""s"" couple of times<br>
-<br>
-3. See that version string is seen as a version string in the most of the querys<br>
-<br>
-TEST 2.  READ VERSION NUMBER WITH TIMBERMATIC IN SIMULATOR<br>
-<br>
-1. With simulator powered up check from timbermatic software download dialog that version number string is allways (try couple of times to re-open the dialog) available for both ACL and ACR<br>
-<br>
-TEST 3.  READ VERSION NUMBER IN REAL MACHINE<br>
-<br>
-1. With machine powered up (RUN1) check from timbermatic software download dialog that version number string is allways (try couple of times to re-open the dialog) available for both ACL and ACR"	ACL/ACR version number must be readable	A. Various test environments, see test cases	""	""		
-JDF Hera	1	20788	GENERAL REQUIREMENTS	"<p> </p><p align=""left"" style=""MARGIN: 0cm 0cm 0pt; TEXT-ALIGN: left""> </p>"	""	"This document defines the requirements for the software for the base machine control on E-series forest harvesters and forwarders.<br>
-"	""	""	""	""	""	""	""	""
-JDF Hera	1.1	20790	System overview	"<p><img align=""baseline"" alt="""" border=""0"" hspace=""0"" id=""img1445"" src=""file://C:%5CUsers%5Cmt55916%5CAppData%5CLocal%5CBorland%5CCaliberRM%5CImageCache%5C55DBD4BB-FE1F-4EE0-BBFC-AEA4BAFA4C53.JPG""></p>"	""	Zeus system layout. All HW modules are connected to each other with CAN 1939 network	""	""	""	""	""	""	""	""
-JDF Hera	1.2	20971	Arm rest controller	"<img align=""baseline"" alt="""" border=""0"" hspace=""0"" id=""img1446"" src=""file://C:%5CUsers%5Cmt55916%5CAppData%5CLocal%5CBorland%5CCaliberRM%5CImageCache%5C19182196-30BF-45FA-86F1-31FFAA613C74.JPG"">"	""	Describes sensors and actuators connected to arm rest controller left (ACL) and right (ACR)	""	"A. ACL/R receives parameters from CAB and runs validity check<br>
-<br>
-B. ACL/R reads values from boom control joysticks<br>
-<br>
-C. ACL reads value from steering control joystick<br>
-<br>
-D. ACR reads value from control joystick used for boom leveling in harvester and decking blade in forwarder<br>
-<br>
-E. ACL/R reads button and drive direction switch statuses<br>
-<br>
-F. ACL/R filters joystick voltage using calibrated limits and EWMA and then sends joystick information to CAN-bus in J1939 format.<br>
-<br>
-G. ACL/R sends button information.<br>
-<br>
-H. ACL/R controls backlight illumination<br>
-<br>
-I. ACL/R supervises status of buttons and joysticks and send error message in case of a failure<br>
-<br>
-J. ACL/R have state to send raw values for the joystick calibration<br>
-<br>
-K. ACL/R is reprogrammable"	""	""	"ACL:<br>
-A. Three 0...5V, 10-bit analog inputs for boom joystick<br>
-<br>
-B. Three 0...5V, 10-bit analog inputs for frame steering<br>
-<br>
-C. 8x8 matrix connection for buttons<br>
-<br>
-D. Serial programming connection<br>
-<br>
-E. Identification of controller<br>
-<br>
-ACR:<br>
-F. Three 0...5V, 10-bit analog inputs for boom joystick<br>
-<br>
-G. One 0...5V, 10-bit analog inputs for extra joystick<br>
-<br>
-H. 8x8 matrix connection for buttons<br>
-<br>
-I. Two digital inputs for drive direction switch<br>
-<br>
-J. Serial programming connection<br>
-<br>
-K. Identification of controller"	"ACL<br>
-A. 8x8 matrix connection to control LED's<br>
-<br>
-B. 5V reference for boom joystick<br>
-<br>
-C. Two 5V references for the steering joystick<br>
-<br>
-ACR<br>
-A. 8x8 matrix connection to control LED's<br>
-<br>
-B. 5V reference for joysticks"	""	""
-JDF Hera	1.2.1	20989	Boom and boom tilt control joystick	<p> </p>	""	ACL/R reads signals from the joysticks, filters them and sends them to other controllers.	A. Controller is in normal operation mode	"1. ACL/R reads the signal  <br>
-<br>
-2. ACL/R compares signal to alarm limits<br>
-<br>
-3. ACL/R filters signal according to algorithm (see [Re])<br>
-<br>
-4. ACL/R sends signal to other controllers (standard J1939 message)<br>
-<br>
-5. EJM1, EJM2 and BJM2 is send at 80ms period when the signal is inside the zero zone.<br>
-<br>
-6. EJM1, EJM2 and BJM2 is send at 20ms period when the signal is outside the zero zone."	""	A./2. Signal is outside alarm limits --> ACL/R sends alarm	""	"Joystick filtering algorithm: <br>
-<br>
-var(i) = var_coeff * var(i - 1) + (1 - var_coeff) * ((x(i - 1) - out(i - 1)) ^ 2);<br>
-<br>
-if (var(i) > var_limit) <br>
-    out(i)=(a2 * out(i-1)) + ((1 - a2) * x(i));<br>
-else <br>
-    out(i)=(a1 * out(i-1)) + ((1 - a1) * x(i));<br>
-<br>
-where<br>
-<br>
-out includes the filtered output values<br>
-var includes the variance calculated at each step<br>
-a1 is the alpha coefficient when the variance is low<br>
-a2 is the alpha coefficient when the variance is high<br>
-var_coeff is the filter coefficient for variance<br>
-var_limit is the limit for switching from a1 to a2<br>
-x is the input data vector"	""	""
-JDF Hera	1.2.2	20990	Steering joystick	""	""	ACL reads signals from the joysticks, filters them and sends them to other controllers.	A. Controller is in normal operation mode	"1. ACL reads the three signals<br>
-<br>
-2. ACL filters signals according to EWMA algorithm<br>
-<br>
-3. ACL compares signals to alarm limits<br>
-<br>
-4. ACL compares 3 signals and ""votes"" to see that all sensors are working as they should<br>
-<br>
-5. ACL calculates an average of the valid signals<br>
-<br>
-6. ACL normalizes the signal to the range 0...1000 according to the calibration parameters<br>
-<br>
-7. ACL sends signal to other controllers (standard J1939 message)<br>
-<br>
-8. BJM3 is send at 80ms period when the signal is inside the zero zone.<br>
-<br>
-9. BJM3 is send at 20ms period when the signal is outside the zero zone."	""	"A./2. Signal is outside alarm limits --> ACLsends alarm<br>
-<br>
-B./3. Faulty signal noticed--> ACL sends alarm"	""	""	Ari to describe filtering and voting algorithms/principles to RTF field	""
-JDF Hera	1.2.3	20991	Buttons	"<p><font size=""2"" face=""TIMES NEW ROMAN""><img id=""img5055"" border=""0"" hspace=""0"" alt=""ACL button mapping"" align=""baseline"" src=""file://C:%5CUsers%5Cmt55916%5CAppData%5CLocal%5CBorland%5CCaliberRM%5CImageCache%5CB463EA73-5BB4-49D0-B5B0-01476F0214CF.png""></font></p><p><font size=""2"" face=""'TIMES NEW ROMAN'""> <img id=""img5056"" border=""0"" hspace=""0"" alt=""ACR button mapping"" align=""baseline"" src=""file://C:%5CUsers%5Cmt55916%5CAppData%5CLocal%5CBorland%5CCaliberRM%5CImageCache%5C6C957A21-5626-4FAA-9F91-1697FEB426A2.png""></font></p>"	""	ACL/R reads buttons from the matrix and sends information to other controllers.	None	"A.ACL/R sends status of all buttons after each button release/press (several buttons can be active at a time).<br>
-Minimum response time is 10ms. Active buttons are sent at 40 ms interval.<br>
-<br>
-B. Button down time is calculated.<br>
-"	"A/A If button is active for long time(> 1minute), armrest controller shall report a fault.<br>
-<br>
-A/A If four or more buttons are pressed simultaneously, armrest controller shall report a fault."	""	""	""	""	""
-JDF Hera	1.2.4	21169	Drive direction switch	""	""	ACR reads drive direction switch status (forward-neutral-backward) and sends information to other controllers.	""	"A. ACR sends switch status after each change of state <br>
-Minimum response time is 10ms. Active switch status is sent at 40 ms interval.<br>
-"	""	A./A. Both directions selected simultaneously. ACR sends an alarm	""	""	""	""
-JDF Hera	1.2.5	20992	LED control	""	""	ACL/R have button backlight illumination	None	A. ACL/R controls all LEDs according to illumination level set by the operator.	""	""	""	""	""	""
-JDF Hera	1.2.6	20993	Parameter handling	""	""	CAB controller sends the parameters to ACL/R, which stores the parameters, and calculates a checksum. The checksum is sent to CAB for parameter validity check.	"A. ACL/R is powered up and has not received parameters yet.<br>
-<br>
-B. ACL/R sets the INVALID_PARAMETERS flag in the status message<br>
-<br>
-C. ACL/R uses the default parameter values for all parameters."	"1. ACL/R received SET_PARAMETER_STATE message from CAB controller.<br>
-<br>
-2. ACL/R sets itself to receiving parameters state, and sets the RECEIVING_PARAMETERS bit in the status message after it has received the first parameter from CAB.<br>
-<br>
-3. ACL/R receives parameters from CAB controller<br>
-<br>
-4. ACL/R checks that parameters are valid<br>
-<br>
-5. ACL/R calculates a checksum of the parameters<br>
-<br>
-6. The checksum is compared to the checksum calculated by CAB"	""	"A/1. Parameter transfer failed--> ACL/R uses default parameters<br>
-<br>
-B/2. Parameter values are not valid --> ACL/R uses default parameters and sends an alarm<br>
-<br>
-C/4. Checksum doesn't match with the CAB checksum -> ACL/R uses default parameters and sends an alarm"	""	""	""	"Values for validity limits to be defined<br>
-Default values to be defined"
-JDF Hera	1.2.7	36228	New Requirement	""	""	""	""	""	""	""	""	""	""	""
-JDF Hera	1.2.8	20999	Calibration	""	""	To make on-line adjustment of the parameter values possible for the operator. This is effective way to get productive boom parameter values.	A. Operator has entered Joystick calibration page in PC	"1. ACL/R goes to calibration mode<br>
-<br>
-2. Operator turns the lever 360 degrees so that it is against mechanical limit all the time.<br>
-<br>
-3. ACL/R is measuring and sending raw analog values to PC<br>
-<br>
-4. PC is recording the min and max values from potentiometer CAN messages for all 4 directions<br>
-<br>
-5. Operator releases the lever<br>
- <br>
-6. Operator presses SAVE<br>
-<br>
-7. PC saves the measured Min and Max values and the zero point on the moment when Save command was set<br>
-<br>
-8. PC sends parameters to other controller(CAB)<br>
-<br>
-9. Controller exits to normal operation mode"	"A. Controller has new parameter values<br>
-B. Controller is in the normal operation mode"	"A/3. Signal is outside alarm limits --> ACL/R sends an alarm<br>
-<br>
-B/all. Controller loses contact with PC<br>
- * Calibration is aborted<br>
- * Old values are restored<br>
-<br>
-C/1. There is no contact with controllers when operator presses START --> Calibration can not be started<br>
-<br>
-D/All] Operator presses CANCEL --><br>
- * Calibration is aborted<br>
- * Old values are restored<br>
-"	""	""	""	""
-JDF Hera	1.2.9	31644	Fault monitoring	""	""	Monitoring of faults in the hardware and power supply.	A. ACL/ACR/SSC is in normal operating mode.	A. ACL/ACR/SSC monitor the power supply voltage, and compare the voltage to the min and max limit. If the limit is exceeded, and alarm is sent.	""	""	""	""	""	""
-JDF Hera	1.3	20994	SAFETY	""	""	To decscribe all safety related requirements like joystick alarms, button checks and parameter validity check	""	""	""	""	""	""	""	""
-JDF Hera	1.3.1	20995	Parameter validity	"<img id=""img5057"" border=""0"" hspace=""0"" alt=""Joystick parameters and validation"" align=""baseline"" src=""file://C:%5CUsers%5Cmt55916%5CAppData%5CLocal%5CBorland%5CCaliberRM%5CImageCache%5CD1A5D7BA-EA01-44C8-A333-0339C6022938.png"">"	""	See that it is safe to operate in all cases	A. ACL/R has received new parameter set from CAB controller.	"1. Joystick parameter values are checked, and the values for joystick calibration must be in the following increasing order:<br>
-<br>
-0 < Min limit < Min < Zero point < Max < Max limit < 1023<br>
-<br>
-2. Zero point value must be between 492 - 532.<br>
-<br>
-3. Supply voltage limits (min and max) need to be between 141 (6V) and 801 (34V)<br>
-<br>
-4. Backlight brightness allowed value range is 0 - 100.<br>
-<br>
-5. Checksum is calculated from all parameter values and compared to the checksum sent by CAB.<br>
-<br>
-6. If validation was successful, ACL/R clears the ""ILLEGAL_PARAMETERS"" bit, and takes the new parameters into use.<br>
-<br>
-7. If validation failed, the default parameter values are taken into use."	""	""	""	""	"A. Default value for the minimum limit: 24<br>
-<br>
-B. Default value for the maximum limit: 1000<br>
-<br>
-C. Default value for the minimum value<br>
-- boom joysticks: 124<br>
-- steering joystick: 200<br>
-<br>
-D. Default value for the maximum value (boom joysticks): - boom joysticks: 900<br>
-- steering joystick: 850<br>
-<br>
-E. Default value for the zero point: 512<br>
-<br>
-F. Default value for the zero zone: 60<br>
-<br>
-G. Default value for the supply voltage minimum value: 500<br>
-<br>
-H. Default value for the supply voltage maximum value: 700<br>
-<br>
-I. Default value for backlight brightness: 100<br>
-<br>
-J. Default value for voting window: 50<br>
-<br>
-K. Default value for EWMA filter slow coefficient: 800<br>
-<br>
-L. Default value for EWMA filter fast coefficient: 600"	""
-JDF Hera	1.3.2	20996	Buttons at start up	""	""	Check that there is no faulty buttons.	Button pressed at start up	"A. ACL/R sends an alarm<br>
-<br>
-B. Normal button status message is not sent until all buttons have been released at least once after start up."	""	""	""	""	""	""
-JDF Hera	1.3.3	20997	Steering joystick	""	""	Voting principle and alarm limits to be described here	A. ACL is in normal operating mode.	""	""	"A. Steering joystick input 1<br>
-<br>
-B. Steering joystick input 2<br>
-<br>
-C. Steering joystick input 3<br>
-"	""	""	""	"1. ACL filters the raw analog values using EWMA filter.<br>
-<br>
-2. ACL compares all three steering joystick input values against the min and max limit values, and sends alarm if the limits are exceeded.<br>
-<br>
-3. If a single signal is out of range, then the two remaining valid signals are used, and their average is set as the output signal.<br>
-<br>
-4. If two signals are out of range, the single valid signal is used as the output signal.<br>
-<br>
-5. If all three signals are out of range, the output value is set to neutral to avoid faulty steering movement.<br>
-<br>
-6. If all three signals are in valid range, the voting algorithm is started.<br>
-<br>
-7. The signals are compared to each other, and checked that they all fit inside the voting window given by the parameter.<br>
-<br>
-8. If a single signal is out of the voting window, an alarm is sent, and the signal is discarded. The average of the two valid signals is used as output.<br>
-<br>
-9. If all signals are out of the voting window (no two signals are close enough to fit to the voting window), then an average of all valid signals is used as output. Alarm will be sent for all three signals being out of the voting window."
-JDF Hera	1.3.4	20998	Boom and pilar tilt joysticks	""	""	Alarm limits to be described here	A. ACL/R is in normal operating mode.	"1. The raw analog signals are compared against the minimum limit value. Alarm is sent if the value is lower than the minimum limit.<br>
-<br>
-2. The raw analog signals are compared against the maximum limit value. Alarm is sent if the value is higher than the maximum limit.<br>
-"	""	""	""	""	""	""
-JDF Hera	1.3.5	21066	Button down toolong time	""	""	Send alarm if a button has been down so long time that it is most propably mechanically broken	A. Button down time exceeded	1. Button down too long time alarm sent	""	""	""	""	""	""
-JDF Hera	1.3.6	31621	Four or more buttons pressed simultaneously	""	""	If four (4) or more buttons are being pressed simultaneously, the system shall give an alarm.	A. Four (4) or more buttons being pressed simultaneously.	"A. ACL/ACR sends alarm.<br>
-<br>
-B. When the buttons are released, the active alarm is cleared."	""	""	""	""	""	""
-JDF Hera	1.3.7	31623	Armrest tilt switch	""	""	Both armrests have a tilt switch indicating when the armrest has been tilted up. The tilt position shall be indicated in the CAN status message.	""	"A. ACL/ACR reads the armrest angle sensor signal, and compares the signal to the limit value for the armrest up position.<br>
-<br>
-B. The angle sensor signal is filtered to filter out short acceleration spikes from the signal.<br>
-<br>
-C. If the armrest angle exceeds the limit value, ACL/ACR sets the bit ARMREST_UP in ACL/ACR status message<br>
-<br>
-D. There shall be some hysteresis in the setting of the bit to avoid the bit value from changing rapidly, when the armrest is at the limit position."	""	""	A. Angle sensor in the armrest main PCB	""	""	""
-JDF Hera	1.4	22581	Secondary steering controller	"<img align=""baseline"" alt=""Steering control system"" border=""0"" hspace=""0"" id=""img2050"" src=""file://C:%5CUsers%5Cmt55916%5CAppData%5CLocal%5CBorland%5CCaliberRM%5CImageCache%5CB89D88A3-B369-4B25-844A-7A677F03819A.bmp"">"	""	Describes the operation and I/O of the Secondary Steering Controller (SSC)	""	"A. SSC receives parameters from CAB and runs a validity check<br>
-<br>
-B. SSC calculates a checksum of the parameters and compares that to the checksum sent by CAB.<br>
-<br>
-C. SSC reads values from steering control joystick inputs 1 - 3<br>
-<br>
-D. SSC filters joystick value using calibrated limits, EWMA filter and voting principle and then sends joystick information to CAN-bus in J1939 format.<br>
-<br>
-E. SSC supervises the status of joysticks and valve outputs and sends error messages in case of a failure<br>
-<br>
-F. SSC listens CAB secondary steering state signal on CAN bus, and changes the internal state according to the CAB signal.<br>
-<br>
-G. SSC monitors CAB presense on CAN bus, and if CAB is not present, switches to Secondary Safe state<br>
-<br>
-H. In Secondary Safe state, SSC controls the proportional valve outputs according to the joystick value"	""	""	"A. Three 0...5V, 10-bit analog inputs for frame steering<br>
-<br>
-B. Serial programming connection<br>
-<br>
-C. CAN bus"	"A. Two 0...1000 mA proportional valve outputs<br>
-<br>
-B. CAN bus"	The operator stimulus for the system is transformed into electrical form by triple gang potentiometer (P1, P2 and P3). This is to detect a single failure in potentiometer signal. The supply voltages (U1, U2 and U3) for the potentiometers are provided from three independent regulated power supplies, to prevent one failing supply from creating signal loss. The sources for supplies are ACL (Armrest Controller, Left) and SSC (Secondary Steering Controller). All three signals from potentiometers are brought to ACL for comparison and then error detection. Additionally the signals from potentiometers are fed into SSC. In SSC these signals are compared. The SSC system creates a secondary control system. The four valve spools are connected in pairs to SSC and BOC (Boom Controller) controllers to form the primary (Yl_pri, Yr_pri) and secondary (Yl_sec, Yr_sec) circuit. These valves are then connected, again in pairs, via shuttle valves to each side of the main steering valve. SSC, BOC and ACL are connected to each other via the SAE J1939 CAN-bus. 	""
-JDF Hera	1.4.1	22582	Steering joystick	""	""	SSC reads signals from the joystick outputs and filters them. The data is used for steering control in Secondary Safe mode.	A. Controller is in STANDBY (Primary Normal / Primary Safe) operation mode or Secondary Safe mode	"1. SSC reads the three signals<br>
-<br>
-2. SSC filters signals according to EWMA algorithm<br>
-<br>
-3. SSC compares signals to alarm limits<br>
-<br>
-4. SSC compares 3 signals and ""votes"" to see that all sensors are working as they should<br>
-<br>
-5. SSC calculates an average of the valid signals<br>
-<br>
-6. SSC normalizes the signal to the range 0...1000 according to the calibration parameters<br>
-<br>
-7. SSC sends signal to other controllers (standard J1939 message)"	""	"A./3. Signal is outside alarm limits --> SSC sends alarm<br>
-<br>
-B./4. Signal outside voting window --> SSC sends alarm"	""	""	Ari to describe filtering and voting algorithms/principles to RTF field	""
-JDF Hera	1.4.1.1	31646	Voting algorithm	""	""	Voting algorithm for selecting the steering signal to be used for control	A. SSC is in normal operating mode (STANDBY / Secondary Safe)	"1. SSC compares all three steering joystick input values against the min and max limit values, and sends alarm if the limits are exceeded.<br>
-<br>
-2. If a single signal is out of range, then the two remaining valid signals are used, and their average is set as the output signal.<br>
-<br>
-3. If two signals are out of range, the single valid signal is used as the output signal.<br>
-<br>
-4. If all three signals are out of range, the output value is set to neutral to avoid faulty steering movement.<br>
-<br>
-5. If all three signals are in valid range, the voting algorithm is started.<br>
-<br>
-6. The signals are compared to each other, and checked that they all fit inside the voting window given by the parameter.<br>
-<br>
-7. If a single signal is outside of the voting window, an alarm is sent, and the signal is discarded. The average of the two valid signals is used as output.<br>
-<br>
-8. If all signals are out of the voting window (no two signals are close enough to fit inside the voting window), then an average of all valid signals is used as output. Alarm will be sent for all three signals being out of the voting window."	""	""	"A. Steering joystick input 1<br>
-<br>
-B. Steering joystick input 2<br>
-<br>
-C. Steering joystick input 3"	A. Steering signal used for steering control	""	""
-JDF Hera	1.4.2	22698	Valve outputs	""	""	Steering proportional valves are controlled in secondary safe mode according to the steering joystick value.	"A. Controller is in Secondary Safe mode.<br>
-<br>
-B. Steering joystick value has been read and voting is done."	"A. A target current value is calculated for the steering valve outputs (left / right) based on the steering joystick value. The steering value of 0 - 1000 is scaled to valve current using the calibration parameters for valve minimum and maximum currents.<br>
- <br>
-B. The channel that is not active, will include a standby current of 150 mA.<br>
-<br>
-C. The current at the valve outputs is measured. The status of the output MOSFETs is read.<br>
-<br>
-E. Dither is implemented by using a low-frequency PWM signal (120 Hz).<br>
-<br>
-D. The target currents are fed to closed-loop controllers regulating the valve output currents.<br>
-<br>
-F. The PWM duty cycles of the valve outputs are set by the closed-loop controllers."	""	"C./1. If the measured output current differs too much from the  target current, an error is reported (current error).<br>
-<br>
-C./2. If the measured current is near zero when target current is above zero, or the status bit in the MOSFET is set (short circuit). <br>
-<br>
-C./3. In an inactive output, the 150 mA standby current is not flowing (measured current near zero / MOSFET status bit set).<br>
-"	"1. Steering joystick<br>
-<br>
-2. Current feedback, left steering valve<br>
-<br>
-3. Current feedback, right steering valve"	"1. Proportional valve output, left steering valve<br>
-<br>
-2. Proportional valve output, right steering valve"	""	""
-JDF Hera	1.4.3	22699	Calibration	""	""	To make on-line adjustment of the parameter values possible for the operator. This is effective way to get productive boom parameter values.	A. Operator has entered steering joystick calibration page in PC	"1. SSC goes to calibration mode<br>
-<br>
-2. Operator turns the steering lever to both mechanical limits, and leaves it at the center position.<br>
-<br>
-3. SSC is measuring and sending raw ADC values to PC<br>
-<br>
-4. PC is recording the min and max position values from SSC status message.<br>
-<br>
-5. Operator releases the lever<br>
- <br>
-6. Operator presses SAVE<br>
-<br>
-7. PC saves the measured Min and Max voltages and the Zero point on the moment when Save command was set<br>
-<br>
-8. PC sends parameters to CAB controller <br>
-<br>
-9. Controller exits to normal operation mode"	"A. Controller has new parameter values<br>
-B. Controller is in the normal operation mode"	"A/3. Signal is outside alarm limits --> SSC sends an alarm<br>
-<br>
-B/all. Controller loses contact with PC<br>
- * Calibration is aborted<br>
- * Old values are restored<br>
-<br>
-C/1. There is no contact with controllers when operator presses START --> Calibration can not be started<br>
-<br>
-D/All] Operator presses CANCEL --><br>
- * Calibration is aborted<br>
- * Old values are restored<br>
-"	""	""	""	""
-JDF Hera	1.4.4	22715	Parameter handling	""	""	CAB controller sends the parameters to SSC, which stores the parameters, and calculates a checksum. The checksum is compared with the checksum sent by CAB.	A. SSC is in Primary Normal (STANDBY) state.	"1. SSC receives parameters from other controller(CAB)<br>
-<br>
-2. SSC checks that parameters are valid<br>
-<br>
-3. SSC calculates a checksum of the parameters<br>
-<br>
-4. The checksum is compared to the checksum sent by CAB"	""	"A/1. Parameter transfer failed--> SSC uses default parameters<br>
-<br>
-B/2. Parameter values are not valid --> SSC uses default parameters and sends an alarm<br>
-<br>
-C/4. Checksum does not match --> SSC uses default parameters and sends an alarm"	""	""	""	"Values for validity limits to be defined<br>
-Default values to be defined"
-JDF Hera	1.4.5	22707	States	"<img align=""baseline"" alt=""State machine"" border=""0"" hspace=""0"" id=""img2049"" src=""file://C:%5CUsers%5Cmt55916%5CAppData%5CLocal%5CBorland%5CCaliberRM%5CImageCache%5CE991F071-8AA8-4235-99A2-7EA0E29A4567.bmp"">"	""	CAB will include a state machine for the fault tolerant steering. SSC will implement states Primary Normal (SSC in standby) and Secondary Safe (SSC active).	"1. CAB will enter Primary Normal state in startup<br>
-<br>
-2. CAB will change states according to the received signals and the current state.<br>
-<br>
-3. CAB will send it's current state to CAN bus.<br>
-<br>
-4. A state change cannot be done in reverse, i.e. from Primary Safe mode cannot be returned back to Primary Normal."	""	""	""	""	""	""	""
-JDF Hera	1.4.5.1	22711	Primary Normal	""	""	Primary Normal state is the normal operating state of the fault tolerant steering. SSC will be in STANDBY mode.	"A. SSC has started up correctly.<br>
-<br>
-B. CAB has started up correctly.<br>
-<br>
-C. There are no active faults in the fault tolerant steering system<br>
-"	"1. SSC monitors the joystick inputs 1 - 3.<br>
-<br>
-2. SSC monitors the state of the valve outputs by feeding a pilot current of 150 mA, and measuring the return current.<br>
-<br>
-3. SSC listens to the CAB status message, and updates it's internal state according to the CAB state.<br>
-<br>
-4. SSC monitors CAB presense in the CAN bus<br>
-"	""	"A./1. If a fault is detected in a joystick input, signal FaultT1 is generated<br>
-<br>
-B./2. If a fault is detected in any of the valve outputs, FaultT2 is generated.<br>
-<br>
-C./3. If the CAB status message timeout elapses, FaultT3 is generated, and SSC will switch state to Secondary Safe<br>
-"	"1. Joystick input 1<br>
-<br>
-2. Joystick input 2<br>
-<br>
-3. Joystick input 3<br>
-<br>
-4. Valve output 1 current<br>
-<br>
-5. Valve output 1 status bit (FET)<br>
-<br>
-6. Valve output 2 current<br>
-<br>
-7. Valve output 2 status bit (FET)<br>
-<br>
-8. CAB status message<br>
-<br>
-"	""	""	""
-JDF Hera	1.4.5.2	22712	Primary Safe	""	""	Primary Safe state is a reduced-speed, normal operating state of the fault-tolerant steering.	"A. CAB is in Primary Normal state<br>
-<br>
-"	"1. CAB sets the state to Primary Safe.<br>
-<br>
-2. SSC remains in STANDBY mode (operation same as in Primary Normal).<br>
-"	""	"<br>
-"	"<br>
-"	""	""	""
-JDF Hera	1.4.5.3	22713	Secondary Safe	""	""	In Secondary Safe state, the secondary circuit controls the steering.	"A. CAB is in Primary Normal or Primary Safe state<br>
-<br>
-"	"1. SSC detects CAB state change to Secondary Safe OR CAB status message timeout occurs.<br>
-<br>
-2. SSC reads the joystick inputs 1 - 3.<br>
-<br>
-3. SSC controls the valve outputs according to the joystick value.<br>
-<br>
-4. SSC monitors the state of the inactive valve outputs by feeding a pilot current of 150 mA, and measuring the return current.<br>
-<br>
-"	""	"A./2. If a fault is detected in a joystick input, a DTC code is generated. If the fault is critical (> 1 signal corrupted), signal FaultT6 is generated.<br>
-<br>
-B./3. If a fault is detected in any of the valve outputs, FaultT6 is generated.<br>
-<br>
-C./4. If a fault is detected in any of the valve outputs, FaultT6 is generated.<br>
-"	"1. Joystick input 1<br>
-<br>
-2. Joystick input 2<br>
-<br>
-3. Joystick input 3<br>
-<br>
-4. Valve output 1 current<br>
-<br>
-5. Valve output 1 status bit (FET)<br>
-<br>
-6. Valve output 2 current<br>
-<br>
-7. Valve output 2 status bit (FET)<br>
-<br>
-8. CAB status message<br>
-"	""	""	""
-JDF Hera	1.4.5.4	22714	Stop Request	""	""	In Stop Request state, the control remains as in the previous state, but a stop request is given to the operator.	"A. CAB is in Primary Safe or Secondary Safe state<br>
-<br>
-"	"1. SSC retains the operation as in the previous state.<br>
-"	""	""	""	""	""	""
