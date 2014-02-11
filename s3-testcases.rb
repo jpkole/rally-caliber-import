@@ -33,17 +33,6 @@ $preview_mode                    = false
 # Flag to set in @rally_testcase_hierarchy_hash if Requirement has no Parent
 $no_parent_id                    = "-9999"
 
-# Output parameters
-$my_output_file_TC               = "caliber_testcases.csv"
-
-$testcase_fields                 =  %w{id hierarchy name project source purpose pre_condition testing_course post_condition machine_type software_load content_status remarks validation description include testing_status test_running}
-
-# Output fields to store a CSV
-# allowing lookup of TestCase OID by Caliber TestCase ID
-# (needed for traces import)
-$testcase_oid_output_csv         = "testcase_oids_by_testcaseid.csv"
-$testcase_oid_output_fields      =  %w{testcase_id ObjectID testcase_name}
-
 if $my_delim == nil then $my_delim = "\t" end
 
 # Load (and maybe override with) my personal/private variables from a file...
@@ -226,34 +215,34 @@ begin
 
     # Report vars
     @logger.info "Running #{$PROGRAM_NAME} with the following settings:
-                $my_base_url                = #{$my_base_url}
-                $my_username                = #{$my_username}
-                $my_workspace               = #{$my_workspace}
-                $my_project                 = #{$my_project}
-                $caliber_file_name          = #{$caliber_file_name}
-                $caliber_image_directory    = #{$caliber_image_directory}
-                $caliber_id_field_name      = #{$caliber_id_field_name}
-		$caliber_weblink_field_name = #{$caliber_weblink_field_name}
-                $max_import_count           = #{$max_import_count}
-                $my_output_file             = #{$my_output_file}
-  		$testcase_fields            = #{$testcase_fields}
-                $import_to_rally            = #{$import_to_rally}
-                $stitch_hierarchy           = #{$stitch_hierarchy}
-                $import_images_flag         = #{$import_images_flag}
-                $testcase_oid_output_csv    = #{$testcase_oid_output_csv}
-                $testcase_oid_output_fields = #{$testcase_oid_output_fields}"
+                $my_base_url                    = #{$my_base_url}
+                $my_username                    = #{$my_username}
+                $my_workspace                   = #{$my_workspace}
+                $my_project                     = #{$my_project}
+                $caliber_file_name              = #{$caliber_file_name}
+                $caliber_image_directory        = #{$caliber_image_directory}
+                $caliber_id_field_name          = #{$caliber_id_field_name}
+		$caliber_weblink_field_name     = #{$caliber_weblink_field_name}
+                $max_import_count               = #{$max_import_count}
+                $my_output_file                 = #{$my_output_file}
+  		$csv_testcase_fields            = #{$csv_testcase_fields}
+                $import_to_rally                = #{$import_to_rally}
+                $stitch_hierarchy               = #{$stitch_hierarchy}
+                $import_images_flag             = #{$import_images_flag}
+                $csv_testcase_oid_output        = #{$csv_testcase_oid_output}
+                $csv_testcase_oid_output_fields = #{$csv_testcase_oid_output_fields}"
 
     # Initialize Caliber Helper
     @caliber_helper = CaliberHelper.new(@rally, $caliber_project, $caliber_id_field_name,
         $description_field_hash, $caliber_image_directory, @logger, $caliber_weblink_field_name)
 
     # Output CSV of TestCase data
-    testcase_csv = CSV.open($my_output_file_TC, "wb", {:col_sep => $my_delim})
-    testcase_csv << $testcase_fields
+    testcase_csv = CSV.open($csv_testcases, "wb", {:col_sep => $my_delim})
+    testcase_csv << $csv_testcase_fields
 
     # Output CSV of TestCase OID's by Caliber Requirement Name
-    testcase_oid_csv    = CSV.open($testcase_oid_output_csv, "wb", {:col_sep => $my_delim})
-    testcase_oid_csv    << $testcase_oid_output_fields
+    testcase_oid_csv    = CSV.open($csv_testcase_oid_output, "wb", {:col_sep => $my_delim})
+    testcase_oid_csv    << $csv_testcase_oid_output_fields
 
     # The following are used for the post-run web-linking
     # Hash of TestCase keyed by Caliber Requirement Hierarchy ID
@@ -334,7 +323,7 @@ begin
                     end
                 end
 
-                @logger.info "Finished Reading Caliber TestCase ID: #{testcase_id}; Hierarchy: #{testcase_hierarchy}; Project: #{testcase_project}"
+                @logger.info "    Finished Reading Caliber TestCase ID: #{testcase_id}; Hierarchy: #{testcase_hierarchy}; Project: #{testcase_project}"
 
                 # Dummy testcase used only when testing
                 # Includes our required fields
@@ -359,7 +348,7 @@ begin
 
                 # Get the Parent hierarchy ID for this Caliber Requirement
                 parent_hierarchy_id = @caliber_helper.get_parent_hierarchy_id(this_testcase)
-                @logger.info "Parent Hierarchy ID: #{parent_hierarchy_id}"
+                @logger.info "    Parent Hierarchy ID: #{parent_hierarchy_id}"
 
                 # Store the requirements Parent Hierarchy ID for use in stitching
                 @caliber_parent_hash[testcase_hierarchy] = parent_hierarchy_id
@@ -395,7 +384,7 @@ begin
                 end
 
                 # Post-pend to CSV
-                testcase_csv << CSV::Row.new($testcase_fields, testcase_data)
+                testcase_csv << CSV::Row.new($csv_testcase_fields, testcase_data)
 
                 # Output testcase OID and Caliber tag name
                 # So we can use this information later when importing traces
@@ -403,7 +392,7 @@ begin
                 testcase_oid_data << testcase["ObjectID"]
                 testcase_oid_data << testcase_name
                 # Post-pend to CSV
-                testcase_oid_csv  << CSV::Row.new($testcase_oid_output_fields, testcase_oid_data)
+                testcase_oid_csv  << CSV::Row.new($csv_testcase_oid_output_fields, testcase_oid_data)
 
                 # Circuit-breaker for testing purposes
                 if import_count < $max_import_count then

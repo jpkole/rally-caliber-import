@@ -21,9 +21,6 @@ $max_attachment_length           = 5000000
 $caliber_file_req_traces         = "hhc_traces.xml"
 $caliber_req_traces_field_name   = 'Externalreference'
 
-# Cached Caliber Requirement to Rally Story OID data
-$story_oid_output_csv            = "story_oids_by_reqname.csv"
-
 # Runtime preferences
 $max_import_count                = 100000
 $preview_mode                    = false
@@ -149,7 +146,7 @@ begin
     @story_oid_by_reqname = {}
 
     # Read in cached reqname -> Story OID mapping from file
-    input  = CSV.read($story_oid_output_csv,  {:col_sep => $my_delim})
+    input  = CSV.read($csv_story_oids_by_req,  {:col_sep => $my_delim})
 
     header = input.first #ignores first line
     rows   = []
@@ -158,7 +155,7 @@ begin
 
     # Proceed through rows in input CSV and store reqname -> story OID lookup
     # in a hash
-    @logger.info "Reading/caching requirement name -> Story OID mapping from #{$story_oid_output_csv} file..."
+    @logger.info "Reading/caching requirement name -> Story OID mapping from #{$csv_story_oids_by_req} file..."
 
     rows.each do |row|
         cache_story_oid(header, row)

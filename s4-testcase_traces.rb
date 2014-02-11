@@ -22,12 +22,6 @@ $max_attachment_length           = 5000000
 $caliber_file_tc_traces          = "jdf_testcase_traces_zeuscontrol.xml"
 $caliber_tc_traces_field_name    = 'Externalreference'
 
-# Cached Caliber Testcase-name to Rally Story OID data
-$testcase_oids_output_csv        = "testcase_oids_by_testcaseid.csv"
-
-# Cached Caliber Requirement to Rally Story OID data
-$story_oids_output_csv           = "story_oids_by_reqname.csv"
-
 # Runtime preferences
 $max_import_count                = 100000
 $preview_mode                    = false
@@ -236,7 +230,7 @@ begin
     @testcase_name_by_caliber_testcase_id ={}
 
     # Read in cached reqname -> Story OID mapping from file
-    input  = CSV.read($testcase_oid_output_csv,  {:col_sep => $my_delim})
+    input  = CSV.read($csv_testcase_oid_output,  {:col_sep => $my_delim})
 
     header = input.first #ignores first line
     rows   = []
@@ -245,7 +239,7 @@ begin
 
     # Proceed through rows in input CSV and store reqname -> story OID lookup
     # in a hash
-    @logger.info "Reading/caching TestCase name -> TestCase OID mapping from #{$testcase_oid_output_csv} file..."
+    @logger.info "Reading/caching TestCase name -> TestCase OID mapping from #{$csv_testcase_oid_output} file..."
 
     rows.each do |row|
         cache_testcase_oid(header, row)
@@ -259,7 +253,7 @@ begin
     @req_name_by_reqid = {}
 
     # Read in cached reqname -> Story OID mapping from file
-    input  = CSV.read($story_oid_output_csv,  {:col_sep => $my_delim})
+    input  = CSV.read($csv_story_oids_by_req,  {:col_sep => $my_delim})
 
     header = input.first #ignores first line
     rows   = []
@@ -268,7 +262,7 @@ begin
 
     # Proceed through rows in input CSV and store reqname -> story OID lookup
     # in a hash
-    @logger.info "Reading/caching requirement name -> Story OID mapping from #{$story_oid_output_csv} file..."
+    @logger.info "Reading/caching requirement name -> Story OID mapping from #{$csv_story_oids_by_req} file..."
 
     rows.each do |row|
         cache_story_oid(header, row)

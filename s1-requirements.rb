@@ -32,16 +32,6 @@ $preview_mode                    = false
 # Flag to set in @rally_story_hierarchy_hash if Requirement has no Parent
 $no_parent_id                    = "-9999"
 
-# Output parameters
-$my_output_file_US               = "caliber_requirements.csv"
-$requirement_fields              =  %w{id hierarchy name project description validation purpose pre_condition basic_course post_condition exceptions remarks}
-
-# Output fields to store a CSV
-# allowing lookup of Story OID by Caliber Requirement Name
-# (needed for traces import)
-$story_oid_output_csv            = "story_oids_by_reqname.csv"
-$story_oid_output_fields         =  %w{reqname ObjectID CaliberID}
-
 if $my_delim == nil then $my_delim = "\t" end
 
 # Load (and maybe override with) my personal/private variables from a file...
@@ -231,12 +221,12 @@ begin
         $description_field_hash, $caliber_image_directory, @logger, nil)
 
     # Output CSV of Requirement data
-    requirements_csv = CSV.open($my_output_file_US, "wb", {:col_sep => $my_delim})
-    requirements_csv << $requirement_fields
+    requirements_csv = CSV.open($csv_requirements, "wb", {:col_sep => $my_delim})
+    requirements_csv << $csv_requirement_fields
 
     # Output CSV of Story OID's by Caliber Requirement Name
-    story_oid_csv    = CSV.open($story_oid_output_csv, "wb", {:col_sep => $my_delim})
-    story_oid_csv    << $story_oid_output_fields
+    story_oid_csv    = CSV.open($csv_story_oids_by_req, "wb", {:col_sep => $my_delim})
+    story_oid_csv    << $csv_story_oids_by_req_fields
 
     # The following are used for the post-run stitching
     # Hash of User Stories keyed by Caliber Requirement Hierarchy ID
@@ -367,7 +357,7 @@ begin
                 end
 
                 # Post-pend to CSV
-                requirements_csv << CSV::Row.new($requirement_fields, requirement_data)
+                requirements_csv << CSV::Row.new($csv_requirement_fields, requirement_data)
 
                 # Output story OID and Caliber requirement name
                 # So we can use this information later when importing traces
@@ -375,7 +365,7 @@ begin
                 story_oid_data << story["ObjectID"]
                 story_oid_data << req_id
                 # Post-pend to CSV
-                story_oid_csv  << CSV::Row.new($story_oid_output_fields, story_oid_data)
+                story_oid_csv  << CSV::Row.new($csv_story_oids_by_req_fields, story_oid_data)
 
                 # Circuit-breaker for testing purposes
                 if import_count < $max_import_count then

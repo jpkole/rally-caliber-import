@@ -390,7 +390,7 @@ class CaliberHelper
                 parent_story_fid = parent_story['FormattedID']
 
                 @logger.info "Parenting Child Hierarchy ID: #{this_hierarchy_id} with Story: #{child_story_fid}; OID: #{child_story_oid} to: "
-                @logger.info "         Parent Hierarchy ID: #{this_parent_hierarchy_id} with Story: #{parent_story_fid}; OID: #{parent_story_oid}"
+                @logger.info "    Parent Hierarchy ID: #{this_parent_hierarchy_id} with Story: #{parent_story_fid}; OID: #{parent_story_oid}"
                 update_fields = {}
                 update_fields["Parent"] = parent_story._ref
                 begin
@@ -420,7 +420,7 @@ class CaliberHelper
                 parent_testcase_oid = parent_testcase['ObjectID']
 
                 @logger.info "Linking Child Hierarchy ID: #{this_hierarchy_id} with TestCase ObjectID: #{child_testcase_oid} to: "
-                @logger.info "        Parent Hierarchy ID: #{this_parent_hierarchy_id} with TestCase ObjectID: #{parent_testcase_oid}"
+                @logger.info "    Parent Hierarchy ID: #{this_parent_hierarchy_id} with TestCase ObjectID: #{parent_testcase_oid}"
 
                 parent_web_link = {}
                 parent_web_link["LinkID"] = parent_testcase_oid
