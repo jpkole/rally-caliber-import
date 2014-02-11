@@ -101,13 +101,13 @@ end
 # Take Caliber traces array, process and combine field data and import into corresponding Rally Story
 def update_story_with_caliber_traces(story_oid, req_name, traces_text)
 
-    @logger.info "Updating Rally Story ObjectID: #{story_oid} with Caliber Traces from Requirement: #{req_name}"
+    @logger.info "    Updating Rally Story ObjectID: #{story_oid} with Caliber Traces from Requirement: #{req_name}"
 
     update_fields                                 = {}
     update_fields[$caliber_req_traces_field_name] = traces_text
     begin
         @rally.update("hierarchicalrequirement", story_oid, update_fields)
-        @logger.info "Successfully Imported Caliber Traces for Rally Story: ObjectID #{story_oid}."
+        @logger.info "    Successfully Imported Caliber Traces for Rally Story: ObjectID #{story_oid}."
     rescue => ex
         @logger.error "Error occurred attempting to Import Caliber Traces to Rally Story: ObjectID #{story_oid}."
         @logger.error ex.message
@@ -171,10 +171,10 @@ begin
             story_oid         = @story_oid_by_reqname[req_name]
 
             if story_oid.nil? then
-                @logger.warn "No Rally Story ObjectID found for Caliber Requirement named: #{req_name}. Skipping import of traces for this requirement."
+                @logger.warn "    No Rally Story ObjectID found for Caliber Requirement named: #{req_name}. Skipping import of traces for this requirement."
                 next
             else
-                @logger.info "Rally Story ObjectID: #{story_oid} found for Caliber Requirement named: #{req_name}."
+                @logger.info "    Rally Story ObjectID: #{story_oid} found for Caliber Requirement named: #{req_name}."
             end
 
             traceability.search($trace_tag).each do | this_trace |
@@ -185,11 +185,10 @@ begin
             # Create traces text for import to rally
             traces_text = create_traces_text_from_traces_array(trace_array)
 
-            if $preview_mode == false then
-                update_story_with_caliber_traces(story_oid, req_name, traces_text)
+            if $preview_mode then
+                @logger.info "    Rally Story ObjectID: #{story_oid} needs updated with #{trace_array.length} Caliber Traces from Requirement: #{req_name}"
             else
-                @logger.info "Rally Story ObjectID: #{story_oid} needs updated with #{trace_array.length} Caliber Traces from Requirement: #{req_name}"
-
+                update_story_with_caliber_traces(story_oid, req_name, traces_text)
             end
 
             # Circuit-breaker for testing purposes
@@ -203,9 +202,9 @@ begin
 
     # Only import into Rally if we're not in "preview_mode" for testing
     if $preview_mode then
-        @logger.info "Finished Processing Caliber Requirement Traces for import to Rally. Total Traces Processed: #{import_count}."
+        @logger.info "    Finished Processing Caliber Requirement Traces for import to Rally. Total Traces Processed: #{import_count}."
     else
-        @logger.info "Finished Importing Caliber Requirement Traces to Rally. Total Traces Created: #{import_count}."
+        @logger.info "    Finished Importing Caliber Requirement Traces to Rally. Total Traces Created: #{import_count}."
     end
 
 end

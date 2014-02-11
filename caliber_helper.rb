@@ -330,7 +330,7 @@ class CaliberHelper
             'Machine Type'               => 'machine_type'
         }
 
-        @logger.info "Processing Caliber TestCase ID: #{testcase_id}; Hierarchy: #{testcase_hierarchy}; Project: #{testcase_project}"
+        @logger.info "    Processing Caliber TestCase ID: #{testcase_id}; Hierarchy: #{testcase_hierarchy}; Project: #{testcase_project}"
 
         testcase_fields = {}
         testcase_fields["Name"]                   = make_name(testcase, :testcase)
@@ -350,7 +350,7 @@ class CaliberHelper
             testcase = @rally.create("testcase", testcase_fields)
             testcase.read
             testcase_oid = testcase['ObjectID']
-            @logger.info "Successfully Created Rally TestCase: ObjectID #{testcase_oid}; from CaliberID: #{testcase_id}"
+            @logger.info "    Successfully Created Rally TestCase: ObjectID #{testcase_oid}; from CaliberID: #{testcase_id}"
             return testcase
         rescue => ex
             @logger.error "Error occurred creating Rally TestCase from Caliber TestCase ID: #{testcase_id}. Not imported."
@@ -395,9 +395,9 @@ class CaliberHelper
                 update_fields["Parent"] = parent_story._ref
                 begin
                     @rally.update("hierarchicalrequirement", child_story_oid, update_fields)
-                    @logger.info "         Successfully Parented Rally Story: #{child_story_fid}; OID: #{child_story_oid}; to Story: #{parent_story_fid}; OID: #{parent_story_oid}"
+                    @logger.info "    Successfully Parented Rally Story: #{child_story_fid}; OID: #{child_story_oid}; to Story: #{parent_story_fid}; OID: #{parent_story_oid}"
                 rescue => ex
-                    @logger.error "         Error occurred attempting to Parent Rally Story: ObjectID #{child_story_oid}; to Story: #{parent_story_oid}"
+                    @logger.error "Error occurred attempting to Parent Rally Story: ObjectID #{child_story_oid}; to Story: #{parent_story_oid}"
                     @logger.error ex.message
                     @logger.error ex.backtrace
                 end
@@ -431,7 +431,7 @@ class CaliberHelper
                 begin
 
                     @rally.update("testcase", child_testcase_oid, update_fields)
-                    @logger.info "Successfully Linked Rally TestCase: ObjectID #{child_testcase_oid}; to TestCase: #{parent_testcase_oid}"
+                    @logger.info "    Successfully Linked Rally TestCase: ObjectID #{child_testcase_oid}; to TestCase: #{parent_testcase_oid}"
                 rescue => ex
                     @logger.error "Error occurred attempting to Link Rally TestCase: ObjectID #{child_testcase_oid}; to TestCase: #{parent_testcase_oid}"
                     @logger.error ex.message

@@ -406,9 +406,9 @@ begin
 
     # Only import into Rally if we're not in "preview_mode" for testing
     if $preview_mode then
-        @logger.info "Finished Processing Caliber TestCases for import to Rally. Total TestCases Processed: #{import_count}."
+        @logger.info "    Finished Processing Caliber TestCases for import to Rally. Total TestCases Processed: #{import_count}."
     else
-        @logger.info "Finished Importing Caliber TestCases to Rally. Total TestCases Created: #{import_count}."
+        @logger.info "    Finished Importing Caliber TestCases to Rally. Total TestCases Created: #{import_count}."
     end
 
     # Run the hierarchy stitching service
