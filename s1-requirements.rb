@@ -240,10 +240,12 @@ begin
         $description_field_hash, $caliber_image_directory, @logger, nil)
 
     # Output CSV of Requirement data
+    @logger.info "CSV file creation of #{$csv_requirements}..."
     requirements_csv = CSV.open($csv_requirements, "wb", {:col_sep => $my_delim})
     requirements_csv << $csv_requirement_fields
 
     # Output CSV of Story OID's by Caliber Requirement Name
+    @logger.info "CSV file creation of #{$csv_story_oids_by_req}..."
     story_oid_csv    = CSV.open($csv_story_oids_by_req, "wb", {:col_sep => $my_delim})
     story_oid_csv    << $csv_story_oids_by_req_fields
 
@@ -264,7 +266,6 @@ begin
         report.search($requirement_type_tag).each do | req_type |
             req_type.search($requirement_tag).each do | requirement |
 
-		debugger
                 # Data - holds output for CSV
                 requirement_data = []
                 story_oid_data   = []

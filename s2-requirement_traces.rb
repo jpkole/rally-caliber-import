@@ -7,6 +7,7 @@ require 'uri'
 require 'rally_api'
 require 'logger'
 require './multi_io.rb'
+require 'debugger'
 
 # Rally Connection parameters
 $my_base_url                     = "https://rally1.rallydev.com/slm"
@@ -183,6 +184,7 @@ begin
     @story_oid_by_reqname = {}
 
     # Read in cached reqname -> Story OID mapping from file
+    @logger.info "CSV file reading/caching requirement-name --> Story-OID mapping from #{$csv_story_oids_by_req}..."
     input  = CSV.read($csv_story_oids_by_req,  {:col_sep => $my_delim})
 
     header = input.first #ignores first line
@@ -192,7 +194,6 @@ begin
 
     # Proceed through rows in input CSV and store reqname -> story OID lookup
     # in a hash
-    @logger.info "Reading/caching requirement name -> Story OID mapping from #{$csv_story_oids_by_req} file..."
 
     rows.each do |row|
         cache_story_oid(header, row)

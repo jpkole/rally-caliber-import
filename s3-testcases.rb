@@ -253,10 +253,12 @@ begin
         $description_field_hash, $caliber_image_directory, @logger, $caliber_weblink_field_name)
 
     # Output CSV of TestCase data
+    @logger.info "CSV file creation of #{$csv_testcase}..."
     testcase_csv = CSV.open($csv_testcases, "wb", {:col_sep => $my_delim})
     testcase_csv << $csv_testcase_fields
 
     # Output CSV of TestCase OID's by Caliber Requirement Name
+    @logger.info "CSV file creation of #{$csv_testcase_oid_output}..."
     testcase_oid_csv    = CSV.open($csv_testcase_oid_output, "wb", {:col_sep => $my_delim})
     testcase_oid_csv    << $csv_testcase_oid_output_fields
 
@@ -273,7 +275,7 @@ begin
 
     # Read through caliber file and store requirement records in array of requirement hashes
     import_count = 0
-    caliber_data.search($report_tag).each do | report |
+    caliber_data.search($report_tag).each do | report | #{
         report.search($requirement_type_tag).each do | req_type |
             req_type.search($requirement_tag).each do | testcase |
 
@@ -297,7 +299,7 @@ begin
                 testcase_id                                  = testcase['id']
                 testcase_tag                                 = testcase['tag']
                 testcase_hierarchy                           = testcase['hierarchy']
-                testcase_project                             = testcase['project']
+                testcase_project                             = report['project']
                 testcase_name                                = testcase['name']
 
                 @logger.info "Started Reading Caliber TestCase ID: #{testcase_id}; Hierarchy: #{testcase_hierarchy}; Project: #{testcase_project}"
@@ -306,7 +308,7 @@ begin
                 # There are many UDAValue records per testcase and each is different
                 # So assign to values of interest via case statement
 
-                testcase.search($uda_values_tag).each do | uda_values |
+                testcase.search($uda_values_tag).each do | uda_values | #{
                     uda_values.search($uda_value_tag).each do | uda_value |
                         uda_value_name = uda_value['name']
                         uda_value_value = uda_value['value'] || ""
@@ -337,7 +339,7 @@ begin
                                 this_testcase['test_running']       = uda_value_value
                         end
                     end
-                end
+                end #} end of "testcase.search($uda_values_tag).each do | uda_values |"
 
                 @logger.info "    Finished Reading Caliber TestCase ID: #{testcase_id}; Hierarchy: #{testcase_hierarchy}; Project: #{testcase_project}"
 
@@ -419,7 +421,7 @@ begin
                 end
             end
         end
-    end
+    end }# end of "caliber_data.search($report_tag).each do | report |"
 
     # Only import into Rally if we're not in "preview_mode" for testing
     if $preview_mode then

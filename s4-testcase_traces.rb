@@ -267,6 +267,7 @@ begin
     @testcase_name_by_caliber_testcase_id ={}
 
     # Read in cached reqname -> Story OID mapping from file
+    @logger.info "CSV file reading/caching of Caliber-Testcase-ID --> Rally-ObjectID from #{$csv_testcase_oid_output}..."
     input  = CSV.read($csv_testcase_oid_output,  {:col_sep => $my_delim})
 
     header = input.first #ignores first line
@@ -276,8 +277,6 @@ begin
 
     # Proceed through rows in input CSV and store reqname -> story OID lookup
     # in a hash
-    @logger.info "Reading/caching TestCase name -> TestCase OID mapping from #{$csv_testcase_oid_output} file..."
-
     rows.each do |row|
         cache_testcase_oid(header, row)
         number_processed += 1
@@ -290,6 +289,7 @@ begin
     @req_name_by_reqid = {}
 
     # Read in cached reqname -> Story OID mapping from file
+    @logger.info "CSV file reading/caching of reqname --> story-OID from #{$csv_testcase_oid_output}..."
     input  = CSV.read($csv_story_oids_by_req,  {:col_sep => $my_delim})
 
     header = input.first #ignores first line
@@ -299,8 +299,6 @@ begin
 
     # Proceed through rows in input CSV and store reqname -> story OID lookup
     # in a hash
-    @logger.info "Reading/caching requirement name -> Story OID mapping from #{$csv_story_oids_by_req} file..."
-
     rows.each do |row|
         cache_story_oid(header, row)
         number_processed += 1
