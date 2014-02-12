@@ -120,7 +120,6 @@ class CaliberHelper
             this_image_id_list         = this_caliber_image_data["ids"]
             this_artifact_description  = this_caliber_image_data["description"]
             this_artifact_ref          = this_caliber_image_data["ref"]
-
             index = 0
 
             # Array with relative URL's to Rally-embedded attachments
@@ -203,9 +202,10 @@ class CaliberHelper
         name                    = caliber_object['name']
         if object_type == :requirement then
             obj_type_prefix = "REQ"
-        end
-        if object_type == :testcase then
+        elsif object_type == :testcase then
             obj_type_prefix = "TC"
+	else
+            obj_type_prefix = "UNKNOWN"
         end
 
         return "<b>Caliber</b> #{hierarchy} #{obj_type_prefix} #{obj_id}: #{name}"
@@ -290,9 +290,9 @@ class CaliberHelper
     # Take Caliber Requirement hash, process and combine field data and create a story in Rally
     def create_story_from_caliber(requirement)
 
-        req_id = requirement['id']
-        req_hierarchy = requirement['hierarchy']
-        req_project = requirement['project']
+        req_id          = requirement['id']
+        req_hierarchy   = requirement['hierarchy']
+        req_project     = requirement['project']
         req_description = requirement['description']
 
         @logger.info "    Processing Caliber Requirement ID: #{req_id}; Hierarchy: #{req_hierarchy}; Project: #{req_project}"

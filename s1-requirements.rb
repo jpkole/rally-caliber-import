@@ -67,13 +67,13 @@ end
 
 # set preview mode
 if $preview_mode then
-    $import_to_rally                 = false
-    $stitch_hierarchy                = false
-    $import_images_flag              = false
+    $import_to_rally            = false
+    $stitch_hierarchy           = false
+    $import_images_flag         = false
 else
-    $import_to_rally                 = true
-    $stitch_hierarchy                = true
-    $import_images_flag              = true
+    $import_to_rally            = true
+    $stitch_hierarchy           = true
+    $import_images_flag         = true
 end
 
 # The following are all value attributes inside the <Requirement> tag itself.
@@ -93,26 +93,26 @@ end
 #      tag="REQ20023"
 #      name_tag="Operating harvester headREQ20023">
 
-# Tags of interest
-$report_tag                              = "Report"
-$requirement_type_tag                    = "ReqType"
-$requirement_tag                         = "Requirement"
-$uda_values_tag                          = "UDAValues"
-$uda_value_tag                           = "UDAValue"
-
 # These are the value tags to look/parse for once on the <Requirement> tag
-$requirement_name                        = "name"
-$requirement_hierarchy                   = "hierarchy"
-$requirement_id                          = "id"
-$requirement_validation                  = "validation"
+$requirement_name               = "name"
+$requirement_hierarchy          = "hierarchy"
+$requirement_id                 = "id"
+$requirement_validation         = "validation"
+
+# Tags of interest
+$report_tag                     = "Report"
+$requirement_type_tag           = "ReqType"
+$requirement_tag                = "Requirement"
+$uda_values_tag                 = "UDAValues"
+$uda_value_tag                  = "UDAValue"
 
 # In HTML mode, the tags are all lowercase so downcase them
 if $html_mode then
-    $report_tag                          = $report_tag.downcase
-    $requirement_type_tag                = $requirement_type_tag.downcase
-    $requirement_tag                     = $requirement_tag.downcase
-    $uda_values_tag                      = $uda_values_tag.downcase
-    $uda_value_tag                       = $uda_value_tag.downcase
+    $report_tag                 = $report_tag.downcase
+    $requirement_type_tag       = $requirement_type_tag.downcase
+    $requirement_tag            = $requirement_tag.downcase
+    $uda_values_tag             = $uda_values_tag.downcase
+    $uda_value_tag              = $uda_value_tag.downcase
 end
 
 # The following are all types of <UDAValue> records on <Requirement>
@@ -140,53 +140,33 @@ end
 # </UDAValues>
 
 # These are the value fields to look/parse for once on the <UDAValues> tag
-$uda_value_name_purpose                  = "JDF Purpose [Pu]"
-$uda_value_name_pre_condition            = "JDF Pre-condition [Pr]"
-$uda_value_name_basic_course             = "JDF Basic Course [Ba]"
-$uda_value_name_post_condition           = "JDF Post-condition [Po]"
-$uda_value_name_exceptions               = "JDF Exceptions [Ex]"
-$uda_value_name_remarks                  = "JDF Remarks [Re]"
-$uda_value_name_open_issues              = "JDF Open Issues"
-$uda_value_name_input                    = "JDF Input [In]"
-$uda_value_name_output                   = "JDF Output [Ou]"
-
-
-# Record template hash for a requirement from Caliber
-# Hash fields are in same order as CSV output format
-
-$caliber_requirement_record_template = {
-    'id'                    => 0,
-    'hierarchy'             => 0,
-    'name'                  => "",
-    'project'               => "",
-    'description'           => "",
-    'caliber_validation'    => "",
-    'caliber_purpose'       => "",
-    'pre_condition'         => "",
-    'basic_course'          => "",
-    'post_condition'        => "",
-    'exceptions'            => "",
-    'remarks'               => "",
-    'open_issues'           => ""
-}
+$uda_value_name_purpose         = "JDF Purpose [Pu]"
+$uda_value_name_pre_condition   = "JDF Pre-condition [Pr]"
+$uda_value_name_basic_course    = "JDF Basic Course [Ba]"
+$uda_value_name_post_condition  = "JDF Post-condition [Po]"
+$uda_value_name_exceptions      = "JDF Exceptions [Ex]"
+$uda_value_name_remarks         = "JDF Remarks [Re]"
+$uda_value_name_open_issues     = "JDF Open Issues"
+$uda_value_name_input           = "JDF Input [In]"
+$uda_value_name_output          = "JDF Output [Ou]"
 
 begin
 
 #==================== Connect to Rally and Import Caliber data ====================
 
     #Setting custom headers
-    $headers                            = RallyAPI::CustomHttpHeader.new()
-    $headers.name                       = "Caliber Requirement Importer"
-    $headers.vendor                     = "Rally Technical Services"
-    $headers.version                    = "0.50"
+    $headers                    = RallyAPI::CustomHttpHeader.new()
+    $headers.name               = "Caliber Requirement Importer"
+    $headers.vendor             = "Rally Technical Services"
+    $headers.version            = "0.50"
 
-    config                  = {:base_url => $my_base_url}
-    config[:username]       = $my_username
-    config[:password]       = $my_password
-    config[:workspace]      = $my_workspace
-    config[:project]        = $my_project
-    config[:version]        = $wsapi_version
-    config[:headers]        = $headers
+    config = {  :base_url       => $my_base_url,
+                :username       => $my_username,
+                :password       => $my_password,
+                :workspace      => $my_workspace,
+                :project        => $my_project,
+                :version        => $wsapi_version,
+                :headers        => $headers}
 
     @rally = RallyAPI::RallyRestJson.new(config)
 
