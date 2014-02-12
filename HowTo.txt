@@ -47,7 +47,10 @@ TO DO:	01) Look at caliber2rally_testcase_traces.rb and examine the regex that
 	01) $my_workspace & $my_project:
 	         Appropriate Rally target Workspace and Project.
 
-	02) Create Workspace and Project on audemo.rallydev.com as user MarkW,
+	02) Change your default WS/Project to the same as the import destination
+	   specified above... to help prevent issues when code is in error.
+
+	03) Create Workspace and Project on audemo.rallydev.com as user MarkW,
 	    as per variables in my_vars_requirements.rb file.
 	    	On UserStories:
 	    		must have a custom field, type string, named: Externalreference

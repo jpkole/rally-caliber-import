@@ -2,7 +2,7 @@
 $my_base_url                     = "https://audemo.rallydev.com/slm"
 $my_username                     = "paul@acme.com"
 $my_password                     = "RallyON!"
-$wsapi_version                   = "1.43"
+$my_wsapi_version                = "1.43"
 $my_workspace                    = "JPKole_Caliber"
 
 $my_project                      = "JPKole_JDF_Hera"

@@ -14,7 +14,7 @@ require 'debugger'
 $my_base_url                     = "https://rally1.rallydev.com/slm"
 $my_username                     = "user@company.com"
 $my_password                     = "topsecret"
-$wsapi_version                   = "1.43"
+$my_wsapi_version                = "1.43"
 $my_workspace                    = "My Workspace"
 $my_project                      = "My Project"
 $max_attachment_length           = 5000000
@@ -191,18 +191,18 @@ begin
 #==================== Connect to Rally and Import Caliber data ====================
 
     #Setting custom headers
-    $headers                            = RallyAPI::CustomHttpHeader.new()
-    $headers.name                       = "Caliber Testcase Importer"
-    $headers.vendor                     = "Rally Technical Services"
-    $headers.version                    = "0.50"
+    $headers                    = RallyAPI::CustomHttpHeader.new()
+    $headers.name               = "Caliber Testcase Importer"
+    $headers.vendor             = "Rally Technical Services"
+    $headers.version            = "0.50"
 
-    config                  = {:base_url => $my_base_url}
-    config[:username]       = $my_username
-    config[:password]       = $my_password
-    config[:workspace]      = $my_workspace
-    config[:project]        = $my_project
-    config[:version]        = $wsapi_version
-    config[:headers]        = $headers
+    config = {  :base_url       => $my_base_url,
+                :username       => $my_username,
+                :password       => $my_password,
+                :workspace      => $my_workspace,
+                :project        => $my_project,
+                :version        => $my_wsapi_version,
+                :headers        => $headers}
 
     @rally = RallyAPI::RallyRestJson.new(config)
 
@@ -215,38 +215,38 @@ begin
 
     # Report vars
     @logger.info "Running #{$PROGRAM_NAME} with the following settings:
-		$my_base_url                     = #{$my_base_url}
-		$my_username                     = #{$my_username}
-		$wsapi_version                   = #{$wsapi_version}
-		$my_workspace                    = #{$my_workspace}
-		$my_project                      = #{$my_project}
-		$max_attachment_length           = #{$max_attachment_length}
-		$caliber_file_req                = #{$caliber_file_req}
-		$caliber_file_req_traces         = #{$caliber_file_req_traces}
-		$caliber_file_tc                 = #{$caliber_file_tc}
-		$caliber_file_tc_traces          = #{$caliber_file_tc_traces}
-		$caliber_image_directory         = #{$caliber_image_directory}
-		$caliber_id_field_name           = #{$caliber_id_field_name}
-		$caliber_weblink_field_name      = #{$caliber_weblink_field_name}
-		$caliber_req_traces_field_name   = #{$caliber_req_traces_field_name}
-		$caliber_tc_traces_field_name    = #{$caliber_tc_traces_field_name}
-		$max_import_count                = #{$max_import_count}
-		$html_mode                       = #{$html_mode}
-		$preview_mode                    = #{$preview_mode}
-		$no_parent_id                    = #{$no_parent_id}
-		$csv_requirements                = #{$csv_requirements}
-		$csv_requirement_fields          = #{$csv_requirement_fields}
-		$csv_story_oids_by_req           = #{$csv_story_oids_by_req}
-		$csv_story_oids_by_req_fields    = #{$csv_story_oids_by_req_fields}
-		$csv_testcases                   = #{$csv_testcases}
-		$csv_testcase_fields             = #{$csv_testcase_fields}
-		$csv_testcase_oid_output         = #{$csv_testcase_oid_output}
-		$csv_testcase_oid_output_fields  = #{$csv_testcase_oid_output_fields}
-		$cal2ral_req_log                 = #{$cal2ral_req_log}
-		$cal2ral_req_traces_log          = #{$cal2ral_req_traces_log}
-		$cal2ral_tc_log                  = #{$cal2ral_tc_log}
-		$cal2ral_tc_traces_log           = #{$cal2ral_tc_traces_log}
-		$description_field_hash          = #{$description_field_hash}"
+                $my_base_url                     = #{$my_base_url}
+                $my_username                     = #{$my_username}
+                $my_wsapi_version                = #{$my_wsapi_version}
+                $my_workspace                    = #{$my_workspace}
+                $my_project                      = #{$my_project}
+                $max_attachment_length           = #{$max_attachment_length}
+                $caliber_file_req                = #{$caliber_file_req}
+                $caliber_file_req_traces         = #{$caliber_file_req_traces}
+                $caliber_file_tc                 = #{$caliber_file_tc}
+                $caliber_file_tc_traces          = #{$caliber_file_tc_traces}
+                $caliber_image_directory         = #{$caliber_image_directory}
+                $caliber_id_field_name           = #{$caliber_id_field_name}
+                $caliber_weblink_field_name      = #{$caliber_weblink_field_name}
+                $caliber_req_traces_field_name   = #{$caliber_req_traces_field_name}
+                $caliber_tc_traces_field_name    = #{$caliber_tc_traces_field_name}
+                $max_import_count                = #{$max_import_count}
+                $html_mode                       = #{$html_mode}
+                $preview_mode                    = #{$preview_mode}
+                $no_parent_id                    = #{$no_parent_id}
+                $csv_requirements                = #{$csv_requirements}
+                $csv_requirement_fields          = #{$csv_requirement_fields}
+                $csv_story_oids_by_req           = #{$csv_story_oids_by_req}
+                $csv_story_oids_by_req_fields    = #{$csv_story_oids_by_req_fields}
+                $csv_testcases                   = #{$csv_testcases}
+                $csv_testcase_fields             = #{$csv_testcase_fields}
+                $csv_testcase_oid_output         = #{$csv_testcase_oid_output}
+                $csv_testcase_oid_output_fields  = #{$csv_testcase_oid_output_fields}
+                $cal2ral_req_log                 = #{$cal2ral_req_log}
+                $cal2ral_req_traces_log          = #{$cal2ral_req_traces_log}
+                $cal2ral_tc_log                  = #{$cal2ral_tc_log}
+                $cal2ral_tc_traces_log           = #{$cal2ral_tc_traces_log}
+                $description_field_hash          = #{$description_field_hash}"
 
     # Initialize Caliber Helper
     @caliber_helper = CaliberHelper.new(@rally, $caliber_project, $caliber_id_field_name,

@@ -97,8 +97,8 @@ class CaliberHelper
         # Rip out <html><body> tags
         new_description = process_description_body(new_description)
 
-	artifact_type = artifact_ref.split("/")[-2]
-	artifact_oid  = artifact_ref.split("/")[-1].split("\.")[-2]
+        artifact_type = artifact_ref.split("/")[-2]
+        artifact_oid  = artifact_ref.split("/")[-1].split("\.")[-2]
         update_fields = {}
         update_fields["Description"] = new_description
         updated_artifact = @rally.update(artifact_type, artifact_oid, update_fields)
@@ -204,7 +204,7 @@ class CaliberHelper
             obj_type_prefix = "REQ"
         elsif object_type == :testcase then
             obj_type_prefix = "TC"
-	else
+    else
             obj_type_prefix = "UNKNOWN"
         end
 
@@ -284,7 +284,7 @@ class CaliberHelper
         notes = make_header('Caliber Open Issues')
         if requirement.has_key? 'open_issues'
             notes += requirement['open_issues']
-	end
+        end
     end
 
     # Take Caliber Requirement hash, process and combine field data and create a story in Rally
