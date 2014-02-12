@@ -30,9 +30,13 @@ $caliber_file_tc                = "../from-ftp-site/heraTC_and_REQ/heraTC_and_RE
 $caliber_file_tc_traces         = "../from-ftp-site/heraTC_and_REQ/heratrace.xml"               # 04-Testcases-Traces
 $caliber_image_directory        = "../from-ftp-site/ImageCache"
 
-$caliber_id_field_name          = "CaliberID"          # US and TC - type String
-$caliber_weblink_field_name     = "CaliberTCParent"    # TC - type String
+# Custom fields in Rally: on User Story
+$caliber_id_field_name          = "CaliberID"          # US - type String
 $caliber_req_traces_field_name  = "Externalreference"  # US - type Text
+
+# Custom fields in Rally: on TestCase
+$caliber_id_field_name          = "CaliberID"          # TC - type String
+$caliber_weblink_field_name     = "CaliberTCParent"    # TC - type Weblink
 $caliber_tc_traces_field_name   = "Externalreference"  # TC - type Text
 
 $max_import_count               = 500

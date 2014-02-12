@@ -1,16 +1,15 @@
 ================================================================================
-05-Feb-2014
-
-TO DO:	01) Look at caliber2rally_testcase_traces.rb and examine the regex that
-------	    filters for linkages to only other test case (near line 194).
-	    Mark had assumed that testcase traces could only link to other
-	    testcases... but now he thinks they should be able to link to
-	    requiremnts as well.
-
+TO DO:	01) Look at s4-testcase_traces.rb and examine the regex that filters for
+------	    linkages to only other test case (near line 194).  Mark had assumed
+	    that testcase traces could only link to other testcases... but now
+	    he thinks they should be able to link to requirements as well.
 --------------------------------------------------------------------------------
+
 01) TechServices has been engaged to help John Deere move data from their
-    Caliber system into Rally.
+    Caliber system into the Rally ALM product.
+
 --------------------------------------------------------------------------------
+
 02) The structure of the data move is as follows:
 		Caliber    	==>	Rally
 		---------------		-----
@@ -20,9 +19,13 @@ TO DO:	01) Look at caliber2rally_testcase_traces.rb and examine the regex that
 		2) TestCases		2) TestCases
 		    2a) RequireTraces	    2a) Links to other Storys
 		    2b) TestCaseTraces	    2b) Links to other TestCases
+
 --------------------------------------------------------------------------------
+
 03) The Caliber data is in XML files.
+
 --------------------------------------------------------------------------------
+
 04) The nine Caliber Requirement projects to be moved:
 
  	Project				Datafiles (images and REQ/TC)
@@ -42,33 +45,64 @@ TO DO:	01) Look at caliber2rally_testcase_traces.rb and examine the regex that
 
 	And a test data set:
 		01) hhc.xml --- match item 01) above
+
 --------------------------------------------------------------------------------
-05) Pre-Import procedure:
-	01) $my_workspace & $my_project:
-	         Appropriate Rally target Workspace and Project.
 
-	02) Change your default WS/Project to the same as the import destination
-	   specified above... to help prevent issues when code is in error.
+s05. Pre-Import procedure:
 
-	03) Create Workspace and Project on audemo.rallydev.com as user MarkW,
-	    as per variables in my_vars_requirements.rb file.
+	a. In file my_vars.rb, set these variables:
+		Rally connection:
+			$my_base_url
+			$my_username
+			$my_password
+			$my_workspace
+			$my_project
+		Caliber data files:
+			$caliber_file_req
+			$caliber_file_req_traces
+			$caliber_file_tc
+			$caliber_file_tc_traces
+			$caliber_image_directory
+		Custom fields created:
+			User Story:
+				$caliber_id_field_name
+				$caliber_req_traces_field_name
+			Test Case:
+				$caliber_id_field_name
+				$caliber_weblink_field_name
+				$caliber_tc_traces_field_name
+		Misc:
+			$max_import_count
+
+	b. Change your default Workspace & Project to the same as the import
+	   destination specified above... to help prevent issues when code
+	   is in error.
+
+	c. Create Workspace and Project on your Rally server to match the
+	   my_vars.rb settings above.
+
+	d. Create the custom fields in the Workspace to match the my_vars.rb
+	   settings above:
 	    	On UserStories:
-	    		must have a custom field, type string, named: Externalreference
-	    		must have a custom field, type string, named: CaliberID
+			$caliber_id_field_name (Externalreference) - type string
+			$caliber_req_traces_field_name (CaliberID) - type string
 		On TestCases:
-	    		must have a custom field, type string, named: Externalreference
-	    		must have a custom field, type Weblink, named: CaliberTCParent
+			$caliber_id_field_name (Externalreference) - type string
+			$caliber_weblink_field_name (CaliberTCParent) - type Weblink,
 				https://audemo.rallydev.com/#/detail/testcase/${id}
-	    		must have a custom field, type string, named: CaliberID
---------------------------------------------------------------------------------
-06) Import procedure for Requirements:
-	01) Edit my_vars_requirements.rb with:
-	    01a) $description_field_hash:
-	         Project-specific field mapping (in PPT slides for JDF_Hera...
-		 others to come... hopefully).
+			$caliber_tc_traces_field_name (CaliberID) - type string
 
-	         For example:
-		 $description_field_hash_01_jdf_hera = {
+--------------------------------------------------------------------------------
+
+s06. Import procedure for Requirements:
+
+	a. Edit my_vars.rb with:
+	   $description_field_hash:
+	   Project-specific field mapping (in PPT slides for JDF_Hera...
+	   others to come... hopefully).
+
+	   For example:
+	   $description_field_hash_01_jdf_hera = {
 				'Caliber Purpose'         => 'caliber_purpose',
 				'Pre-condition'           => 'pre_condition',
 				'Basic course'            => 'basic_course',
@@ -80,31 +114,28 @@ TO DO:	01) Look at caliber2rally_testcase_traces.rb and examine the regex that
 				'Input'                   => 'input',
 				'Output'                  => 'output'
 				 }
-		$description_field_hash = $description_field_hash_01_jdf_hera
+	   $description_field_hash = $description_field_hash_01_jdf_hera
 
-	    01b) $caliber_file_name and $caliber_image_directory:
-	         The 2 input files containing data.
+	b. Run s1-requirements.rb against the data files (defined in my_vars.rb)
+	   to import the Caliber-Requirements to Rally-UserStorys.
 
-	02) Run caliber2rally_requirements.rb against heraTC_and_REQ.xml to
-	    import the Caliber requirements to Rally Storys.
+	c. Run s2-requirements_traces.rb against the data files (defined in
+	   my_vars.rb) to import Caliber-RequirementTraces into the Rally
+	   custom field "Externalreference" (rich-text) on Rally Storys that
+	   were created in the previous step (s06.b) above. This custom field
+	   will be populated with hyperlinks to other Rally Storys imported in
+	   step 02) above.
 
-	03) Update my_vars_requirements_traces.rb $my_project with appropriate
-	    Rally target project (Project: Hera_Requirements under WS: JDF_Tampere.).
-
-	04) Run ruby caliber2rally_requirements_traces.rb against heratrace.xml
-	    to import Caliber RequirementTraces into the Externalreference
-	    rich-text custom field on Rally Storys created in step 3 above.
-	    This custom field will be populated with hyperlinks to other Rally
-	    Storys imported in step 3.
 --------------------------------------------------------------------------------
-07) Import procedure for TestCases:
 
-	01) Populate $description_field_hash in my_vars_requirements.rb with
-	    project-specific field mapping.
+s07. Import procedure for TestCases:
 
-	    For example, $description_field_hash for jdf_zeus_harvesting during
-	    proof-of-concept was:
-	        $description_field_hash = {
+	a. Populate $description_field_hash in my_vars.rb with
+	   project-specific field mapping.
+
+	   For example, $description_field_hash for jdf_zeus_harvesting during
+	   proof-of-concept was:
+		$description_field_hash = {
 				'Source [So]'             => 'source',
 				'Purpose [Pu]'            => 'purpose',
 				'Pre-condition [Pr]'      => 'pre_condition',
@@ -115,22 +146,16 @@ TO DO:	01) Look at caliber2rally_testcase_traces.rb and examine the regex that
 				'Description'             => 'description'
 				}
 
-	02) Update my_vars_requirements.rb $my_project, with appropriate Rally
-	    target project.
+	b. Run s3-testcases.rb against the data files (defined in my_vars.rb)
+	   to import the Caliber-TestCases to Rally-TestCases.
 
-	03) Run caliber2rally_testcases.rb against heraTC_and_REQ.xml to
-	    import the Caliber TestCases to Rally TestCases.
+	c. Run s4-testcase_traces.rb against the data files (defined in
+	   my_vars.rb) to import Caliber-TestCaseTraces into the Rally custom
+	   field "Externalreference" (rich-text) on Rally TestCases that were
+	   created in the previous step (s07.b) above. This custom field will
+	   be populated with hyperlinks to other Rally-UserStorys imported in
+	   step s06.b (above) and Rally-TestCases created in step s06.b (above).
 
-	04) Update my_vars_testcase_traces.rb $my_project with appropriate
-	    Rally target project (Project: Hera_Requirements under WS: JDF_Tampere.).
-
-	05) Run ruby caliber2rally_testcase_traces.rb against heratrace.xml
-	    to import Caliber TestCaseTraces into the Externalreference
-	    rich-text custom field on Rally TestCases created in step 3 above.
-	    This custom field will be populated with hyperlinks to other Rally
-	    Storys imported in step 05.3 (above) and Rally TestCases created in
-	    step 06.3 (above).
 --------------------------------------------------------------------------------
-
 [the end]
 ================================================================================
