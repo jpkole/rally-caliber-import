@@ -19,12 +19,12 @@ $my_project                      = "My Project"
 $max_attachment_length           = 5000000
 
 # Caliber parameters
-$caliber_file_tc_traces          = "jdf_testcase_traces_zeuscontrol.xml"
-$caliber_tc_traces_field_name    = 'Externalreference'
+$caliber_file_tc_traces         = "jdf_testcase_traces_zeuscontrol.xml"
+$caliber_tc_traces_field_name   = 'Externalreference'
 
 # Runtime preferences
-$max_import_count                = 100000
-$preview_mode                    = false
+$max_import_count               = 100000
+$preview_mode                   = false
 
 if $my_delim == nil then $my_delim = "\t" end
 
@@ -37,15 +37,11 @@ else
         print "File #{my_vars} not found...\n"
 end
 
-caliber_data = Nokogiri::XML(File.open($caliber_file_tc_traces), 'UTF-8') do | config |
-    config.strict
-end
-
 # set preview mode
 if $preview_mode then
-    $import_to_rally                 = false
+    $import_to_rally        = false
 else
-    $import_to_rally                 = true
+    $import_to_rally        = true
 end
 
 # The following are all attributes inside the Traces file itself.
@@ -79,31 +75,31 @@ end
 
 
 # Tags of interest
-$jdrequesttraces_tag                              = "JDrequestTraces"
+$jdrequesttraces_tag        = "JDrequestTraces"
 
 # The name attribute of the Traceability tag is the name of the
 # Caliber Requirement to which this set of Traces corresponds
-$jdrequest_tag                                    = "JDrequest"
+$jdrequest_tag              = "JDrequest"
 
 # This contains the Caliber ID of the testcase to which we want to associate the traces.
-$jdid_tag                                         = "JDid"
+$jdid_tag                   = "JDid"
 
 # Traces From/To
-$jdtracefrom_tag                                  = "JDtracefrom"
-$jdtraceto_tag                                    = "JDtraceto"
+$jdtracefrom_tag            = "JDtracefrom"
+$jdtraceto_tag              = "JDtraceto"
 
 # Trace
-$jdtrace_tag                                      = "JDtrace"
+$jdtrace_tag                = "JDtrace"
 
 #TraceID
-$jdtraceid_tag                                    = "JDtraceId"
-$jdtracename_tag                                  = "JDtraceName"
+$jdtraceid_tag              = "JDtraceId"
+$jdtracename_tag            = "JDtraceName"
 
 def cache_testcase_oid(header, row)
-    testcase_id                 = row[header[0]].strip
-    testcase_oid                = row[header[1]].strip
-    testcase_fid                = row[header[2]].strip
-    testcase_name               = row[header[3]].strip
+    testcase_id             = row[header[0]].strip
+    testcase_oid            = row[header[1]].strip
+    testcase_fid            = row[header[2]].strip
+    testcase_name           = row[header[3]].strip
 
     if !testcase_id.eql? nil then
         @testcase_oid_by_caliber_testcase_id[testcase_id] = testcase_oid.to_s
@@ -115,10 +111,10 @@ def cache_testcase_oid(header, row)
 end
 
 def cache_story_oid(header, row)
-    req_name               = row[header[0]].strip
-    story_oid              = row[header[1]].strip
-    story_fid              = row[header[2]].strip
-    req_id                 = row[header[3]].strip
+    req_name                = row[header[0]].strip
+    story_oid               = row[header[1]].strip
+    story_fid               = row[header[2]].strip
+    req_id                  = row[header[3]].strip
 
     if !req_id.eql? nil then
         @story_oid_by_reqid[req_id] = story_oid.to_s
@@ -203,28 +199,16 @@ begin
 
 #==================== Connect to Rally and Import Caliber data ====================
 
-#Setting custom headers
-    $headers                    = RallyAPI::CustomHttpHeader.new()
-    $headers.name               = "Caliber Testcase Traces Importer"
-    $headers.vendor             = "Rally Technical Services"
-    $headers.version            = "0.50"
-
-    config = {  :base_url       => $my_base_url,
-                :username       => $my_username,
-                :password       => $my_password,
-                :workspace      => $my_workspace,
-                :project        => $my_project,
-                :version        => $my_wsapi_version,
-                :headers        => $headers}
-
-    @rally = RallyAPI::RallyRestJson.new(config)
-
     # Instantiate Logger
     log_file = File.open($cal2ral_tc_traces_log, "a")
     log_file.sync = true
     @logger = Logger.new MultiIO.new(STDOUT, log_file)
 
     @logger.level = Logger::INFO #DEBUG | INFO | WARNING | FATAL
+
+    if $preview_mode then
+        @logger.info "----PREVIEW MODE----"
+    end
 
     # Report vars
     @logger.info "Running #{$PROGRAM_NAME} with the following settings:
@@ -261,10 +245,32 @@ begin
                 $cal2ral_tc_traces_log           = #{$cal2ral_tc_traces_log}
                 $description_field_hash          = #{$description_field_hash}"
 
+    # Set up custom headers for Rally connection
+    $headers                    = RallyAPI::CustomHttpHeader.new()
+    $headers.name               = "Caliber Testcase Traces Importer"
+    $headers.vendor             = "Rally Technical Services"
+    $headers.version            = "0.50"
+
+    config = {  :base_url       => $my_base_url,
+                :username       => $my_username,
+                :password       => $my_password,
+                :workspace      => $my_workspace,
+                :project        => $my_project,
+                :version        => $my_wsapi_version,
+                :headers        => $headers}
+
+    @logger.info "Initiating connection to Rally at #{$my_base_url}..."
+    @rally = RallyAPI::RallyRestJson.new(config)
+
     ############################
     # Hash to provide a lookup from Caliber TestCase ID -> Rally TestCase OID
     @testcase_oid_by_caliber_testcase_id = {}
     @testcase_name_by_caliber_testcase_id ={}
+
+    @logger.info "Opening for reading XML data file #{$caliber_file_tc_traces}..."
+    caliber_data = Nokogiri::XML(File.open($caliber_file_tc_traces), 'UTF-8') do | config |
+        config.strict
+    end
 
     # Read in cached reqname -> Story OID mapping from file
     @logger.info "CSV file reading/caching of Caliber-Testcase-ID --> Rally-ObjectID from #{$csv_testcase_oid_output}..."
@@ -273,10 +279,10 @@ begin
     header = input.first #ignores first line
     rows   = []
     (1...input.size).each { |i| rows << CSV::Row.new(header, input[i])}
+    @logger.info "    Found #{rows.length} rows of data"
     number_processed = 0
 
-    # Proceed through rows in input CSV and store reqname -> story OID lookup
-    # in a hash
+    # Proceed through rows in input CSV and store reqname -> story OID lookup in a hash
     rows.each do |row|
         cache_testcase_oid(header, row)
         number_processed += 1
@@ -289,12 +295,13 @@ begin
     @req_name_by_reqid = {}
 
     # Read in cached reqname -> Story OID mapping from file
-    @logger.info "CSV file reading/caching of reqname --> story-OID from #{$csv_testcase_oid_output}..."
+    @logger.info "CSV file reading/caching of reqname --> story-OID from #{$csv_story_oids_by_req}..."
     input  = CSV.read($csv_story_oids_by_req,  {:col_sep => $my_delim})
 
     header = input.first #ignores first line
     rows   = []
     (1...input.size).each { |i| rows << CSV::Row.new(header, input[i])}
+    @logger.info "    Found #{rows.length} rows of data"
     number_processed = 0
 
     # Proceed through rows in input CSV and store reqname -> story OID lookup
@@ -303,74 +310,88 @@ begin
         cache_story_oid(header, row)
         number_processed += 1
     end
+
     ##############################
-
-
     # Read through caliber file and store trace records in array of testcase hashes
     import_count = 0
-    caliber_data.search($jdrequesttraces_tag ).each do | request_traces |
-        request_traces.search($jdrequest_tag).each do | jd_request |
+    caliber_data.search($jdrequesttraces_tag).each_with_index do | request_traces, indx_req_traces |
+        @logger.info "Processing #{$jdrequesttraces_tag} tag #{indx_req_traces+1}..."
 
-        this_testcase_id = ""
+        request_traces.search($jdrequest_tag).each_with_index do | jd_request, indx_request |
+            @logger.info "    Processing #{$jdrequest_tag} tag #{indx_request+1}..."
+
+            this_testcase_id = ""
             jd_request.search($jdid_tag).each do | jd_id |
-            this_testcase_id = jd_id.text
-        end
+                this_testcase_id = jd_id.text
+            end
 
             traces_array = []
-        ##### #####
-        # Find all <JDtraceto>'s
-            jd_request.search($jdtraceto_tag).each do | jd_traceto |
+            ##### #####
+            # Find all <JDtraceto>'s
+            jd_request.search($jdtraceto_tag).each_with_index do | jd_traceto, indx_traceto |
+                @logger.info "        Processing #{$jdtraceto_tag} tag #{indx_traceto+1}..."
+    
+                jd_traceto.search($jdtrace_tag).each_with_index do | jd_trace, indx_trace |
+                    @logger.info "            Processing #{$jdtrace_tag} tag #{indx_trace+1}..."
 
-                jd_traceto.search($jdtrace_tag).each do | jd_trace |
-                    this_traceid    = jd_trace.search($jdtraceid_tag).first.text
-                    this_tracename  = jd_trace.search($jdtracename_tag).first.text
-
-                    is_testcase_or_requirement = this_traceid.match(/^(TC|REQ)/)
-
-                    if !is_testcase_or_requirement.nil? then
-                        traces_array.push(this_traceid)
+                        this_traceid    = jd_trace.search($jdtraceid_tag).first.text
+                        this_tracename  = jd_trace.search($jdtracename_tag).first.text
+    
+                        is_testcase_or_requirement = this_traceid.match(/^(TC|REQ)/)
+    
+                        if !is_testcase_or_requirement.nil? then
+                            traces_array.push(this_traceid)
+                        else
+                            @logger.info "ERROR: Trace was neither for TC or REQ..."
+                        end
                     end
                 end
-            end
-        ##### #####
-        # Find all <JDtracefrom>'s
-            jd_request.search($jdtracefrom_tag).each do | jd_tracefrom |
 
-                jd_tracefrom.search($jdtrace_tag).each do | jd_trace |
-                    this_traceid    = jd_trace.search($jdtraceid_tag).first.text
-                    this_tracename  = jd_trace.search($jdtracename_tag).first.text
+                ##### #####
+                # Find all <JDtracefrom>'s
+                jd_request.search($jdtracefrom_tag).each_with_index do | jd_tracefrom, indx_tracefrom |
+                    @logger.info "        Processing #{$jdtracefrom_tag} tag #{indx_tracefrom+1}..."
+    
+                    jd_tracefrom.search($jdtrace_tag).each_with_index do | jd_trace, indx_trace |
+                        @logger.info "            Processing #{$jdtrace_tag} tag #{indx_trace+1}..."
 
-                    is_testcase_or_requirement = this_traceid.match(/^(TC|REQ)/)
+                        this_traceid    = jd_trace.search($jdtraceid_tag).first.text
+                        this_tracename  = jd_trace.search($jdtracename_tag).first.text
+    
+                        is_testcase_or_requirement = this_traceid.match(/^(TC|REQ)/)
 
-                    if !is_testcase_or_requirement.nil? then
-                        traces_array.push(this_traceid)
+                        if !is_testcase_or_requirement.nil? then
+                            traces_array.push(this_traceid)
+                        else
+                            @logger.info "ERROR: Trace was neither for TC or REQ..."
+                        end
                     end
                 end
-            end
-        ##### #####
-            # Create traces text for import to rally
-            if traces_array.length > 0 then
-                traces_text = create_traces_markup_from_traces_array(traces_array)
-            end
 
-            if $preview_mode then
-                @logger.info "Rally TestCase needs updated with #{traces_array.length} Caliber Traces from TestCase: #{this_testcase_id}"
-            else
-                testcase_oid = @testcase_oid_by_caliber_testcase_id[this_testcase_id]
-                if !testcase_oid.nil?
-                    update_testcase_with_caliber_traces(testcase_oid, this_testcase_id, traces_text)
+                ##### #####
+                # Create traces text for import to rally
+                if traces_array.length > 0 then
+                    traces_text = create_traces_markup_from_traces_array(traces_array)
+                end
+    
+                if $preview_mode then
+                    @logger.info "Rally TestCase needs updated with #{traces_array.length} Caliber Traces from TestCase: #{this_testcase_id}"
                 else
-                    @logger.error "Rally TestCase with OID: #{testcase_oid} not found for importing traces."
+                    debugger
+                    testcase_oid = @testcase_oid_by_caliber_testcase_id[this_testcase_id]
+                    if !testcase_oid.nil?
+                        update_testcase_with_caliber_traces(testcase_oid, this_testcase_id, traces_text)
+                    else
+                        @logger.error "Rally TestCase with OID: #{testcase_oid} not found for importing traces."
+                    end
                 end
-            end
-
-            # Circuit-breaker for testing purposes
-            if import_count < $max_import_count then
-                import_count += 1
-            else
-                break
-            end
-	    ##### #####
+    
+                # Circuit-breaker for testing purposes
+                if import_count < $max_import_count then
+                    import_count += 1
+                else
+                    break
+                end
         end
     end
 

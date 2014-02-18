@@ -45,25 +45,7 @@ else
 end
 
 
-# HTML Mode vs. XML Mode
-# The following is needed to preserve newlines in formatting of UDAValues when
-# Imported into Rally. Caliber export uses newlines in UDAValue attributes as formatting.
-# When importing straight XML, the newlines are ignored completely
-# Rally (and Nokogiri, really) needs markup. This step replaces newlines with <br>
-# And reads the resulting input as HTML rather than XML
-caliber_file = File.open($caliber_file_tc, 'rb')
-caliber_content = caliber_file.read
-caliber_content_html = caliber_content.gsub("\n", "&lt;br/&gt;\n")
 
-if $html_mode then
-    caliber_data = Nokogiri::HTML(caliber_content_html, 'UTF-8') do | config |
-        config.strict
-    end
-else
-    caliber_data = Nokogiri::XML(File.open($caliber_file_tc), 'UTF-8') do | config |
-        config.strict
-    end
-end
 
 # set preview mode
 if $preview_mode then
@@ -190,22 +172,6 @@ begin
 
 #==================== Connect to Rally and Import Caliber data ====================
 
-    #Setting custom headers
-    $headers                    = RallyAPI::CustomHttpHeader.new()
-    $headers.name               = "Caliber Testcase Importer"
-    $headers.vendor             = "Rally Technical Services"
-    $headers.version            = "0.50"
-
-    config = {  :base_url       => $my_base_url,
-                :username       => $my_username,
-                :password       => $my_password,
-                :workspace      => $my_workspace,
-                :project        => $my_project,
-                :version        => $my_wsapi_version,
-                :headers        => $headers}
-
-    @rally = RallyAPI::RallyRestJson.new(config)
-
     # Instantiate Logger
     log_file = File.open($cal2ral_tc_log, "a")
     log_file.sync = true
@@ -213,6 +179,10 @@ begin
 
     @logger.level = Logger::INFO #DEBUG | INFO | WARNING | FATAL
 
+    if $preview_mode then
+        @logger.info "----PREVIEW MODE----"
+    end
+   
     # Report vars
     @logger.info "Running #{$PROGRAM_NAME} with the following settings:
                 $my_base_url                     = #{$my_base_url}
@@ -248,9 +218,47 @@ begin
                 $cal2ral_tc_traces_log           = #{$cal2ral_tc_traces_log}
                 $description_field_hash          = #{$description_field_hash}"
 
+    # Set up custom headers for Rally connection
+    $headers                    = RallyAPI::CustomHttpHeader.new()
+    $headers.name               = "Caliber Testcase Importer"
+    $headers.vendor             = "Rally Technical Services"
+    $headers.version            = "0.50"
+
+    config = {  :base_url       => $my_base_url,
+                :username       => $my_username,
+                :password       => $my_password,
+                :workspace      => $my_workspace,
+                :project        => $my_project,
+                :version        => $my_wsapi_version,
+                :headers        => $headers}
+
+    @logger.info "Initiating connection to Rally at #{$my_base_url}..."
+    @rally = RallyAPI::RallyRestJson.new(config)
+ 
     # Initialize Caliber Helper
     @caliber_helper = CaliberHelper.new(@rally, $caliber_project, $caliber_id_field_name,
         $description_field_hash, $caliber_image_directory, @logger, $caliber_weblink_field_name)
+
+    # HTML Mode vs. XML Mode
+    # The following is needed to preserve newlines in formatting of UDAValues when
+    # Imported into Rally. Caliber export uses newlines in UDAValue attributes as formatting.
+    # When importing straight XML, the newlines are ignored completely
+    # Rally (and Nokogiri, really) needs markup. This step replaces newlines with <br>
+    # And reads the resulting input as HTML rather than XML
+    @logger.info "Opening for reading XML data file #{$caliber_file_tc}..."
+    caliber_file = File.open($caliber_file_tc, 'rb')
+    caliber_content = caliber_file.read
+    caliber_content_html = caliber_content.gsub("\n", "&lt;br/&gt;\n")
+    
+    if $html_mode then
+        caliber_data = Nokogiri::HTML(caliber_content_html, 'UTF-8') do | config |
+            config.strict
+        end
+    else
+        caliber_data = Nokogiri::XML(File.open($caliber_file_tc), 'UTF-8') do | config |
+            config.strict
+        end
+    end
 
     # Output CSV of TestCase data
     @logger.info "CSV file creation of #{$csv_testcases}..."
@@ -275,9 +283,14 @@ begin
 
     # Read through caliber file and store requirement records in array of requirement hashes
     import_count = 0
-    caliber_data.search($report_tag).each do | report | #{
-        report.search($requirement_type_tag).each do | req_type |
-            req_type.search($requirement_tag).each do | testcase |
+    caliber_data.search($report_tag).each_with_index do | report, indx_report | #{
+        @logger.info "Processing XML Report tag #{indx_report+1}: project=\"#{report['project']}\" date=\"#{report['date']}\""
+
+        report.search($requirement_type_tag).each_with_index do | req_type, indx_req_type |
+            @logger.info "    Processing XML ReqType tag #{indx_req_type+1}: name=\"#{req_type['name']}\" sort_by=\"#{req_type['sort_by']}\""
+
+            req_type.search($requirement_tag).each_with_index do | requirement, indx_req |
+                @logger.info "        Processing XML Requirement tag #{indx_req+1}: index=\"#{requirement['index']}\"\ hierarchy=\"#{requirement['hierarchy']}\" id=\"#{requirement['id']}\" tag=\"#{requirement['tag']}\""
 
                 # Data - holds output for CSV
                 testcase_data                        = []
@@ -286,32 +299,39 @@ begin
                 # Store fields that derive from Project and Requirement objects
                 this_testcase                        = {}
                 this_testcase['project']             = report['project']
-                this_testcase['hierarchy']           = testcase['hierarchy']
-                this_testcase['id']                  = testcase['id']
-                this_testcase['tag']                 = testcase['tag']
-                this_testcase['name']                = testcase['name'] || ""
+                this_testcase['hierarchy']           = requirement['hierarchy']
+                this_testcase['id']                  = requirement['id']
+                this_testcase['tag']                 = requirement['tag']
+                this_testcase['name']                = requirement['name'] || ""
 
                 # process_description_body pulls HTML content out of <html><body> tags
-                this_testcase['description']         = @caliber_helper.process_description_body(testcase['description'] || "")
-                this_testcase['validation']          = @caliber_helper.process_description_body(testcase['validation'] || "")
+                this_testcase['description']         = @caliber_helper.process_description_body(requirement['description'] || "")
+                this_testcase['validation']          = @caliber_helper.process_description_body(requirement['validation'] || "")
 
                 # Store Caliber ID, HierarchyID, Project and Name in variables for convenient logging output
-                testcase_id                                  = testcase['id']
-                testcase_tag                                 = testcase['tag']
-                testcase_hierarchy                           = testcase['hierarchy']
+                testcase_id                                  = requirement['id']
+                testcase_tag                                 = requirement['tag']
+                testcase_hierarchy                           = requirement['hierarchy']
                 testcase_project                             = report['project']
-                testcase_name                                = testcase['name']
+                testcase_name                                = requirement['name']
 
-                @logger.info "Started Reading Caliber TestCase ID: #{testcase_id}; Hierarchy: #{testcase_hierarchy}; Project: #{testcase_project}"
+                #@logger.info "Started Reading Caliber TestCase ID: #{testcase_id}; Hierarchy: #{testcase_hierarchy}; Project: #{testcase_project}"
 
                 # Loop through UDAValue records and cache fields from them
                 # There are many UDAValue records per testcase and each is different
                 # So assign to values of interest via case statement
 
-                testcase.search($uda_values_tag).each do | uda_values | #{
-                    uda_values.search($uda_value_tag).each do | uda_value |
+                requirement.search($uda_values_tag).each_with_index do | uda_values, indx_values | #{
+                    uda_values.search($uda_value_tag).each_with_index do | uda_value, indx_value |
                         uda_value_name = uda_value['name']
                         uda_value_value = uda_value['value'] || ""
+                        maxdis=70 #maximum display length for value
+                        if uda_value_value.length > maxdis then
+                            cont="...."
+                        else
+                            cont=""
+                        end
+                        uda_stat="used   "
                         case uda_value_name
                             when $uda_value_name_source
                                 this_testcase['source']             = uda_value_value
@@ -337,11 +357,14 @@ begin
                                 this_testcase['testing_status']     = uda_value_value
                             when $uda_value_name_test_running
                                 this_testcase['test_running']       = uda_value_value
+                            else
+                                uda_stat="ignored"
                         end
+                        @logger.info "            UDAValue tag #{indx_value+1} of #{uda_values.children.count}: #{uda_stat} name='#{uda_value_name}'"
                     end
-                end #} end of "testcase.search($uda_values_tag).each do | uda_values |"
+                end #} end of "requirement.search($uda_values_tag).each do | uda_values |"
 
-                @logger.info "    Finished Reading Caliber TestCase ID: #{testcase_id}; Hierarchy: #{testcase_hierarchy}; Project: #{testcase_project}"
+                #@logger.info "    Finished Reading Caliber TestCase ID: #{testcase_id}; Hierarchy: #{testcase_hierarchy}; Project: #{testcase_project}"
 
                 # Dummy testcase used only when testing
                 # Includes our required fields
@@ -358,6 +381,7 @@ begin
                 # Import to Rally
                 if $import_to_rally then
                     testcase = @caliber_helper.create_testcase_from_caliber(this_testcase)
+                    @logger.info "        Created Rally TestCase: FormattedID=#{testcase.FormattedID}; ObjectID=#{testcase.ObjectID}; from Caliber Requirement id=#{requirement['id']}"
                 end
 
                 # Save the TestCase OID and associated it to the Caliber Hierarchy ID for later use
@@ -388,10 +412,11 @@ begin
                     description_with_images = this_testcase['description']
                     image_file_objects, image_file_ids = @caliber_helper.get_caliber_image_files(description_with_images)
                     caliber_image_data = {
-                        "files"       => image_file_objects,
-                        "ids"         => image_file_ids,
-                        "description" => description_with_images,
-                        "ref"         => testcase["_ref"]
+                        "files"         => image_file_objects,
+                        "ids"           => image_file_ids,
+                        "description"   => description_with_images,
+                        "fmtid"         => testcase["FormattedID"],
+                        "ref"           => testcase["_ref"]
                     }
                     @rally_testcases_with_images_hash[testcase["ObjectID"].to_s] = caliber_image_data
                 end
@@ -425,9 +450,9 @@ begin
 
     # Only import into Rally if we're not in "preview_mode" for testing
     if $preview_mode then
-        @logger.info "    Finished Processing Caliber TestCases for import to Rally. Total TestCases Processed: #{import_count}."
+        @logger.info "Finished Processing Caliber TestCases for import to Rally. Total TestCases Processed: #{import_count}."
     else
-        @logger.info "    Finished Importing Caliber TestCases to Rally. Total TestCases Created: #{import_count}."
+        @logger.info "Finished Importing Caliber TestCases to Rally. Total TestCases Created: #{import_count}."
     end
 
     # Run the hierarchy stitching service

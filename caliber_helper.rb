@@ -78,7 +78,7 @@ class CaliberHelper
         attachment = @rally.create(:attachment, attachment_fields)
 
         #@logger.info "    Imported #{attachment_data_hash[:name]} to a Rally Attachment Artifact: ObjectID=#{attachment_data_hash[:artifactoid]}"
-        @logger.info "    Created Rally Attachment Artifact: ObjectID=#{attachment.ObjectID}; content=#{attachment_data_hash[:name]}"
+        @logger.info "        Created Rally Attachment Artifact: ObjectID=#{attachment.ObjectID}; content=#{attachment_data_hash[:name]}"
         return attachment
     end
 
@@ -103,7 +103,7 @@ class CaliberHelper
         update_fields = {}
         update_fields["Description"] = new_description
         updated_artifact = @rally.update(artifact_type, artifact_oid, update_fields)
-        @logger.info "    Updated Rally Artifact; FormattedID=#{artifact_fmtid}; ObjectID=#{artifact_oid} with embedded images."
+        @logger.info "        Updated Rally Artifact; FormattedID=#{artifact_fmtid}; ObjectID=#{artifact_oid} with embedded images."
 
     end
 
@@ -128,18 +128,18 @@ class CaliberHelper
             new_attachment_sources = []
 
             this_image_list.each do | this_image_file | #{
-                @logger.info "Processing image file #{index+1}: #{File.basename(this_image_file)}..."
+                @logger.info "    Processing image file #{index+1}: #{File.basename(this_image_file)}..."
                 if File.exist?(this_image_file) then
                     image_bytes = File.open(this_image_file, 'rb') { | file | file.read }
                     image_id = this_image_id_list[index]
                     attachment_name, mimetype = get_image_metadata(this_image_file, image_id)
 
                     if mimetype.nil? then
-                        @logger.warn "Invalid mime-type encountered! Skipped importing image file #{this_image_file} to Rally Description on Artifact with ObjectID: #{this_artifact_oid}"
+                        @logger.warn "    Invalid mime-type encountered! Skipped importing image file #{this_image_file} to Rally Description on Artifact with ObjectID: #{this_artifact_oid}"
                         next
                     end
                     if image_bytes.length > @max_attachment_length then
-                        @logger.warn "Attachment size of #{image_bytes.length} exceeds Rally allowed maximum of 5 MB. Skipped importing image file #{this_image_file} on Artifact with ObjectID: #{this_artifact_oid}"
+                        @logger.warn "    Attachment size of #{image_bytes.length} exceeds Rally allowed maximum of 5 MB. Skipped importing image file #{this_image_file} on Artifact with ObjectID: #{this_artifact_oid}"
                         next
                     end
                     begin
@@ -174,6 +174,7 @@ class CaliberHelper
             # tags of the Rally Description with new URL data from actual attachment in Rally
             fix_description_images(this_artifact_fmtid, this_artifact_ref, this_artifact_description, new_attachment_sources)
         end
+        @logger.info "End of post-service to import Caliber images for requirements that have embedded images."
     end #} end of "def import_images(artifacts_with_images_hash)"
 
     # Caliber hierarchy id's look like: 1.1.1, as an example
@@ -352,7 +353,7 @@ class CaliberHelper
             testcase = @rally.create("testcase", testcase_fields)
             testcase.read
             testcase_oid = testcase['ObjectID']
-            @logger.info "    Successfully Created Rally TestCase: ObjectID #{testcase_oid}; from CaliberID: #{testcase_id}"
+            #@logger.info "    Successfully Created Rally TestCase: ObjectID #{testcase_oid}; from CaliberID: #{testcase_id}"
             return testcase
         rescue => ex
             @logger.error "Error occurred creating Rally TestCase from Caliber TestCase ID: #{testcase_id}. Not imported."
@@ -391,8 +392,8 @@ class CaliberHelper
                 parent_story_oid = parent_story['ObjectID']
                 parent_story_fid = parent_story['FormattedID']
 
-                @logger.info "Parenting Child Hierarchy ID: #{this_hierarchy_id} with Rally UserStory: FormattedID=#{child_story_fid}; ObjectID=#{child_story_oid} to: "
-                @logger.info "    Parent Hierarchy ID: #{this_parent_hierarchy_id} with Rally Parent UserStory: FormattedID=#{parent_story_fid}; ObjectID=#{parent_story_oid}"
+                @logger.info "    Parenting Child Hierarchy ID: #{this_hierarchy_id} with Rally UserStory: FormattedID=#{child_story_fid}; ObjectID=#{child_story_oid} to:"
+                @logger.info "        Parent Hierarchy ID: #{this_parent_hierarchy_id} with Rally Parent UserStory: FormattedID=#{parent_story_fid}; ObjectID=#{parent_story_oid}"
                 update_fields = {}
                 update_fields["Parent"] = parent_story._ref
                 begin
@@ -405,6 +406,7 @@ class CaliberHelper
                 end
             end
         end
+        @logger.info "End of post-service to parent Rally User Stories According to Caliber Hierarchy."
     end
 
     # Post-import service to create weblinks that link TestCase Hierarchy in Rally
@@ -418,11 +420,13 @@ class CaliberHelper
             if this_parent_hierarchy_id != @no_parent_id then
                 child_testcase = rally_testcase_hierarchy_hash[this_hierarchy_id]
                 child_testcase_oid = child_testcase['ObjectID']
+                child_testcase_fid = child_testcase['FormattedID']
                 parent_testcase = rally_testcase_hierarchy_hash[this_parent_hierarchy_id]
                 parent_testcase_oid = parent_testcase['ObjectID']
+                parent_testcase_fid = parent_testcase['FormattedID']
 
-                @logger.info "Linking Child Hierarchy ID: #{this_hierarchy_id} with TestCase ObjectID: #{child_testcase_oid} to: "
-                @logger.info "    Parent Hierarchy ID: #{this_parent_hierarchy_id} with TestCase ObjectID: #{parent_testcase_oid}"
+                @logger.info "    Parenting Child Hierarchy ID: #{this_hierarchy_id} with Rally TestCase: FormattedID=#{child_testcase_fid}; ObjectID=#{child_testcase_oid} to:"
+                @logger.info "        Parent Hierarchy ID: #{this_parent_hierarchy_id} with Rally TestCase: FormattedID=#{parent_testcase_fid}; ObjectID: #{parent_testcase_oid}"
 
                 parent_web_link = {}
                 parent_web_link["LinkID"] = parent_testcase_oid
@@ -432,7 +436,7 @@ class CaliberHelper
                 update_fields[@caliber_weblink_field_name] = parent_web_link
                 begin
                     @rally.update("testcase", child_testcase_oid, update_fields)
-                    @logger.info "    Successfully Linked Rally TestCase: ObjectID #{child_testcase_oid}; to TestCase: #{parent_testcase_oid}"
+                    #@logger.info "    Successfully Linked Rally TestCase: ObjectID #{child_testcase_oid}; to TestCase: #{parent_testcase_oid}"
                 rescue => ex
                     @logger.error "Error occurred attempting to Link Rally TestCase: ObjectID #{child_testcase_oid}; to TestCase: #{parent_testcase_oid}"
                     @logger.error ex.message
@@ -440,6 +444,7 @@ class CaliberHelper
                 end
             end
         end
+        @logger.info "End of post-service to create weblinks from Rally TestCases to their parents According to Caliber Hierarchy."
     end
 
 end

@@ -37,9 +37,6 @@ else
         print "File #{my_vars} not found...\n"
 end
 
-caliber_data = Nokogiri::XML(File.open($caliber_file_req_traces), 'UTF-8') do | config |
-    config.strict
-end
 
 # set preview mode
 if $preview_mode then
@@ -61,18 +58,18 @@ end
 # </Report>
 
 # Tags of interest
-$report_tag                              = "Report"
+$report_tag         = "Report"
 
 # The name attribute of the Traceability tag is the name of the
 # Caliber Requirement to which this set of Traces corresponds
-$traceability_tag                        = "Traceability"
-$trace_tag                               = "Trace"
+$traceability_tag   = "Traceability"
+$trace_tag          = "Trace"
 
 def cache_story_oid(header, row)
-    req_name               = row[header[0]].strip
-    story_oid              = row[header[1]].strip
-    #column 3 = FormattedID
-    #column 4 = Caliber ID
+    req_name        = row[header[0]].strip
+    story_oid       = row[header[1]].strip
+    #column 3       = FormattedID
+    #column 4       = Caliber ID
 
     if !req_name.eql? nil then
         @story_oid_by_reqname[req_name] = story_oid.to_s
@@ -122,28 +119,16 @@ begin
 
 #==================== Connect to Rally and Import Caliber data ====================
 
-#Setting custom headers
-    $headers                    = RallyAPI::CustomHttpHeader.new()
-    $headers.name               = "Caliber Requirement Traces Importer"
-    $headers.vendor             = "Rally Technical Services"
-    $headers.version            = "0.50"
-
-    config = {  :base_url       => $my_base_url,
-                :username       => $my_username,
-                :password       => $my_password,
-                :workspace      => $my_workspace,
-                :project        => $my_project,
-                :version        => $my_wsapi_version,
-                :headers        => $headers}
-
-    @rally = RallyAPI::RallyRestJson.new(config)
-
     # Instantiate Logger
     log_file = File.open($cal2ral_req_traces_log, "a")
     log_file.sync = true
     @logger = Logger.new MultiIO.new(STDOUT, log_file)
 
     @logger.level = Logger::INFO #DEBUG | INFO | WARNING | FATAL
+
+    if $preview_mode then
+        @logger.info "----PREVIEW MODE----"
+    end
 
     # Report vars
     @logger.info "Running #{$PROGRAM_NAME} with the following settings:
@@ -180,6 +165,28 @@ begin
                 $cal2ral_tc_traces_log           = #{$cal2ral_tc_traces_log}
                 $description_field_hash          = #{$description_field_hash}"
 
+    # Set up custom headers for Rally connection
+    $headers                    = RallyAPI::CustomHttpHeader.new()
+    $headers.name               = "Caliber Requirement Traces Importer"
+    $headers.vendor             = "Rally Technical Services"
+    $headers.version            = "0.50"
+
+    config = {  :base_url       => $my_base_url,
+                :username       => $my_username,
+                :password       => $my_password,
+                :workspace      => $my_workspace,
+                :project        => $my_project,
+                :version        => $my_wsapi_version,
+                :headers        => $headers}
+    
+    @logger.info "Initiating connection to Rally at #{$my_base_url}..."
+    @rally = RallyAPI::RallyRestJson.new(config)
+
+    @logger.info "Opening for reading XML data file #{$caliber_file_req_traces}..."
+    caliber_data = Nokogiri::XML(File.open($caliber_file_req_traces), 'UTF-8') do | config |
+        config.strict
+    end
+
     # Hash to provide a lookup from Caliber reqname -> Rally Story OID
     @story_oid_by_reqname = {}
 
@@ -190,10 +197,10 @@ begin
     header = input.first #ignores first line
     rows   = []
     (1...input.size).each { |i| rows << CSV::Row.new(header, input[i])}
+    @logger.info "    Found #{rows.length} rows of data"
     number_processed = 0
 
-    # Proceed through rows in input CSV and store reqname -> story OID lookup
-    # in a hash
+    # Proceed through rows in input CSV and store reqname -> story OID lookup in a hash
 
     rows.each do |row|
         cache_story_oid(header, row)
@@ -202,17 +209,24 @@ begin
 
     # Read through caliber file and store requirement records in array of requirement hashes
     import_count = 0
-    caliber_data.search($report_tag).each do | report |
-        report.search($traceability_tag).each do | traceability |
+    #caliber_data.search($report_tag).each do | report |
+        #report.search($traceability_tag).each do | traceability |
+
+    caliber_data.search("JDrequestTraces").each_with_index do | report, indx_report |
+        @logger.info "Processing <JDrequestTraces> tag #{indx_report+1}..."
+
+        report.search("JDrequest").each_with_index do | traceability, indx_trace |
+            @logger.info "    Processing <JDrequest> tag #{indx_trace+1}..."
+
             req_name          = traceability['name']
             trace_array       = []
             story_oid         = @story_oid_by_reqname[req_name]
 
             if story_oid.nil? then
-                @logger.warn "No Rally Story ObjectID found for Caliber Requirement named: #{req_name}. Skipping import of traces for this requirement."
+                @logger.warn "    No Rally Story ObjectID found for Caliber Requirement named: #{req_name}. Skipping import of traces for this requirement."
                 next
             else
-                @logger.info "Rally Story ObjectID: #{story_oid} found for Caliber Requirement named: #{req_name}."
+                @logger.info "    Rally Story ObjectID: #{story_oid} found for Caliber Requirement named: #{req_name}."
             end
 
             traceability.search($trace_tag).each do | this_trace |
@@ -240,9 +254,9 @@ begin
 
     # Only import into Rally if we're not in "preview_mode" for testing
     if $preview_mode then
-        @logger.info "    Finished Processing Caliber Requirement Traces for import to Rally. Total Traces Processed: #{import_count}."
+        @logger.info "Finished Processing Caliber Requirement Traces for import to Rally. Total Traces Processed: #{import_count}."
     else
-        @logger.info "    Finished Importing Caliber Requirement Traces to Rally. Total Traces Created: #{import_count}."
+        @logger.info "Finished Importing Caliber Requirement Traces to Rally. Total Traces Created: #{import_count}."
     end
 
 end

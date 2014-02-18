@@ -26,11 +26,11 @@ $max_attachment_length           = 5000000
 #$caliber_file_tc_traces         = "../from-marks-dropbox/jdf_testcase_traces_zeuscontrol.xml"   # 04-Testcases-Traces
 #$caliber_image_directory        = "../from-marks-dropbox/images"
 
-$caliber_file_req               = "../from-ftp-site/heraTC_and_REQ/heraREQ.xml"                 # 01-Requirements
-$caliber_file_req_traces        = "../from-ftp-site/heraTC_and_REQ/heratrace.xml"               # 02-Requirement-Traces
-$caliber_file_tc                = "../from-ftp-site/heraTC_and_REQ/heraTC_and_REQ.xml"          # 03-Testcases
-$caliber_file_tc_traces         = "../from-ftp-site/heraTC_and_REQ/heratrace.xml"               # 04-Testcases-Traces
-$caliber_image_directory        = "../from-ftp-site/ImageCache"
+$caliber_file_req               = "../from-ftp-site/fetch1/heraTC_and_REQ/heraREQ.xml"          # 01-Requirements
+$caliber_file_req_traces        = "../from-ftp-site/fetch1/heraTC_and_REQ/heratrace.xml"        # 02-Requirement-Traces
+$caliber_file_tc                = "../from-ftp-site/fetch1/heraTC_and_REQ/heraTC.xml"           # 03-Testcases
+$caliber_file_tc_traces         = "../from-ftp-site/fetch1/heraTC_and_REQ/heratrace.xml"        # 04-Testcases-Traces
+$caliber_image_directory        = "../from-ftp-site/fetch1/ImageCache"
 
 # Custom fields in Rally: on User Story
 $caliber_id_field_name          = "CaliberID"          # US - type String

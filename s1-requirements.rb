@@ -135,8 +135,6 @@ end
 #$uda_value_name_machine_type   = "JDF Machine Type"        #15
  $uda_value_name_open_issues    = "JDF Open Issues"         #16
 
- 
-
 begin
 
 #==================== Connect to Rally and Import Caliber data ====================
@@ -147,6 +145,7 @@ begin
     @logger = Logger.new MultiIO.new(STDOUT, log_file)
 
     @logger.level = Logger::INFO #DEBUG | INFO | WARNING | FATAL
+
     if $preview_mode then
         @logger.info "----PREVIEW MODE----"
     end
@@ -186,7 +185,6 @@ begin
                 $cal2ral_tc_traces_log           = #{$cal2ral_tc_traces_log}
                 $description_field_hash          = #{$description_field_hash}"
 
-
     # Set up custom headers for Rally connection
     $headers                    = RallyAPI::CustomHttpHeader.new()
     $headers.name               = "Caliber Requirement Importer"
@@ -200,6 +198,7 @@ begin
                 :project        => $my_project,
                 :version        => $my_wsapi_version,
                 :headers        => $headers}
+
     @logger.info "Initiating connection to Rally at #{$my_base_url}..."
     @rally = RallyAPI::RallyRestJson.new(config)
 
@@ -228,7 +227,6 @@ begin
             config.strict
         end
     end
-
 
     # Output CSV of Requirement data
     @logger.info "CSV file creation of #{$csv_requirements}..."
