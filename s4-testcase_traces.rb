@@ -8,6 +8,7 @@ require 'rally_api'
 require 'logger'
 require './multi_io.rb'
 require 'debugger'
+@jpwantsdebugger=true
 
 # Rally Connection parameters
 $my_base_url                     = "https://rally1.rallydev.com/slm"
@@ -377,7 +378,7 @@ begin
                 if $preview_mode then
                     @logger.info "Rally TestCase needs updated with #{traces_array.length} Caliber Traces from TestCase: #{this_testcase_id}"
                 else
-                    debugger
+                    debugger if @jpwantsdebugger
                     testcase_oid = @testcase_oid_by_caliber_testcase_id[this_testcase_id]
                     if !testcase_oid.nil?
                         update_testcase_with_caliber_traces(testcase_oid, this_testcase_id, traces_text)

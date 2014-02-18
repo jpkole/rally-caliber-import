@@ -9,6 +9,7 @@ require 'logger'
 require './caliber_helper.rb'
 require './multi_io.rb'
 require 'debugger'
+@jpwantsdebugger=true
 
 # Rally Connection parameters
 $my_base_url                     = "https://rally1.rallydev.com/slm"
@@ -287,7 +288,13 @@ begin
         @logger.info "Processing XML Report tag #{indx_report+1}: project=\"#{report['project']}\" date=\"#{report['date']}\""
 
         report.search($requirement_type_tag).each_with_index do | req_type, indx_req_type |
-            @logger.info "    Processing XML ReqType tag #{indx_req_type+1}: name=\"#{req_type['name']}\" sort_by=\"#{req_type['sort_by']}\""
+            
+            if req_type['name'] == "JDF Test Case (TC)" then
+                @logger.info "    Processing XML ReqType tag #{indx_req_type+1}: name=\"#{req_type['name']}\" sort_by=\"#{req_type['sort_by']}\""         
+            else
+                @logger.info "    Ignoring ReqType tag with name=\"#{req_type['name']}\""
+                next  
+            end
 
             req_type.search($requirement_tag).each_with_index do | requirement, indx_req |
                 @logger.info "        Processing XML Requirement tag #{indx_req+1}: index=\"#{requirement['index']}\"\ hierarchy=\"#{requirement['hierarchy']}\" id=\"#{requirement['id']}\" tag=\"#{requirement['tag']}\""

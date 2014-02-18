@@ -11,7 +11,7 @@ $my_username                     = "paul@acme.com"
 $my_password                     = "RallyON!"
 $my_wsapi_version                = "1.43"
 $my_workspace                    = "Integrations"
-$my_project                      = "JPKole_JDF_Hera-05"
+$my_project                      = "JPKole_JDF_Hera-07"
 
 $max_attachment_length           = 5000000
 
@@ -26,9 +26,9 @@ $max_attachment_length           = 5000000
 #$caliber_file_tc_traces         = "../from-marks-dropbox/jdf_testcase_traces_zeuscontrol.xml"   # 04-Testcases-Traces
 #$caliber_image_directory        = "../from-marks-dropbox/images"
 
-$caliber_file_req               = "../from-ftp-site/fetch1/heraTC_and_REQ/heraREQ.xml"          # 01-Requirements
+$caliber_file_req               = "../from-ftp-site/fetch1/heraTC_and_REQ/heraTC_and_REQ.xml"   # 01-Requirements
 $caliber_file_req_traces        = "../from-ftp-site/fetch1/heraTC_and_REQ/heratrace.xml"        # 02-Requirement-Traces
-$caliber_file_tc                = "../from-ftp-site/fetch1/heraTC_and_REQ/heraTC.xml"           # 03-Testcases
+$caliber_file_tc                = "../from-ftp-site/fetch1/heraTC_and_REQ/heraTC_and_REQ.xml"   # 03-Testcases
 $caliber_file_tc_traces         = "../from-ftp-site/fetch1/heraTC_and_REQ/heratrace.xml"        # 04-Testcases-Traces
 $caliber_image_directory        = "../from-ftp-site/fetch1/ImageCache"
 
