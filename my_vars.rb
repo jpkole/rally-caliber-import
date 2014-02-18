@@ -11,7 +11,7 @@ $my_username                     = "paul@acme.com"
 $my_password                     = "RallyON!"
 $my_wsapi_version                = "1.43"
 $my_workspace                    = "Integrations"
-$my_project                      = "JPKole_JDF_Hera-07"
+$my_project                      = "JPKole_JDF_Hera-08"
 
 $max_attachment_length           = 5000000
 

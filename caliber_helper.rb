@@ -114,7 +114,13 @@ class CaliberHelper
     # - Stitches Rally's image URL back into Rally Artifact description <img src="" tags
     #   to effect "in-lining" of the images in the Rally Artifact description
     def import_images(artifacts_with_images_hash) #{
-        @logger.info "Starting post-service to import Caliber images for requirements that have embedded images."
+
+        if artifacts_with_images_hash.count > 0 then
+            @logger.info "Starting post-service to import Caliber images for requirements that have embedded images."
+        else
+            @logger.info "No images found for processing."
+        end
+
         artifacts_with_images_hash.each_pair do | this_artifact_oid, this_caliber_image_data |
 
             this_image_list             = this_caliber_image_data["files"]

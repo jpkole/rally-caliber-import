@@ -384,6 +384,7 @@ begin
                         "fmtid"         => story["FormattedID"],
                         "ref"           => story["_ref"]
                     }
+                    @logger.info "            Adding #{caliber_image_count} images to hash for later processing."
                     @rally_stories_with_images_hash[story["ObjectID"].to_s] = caliber_image_data
                 end
 

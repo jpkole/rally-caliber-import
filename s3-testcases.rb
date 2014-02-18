@@ -425,6 +425,7 @@ begin
                         "fmtid"         => testcase["FormattedID"],
                         "ref"           => testcase["_ref"]
                     }
+                    @logger.info "            Adding #{caliber_image_count} images to hash for later processing."
                     @rally_testcases_with_images_hash[testcase["ObjectID"].to_s] = caliber_image_data
                 end
 
@@ -464,8 +465,7 @@ begin
 
     # Run the hierarchy stitching service
     if $stitch_hierarchy then
-        @caliber_helper.post_import_testcase_hierarchy_linker(@caliber_parent_hash,
-            @rally_testcase_hierarchy_hash)
+        @caliber_helper.post_import_testcase_hierarchy_linker(@caliber_parent_hash, @rally_testcase_hierarchy_hash)
     end
 
     # Run the image import service
