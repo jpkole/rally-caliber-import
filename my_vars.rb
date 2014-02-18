@@ -1,19 +1,21 @@
 # Rally Connection parameters
+$my_base_url                     = "https://rally1.rallydev.com/slm"
+$my_username                     = "rally_caliber@johndeere.com"
+$my_password                     = "!!nrlad1804"
+$my_wsapi_version                = "1.43"
+$my_workspace                    = "JDF Tampere"
+$my_project                      = "Caliber2Rally_Hera"
+
 $my_base_url                     = "https://audemo.rallydev.com/slm"
 $my_username                     = "paul@acme.com"
 $my_password                     = "RallyON!"
 $my_wsapi_version                = "1.43"
-$my_workspace                    = "JPKole_Caliber"
-
-$my_project                      = "JPKole_JDF_Hera"
-#$my_project                      = "JPKole_JDF_zeuscontrol"
+$my_workspace                    = "Integrations"
+$my_project                      = "JPKole_JDF_Hera-05"
 
 $max_attachment_length           = 5000000
 
 # Caliber parameters
-
-#$caliber_file_name               = "../from-ftp-site/heraTC_and_REQ/heraTC_and_REQ.xml"
-#$caliber_image_directory         = "../from-ftp-site/ImageCache"
 
 # JDF_zeuscontrol project:
 # (proof of concept project)                                                                    # Order of import:
@@ -24,7 +26,7 @@ $max_attachment_length           = 5000000
 #$caliber_file_tc_traces         = "../from-marks-dropbox/jdf_testcase_traces_zeuscontrol.xml"   # 04-Testcases-Traces
 #$caliber_image_directory        = "../from-marks-dropbox/images"
 
-$caliber_file_req               = "../from-ftp-site/heraTC_and_REQ/heraTC_and_REQ.xml"          # 01-Requirements
+$caliber_file_req               = "../from-ftp-site/heraTC_and_REQ/heraREQ.xml"                 # 01-Requirements
 $caliber_file_req_traces        = "../from-ftp-site/heraTC_and_REQ/heratrace.xml"               # 02-Requirement-Traces
 $caliber_file_tc                = "../from-ftp-site/heraTC_and_REQ/heraTC_and_REQ.xml"          # 03-Testcases
 $caliber_file_tc_traces         = "../from-ftp-site/heraTC_and_REQ/heratrace.xml"               # 04-Testcases-Traces
@@ -39,7 +41,7 @@ $caliber_id_field_name          = "CaliberID"          # TC - type String
 $caliber_weblink_field_name     = "CaliberTCParent"    # TC - type Weblink
 $caliber_tc_traces_field_name   = "Externalreference"  # TC - type Text
 
-$max_import_count               = 500
+$max_import_count               = 50000
 
 # Runtime preferences
 $html_mode                      = true

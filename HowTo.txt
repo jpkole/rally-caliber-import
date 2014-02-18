@@ -50,7 +50,25 @@ TO DO:	01) Look at s4-testcase_traces.rb and examine the regex that filters for
 
 s05. Pre-Import procedure:
 
-	a. In file my_vars.rb, set these variables:
+	a. When run for the first time in a subscription, create a new Workspace
+	   and Project on your Rally server.
+	   Note: If possible, change your default Workspace & Project to the
+	         same as you just created above... to help prevent issues when
+		 code is in error.
+
+	b. Create the custom fields under the Project (as opposed to the
+	   Workspace where it will be seen by all Porjects) to match the
+	   my_vars.rb settings (see next step):
+	    	On UserStories:
+			$caliber_id_field_name (Externalreference) - type string
+			$caliber_req_traces_field_name (CaliberID) - type string
+		On TestCases:
+			$caliber_id_field_name (Externalreference) - type string
+			$caliber_weblink_field_name (CaliberTCParent) - type Weblink,
+				https://audemo.rallydev.com/#/detail/testcase/${id}
+			$caliber_tc_traces_field_name (CaliberID) - type string
+
+	c. In file my_vars.rb, set these variables:
 		Rally connection:
 			$my_base_url
 			$my_username
@@ -74,23 +92,6 @@ s05. Pre-Import procedure:
 		Misc:
 			$max_import_count
 
-	b. Change your default Workspace & Project to the same as the import
-	   destination specified above... to help prevent issues when code
-	   is in error.
-
-	c. Create Workspace and Project on your Rally server to match the
-	   my_vars.rb settings above.
-
-	d. Create the custom fields in the Workspace to match the my_vars.rb
-	   settings above:
-	    	On UserStories:
-			$caliber_id_field_name (Externalreference) - type string
-			$caliber_req_traces_field_name (CaliberID) - type string
-		On TestCases:
-			$caliber_id_field_name (Externalreference) - type string
-			$caliber_weblink_field_name (CaliberTCParent) - type Weblink,
-				https://audemo.rallydev.com/#/detail/testcase/${id}
-			$caliber_tc_traces_field_name (CaliberID) - type string
 
 --------------------------------------------------------------------------------
 

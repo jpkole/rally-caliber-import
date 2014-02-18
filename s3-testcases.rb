@@ -253,7 +253,7 @@ begin
         $description_field_hash, $caliber_image_directory, @logger, $caliber_weblink_field_name)
 
     # Output CSV of TestCase data
-    @logger.info "CSV file creation of #{$csv_testcase}..."
+    @logger.info "CSV file creation of #{$csv_testcases}..."
     testcase_csv = CSV.open($csv_testcases, "wb", {:col_sep => $my_delim})
     testcase_csv << $csv_testcase_fields
 

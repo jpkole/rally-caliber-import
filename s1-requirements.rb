@@ -43,28 +43,6 @@ else
     print "File #{my_vars} not found...\n"
 end
 
-
-# HTML Mode vs. XML Mode
-# The following is needed to preserve newlines in formatting of UDAValues when
-# Imported into Rally. Caliber export uses newlines in UDAValue attributes as formatting.
-# When importing straight XML, the newlines are ignored completely
-# Rally (and Nokogiri, really) needs markup. This step replaces newlines with <br>
-# And reads the resulting input as HTML rather than XML
-caliber_file = File.open($caliber_file_req, 'rb')
-caliber_content = caliber_file.read
-
-caliber_content_html = caliber_content.gsub("\n", "&lt;br/&gt;\n")
-
-if $html_mode then
-    caliber_data = Nokogiri::HTML(caliber_content_html, 'UTF-8') do | config |
-        config.strict
-    end
-else
-    caliber_data = Nokogiri::XML(File.open($caliber_file_req), 'UTF-8') do | config |
-        config.strict
-    end
-end
-
 # set preview mode
 if $preview_mode then
     $import_to_rally            = false
@@ -94,25 +72,25 @@ end
 #      name_tag="Operating harvester headREQ20023">
 
 # These are the value tags to look/parse for once on the <Requirement> tag
-$requirement_name               = "name"
-$requirement_hierarchy          = "hierarchy"
-$requirement_id                 = "id"
-$requirement_validation         = "validation"
+$requirement_hierarchy      = "hierarchy"
+$requirement_id             = "id"
+$requirement_name           = "name"
+$requirement_validation     = "validation"
 
 # Tags of interest
-$report_tag                     = "Report"
-$requirement_type_tag           = "ReqType"
-$requirement_tag                = "Requirement"
-$uda_values_tag                 = "UDAValues"
-$uda_value_tag                  = "UDAValue"
+$report_tag                 = "Report"
+$req_type_tag               = "ReqType"
+$req_tag                    = "Requirement"
+$uda_values_tag             = "UDAValues"
+$uda_value_tag              = "UDAValue"
 
 # In HTML mode, the tags are all lowercase so downcase them
 if $html_mode then
-    $report_tag                 = $report_tag.downcase
-    $requirement_type_tag       = $requirement_type_tag.downcase
-    $requirement_tag            = $requirement_tag.downcase
-    $uda_values_tag             = $uda_values_tag.downcase
-    $uda_value_tag              = $uda_value_tag.downcase
+    $report_tag             = $report_tag.downcase
+    $req_type_tag           = $req_type_tag.downcase
+    $req_tag                = $req_tag.downcase
+    $uda_values_tag         = $uda_values_tag.downcase
+    $uda_value_tag          = $uda_value_tag.downcase
 end
 
 # The following are all types of <UDAValue> records on <Requirement>
@@ -140,35 +118,28 @@ end
 # </UDAValues>
 
 # These are the value fields to look/parse for once on the <UDAValues> tag
-$uda_value_name_purpose         = "JDF Purpose [Pu]"
-$uda_value_name_pre_condition   = "JDF Pre-condition [Pr]"
-$uda_value_name_basic_course    = "JDF Basic Course [Ba]"
-$uda_value_name_post_condition  = "JDF Post-condition [Po]"
-$uda_value_name_exceptions      = "JDF Exceptions [Ex]"
-$uda_value_name_remarks         = "JDF Remarks [Re]"
-$uda_value_name_open_issues     = "JDF Open Issues"
-$uda_value_name_input           = "JDF Input [In]"
-$uda_value_name_output          = "JDF Output [Ou]"
+#$uda_value_name_purpose        = "JDF Purpose [So]"        #01
+ $uda_value_name_purpose        = "JDF Purpose [Pu]"        #02
+ $uda_value_name_pre_condition  = "JDF Pre-condition [Pr]"  #03
+ $uda_value_name_basic_course   = "JDF Basic Course [Ba]"   #04
+ $uda_value_name_post_condition = "JDF Post-condition [Po]" #05
+ $uda_value_name_exceptions     = "JDF Exceptions [Ex]"     #06
+ $uda_value_name_input          = "JDF Input [In]"          #07
+ $uda_value_name_output         = "JDF Output [Ou]"         #08
+ $uda_value_name_remarks        = "JDF Remarks [Re]"        #09
+#$uda_value_name_project        = "JDF Project"             #10
+#$uda_value_name_software       = "JDF Software Load"       #11
+#$uda_value_name_content        = "JDF Content Status"      #12
+#$uda_value_name_delivery       = "JDF Delivery Status"     #13
+#$uda_value_name_requirement    = "JDF Requirement Class"   #14
+#$uda_value_name_machine_type   = "JDF Machine Type"        #15
+ $uda_value_name_open_issues    = "JDF Open Issues"         #16
+
+ 
 
 begin
 
 #==================== Connect to Rally and Import Caliber data ====================
-
-    #Setting custom headers
-    $headers                    = RallyAPI::CustomHttpHeader.new()
-    $headers.name               = "Caliber Requirement Importer"
-    $headers.vendor             = "Rally Technical Services"
-    $headers.version            = "0.50"
-
-    config = {  :base_url       => $my_base_url,
-                :username       => $my_username,
-                :password       => $my_password,
-                :workspace      => $my_workspace,
-                :project        => $my_project,
-                :version        => $my_wsapi_version,
-                :headers        => $headers}
-
-    @rally = RallyAPI::RallyRestJson.new(config)
 
     # Instantiate Logger
     log_file = File.open($cal2ral_req_log, "a")
@@ -215,9 +186,49 @@ begin
                 $cal2ral_tc_traces_log           = #{$cal2ral_tc_traces_log}
                 $description_field_hash          = #{$description_field_hash}"
 
+
+    # Set up custom headers for Rally connection
+    $headers                    = RallyAPI::CustomHttpHeader.new()
+    $headers.name               = "Caliber Requirement Importer"
+    $headers.vendor             = "Rally Technical Services"
+    $headers.version            = "0.50"
+
+    config = {  :base_url       => $my_base_url,
+                :username       => $my_username,
+                :password       => $my_password,
+                :workspace      => $my_workspace,
+                :project        => $my_project,
+                :version        => $my_wsapi_version,
+                :headers        => $headers}
+    @logger.info "Initiating connection to Rally at #{$my_base_url}..."
+    @rally = RallyAPI::RallyRestJson.new(config)
+
     # Initialize Caliber Helper
     @caliber_helper = CaliberHelper.new(@rally, $caliber_project, $caliber_id_field_name,
         $description_field_hash, $caliber_image_directory, @logger, nil)
+
+    # HTML Mode vs. XML Mode
+    # The following is needed to preserve newlines in formatting of UDAValues when
+    # Imported into Rally. Caliber export uses newlines in UDAValue attributes as formatting.
+    # When importing straight XML, the newlines are ignored completely
+    # Rally (and Nokogiri, really) needs markup. This step replaces newlines with <br>
+    # And reads the resulting input as HTML rather than XML
+    @logger.info "Opening for reading XML data file #{$caliber_file_req}..."
+    caliber_file = File.open($caliber_file_req, 'rb')
+    caliber_content = caliber_file.read
+
+    caliber_content_html = caliber_content.gsub("\n", "&lt;br/&gt;\n")
+
+    if $html_mode then
+        caliber_data = Nokogiri::HTML(caliber_content_html, 'UTF-8') do | config |
+            config.strict
+        end
+    else
+        caliber_data = Nokogiri::XML(File.open($caliber_file_req), 'UTF-8') do | config |
+            config.strict
+        end
+    end
+
 
     # Output CSV of Requirement data
     @logger.info "CSV file creation of #{$csv_requirements}..."
@@ -242,40 +253,54 @@ begin
 
     # Read through caliber file and store requirement records in array of requirement hashes
     import_count = 0
-    caliber_data.search($report_tag).each do | report |
-        report.search($requirement_type_tag).each do | req_type |
-            req_type.search($requirement_tag).each do | requirement |
+    caliber_data.search($report_tag).each_with_index do | report, indx_report |
+        @logger.info "Processing XML Report tag #{indx_report+1}: project=\"#{report['project']}\" date=\"#{report['date']}\""
+
+        report.search($req_type_tag).each_with_index do | req_type, indx_req_type |
+            @logger.info "    Processing XML ReqType tag #{indx_req_type+1}: name=\"#{req_type['name']}\" sort_by=\"#{req_type['sort_by']}\""
+
+            req_type.search($req_tag).each_with_index do | requirement, indx_req |
+                @logger.info "        Processing XML Requirement tag #{indx_req+1}: index=\"#{requirement['index']}\"\ hierarchy=\"#{requirement['hierarchy']}\" id=\"#{requirement['id']}\" tag=\"#{requirement['tag']}\""
+
 
                 # Data - holds output for CSV
                 requirement_data = []
                 story_oid_data   = []
 
                 # Store fields that derive from Project and Requirement objects
-                this_requirement			= {}
-                this_requirement['project']             = report['project']
-                this_requirement['hierarchy']           = requirement['hierarchy']
-                this_requirement['id']                  = requirement['id']
-                this_requirement['name']                = requirement['name'] || ""
+                this_requirement                    = {}
+                this_requirement['project']         = report['project']
+                this_requirement['hierarchy']       = requirement['hierarchy']
+                this_requirement['id']              = requirement['id']
+                this_requirement['name']            = requirement['name'] || ""
 
                 # process_description_body pulls HTML content out of <html><body> tags
-                this_requirement['description']         = @caliber_helper.process_description_body(requirement['description'] || "")
-                this_requirement['validation']          = requirement['validation'] || ""
+                this_requirement['description']     = @caliber_helper.process_description_body(requirement['description'] || "")
+                this_requirement['validation']      = requirement['validation'] || ""
 
                 # Store Caliber ID, HierarchyID, Project and Name in variables for convenient logging output
-                req_id                                  = this_requirement['id']
-                req_hierarchy                           = this_requirement['hierarchy']
-                req_project                             = this_requirement['project']
-                req_name                                = this_requirement['name']
+                req_id                              = this_requirement['id']
+                req_hierarchy                       = this_requirement['hierarchy']
+                req_project                         = this_requirement['project']
+                req_name                            = this_requirement['name']
 
-                @logger.info "Started Reading Caliber Requirement ID: #{req_id}; Hierarchy: #{req_hierarchy}; Project: #{req_project}"
+                
 
                 # Loop through UDAValue records and cache fields from them
                 # There are many UDAValue records per requirement and each is different
                 # So assign to values of interest via case statement
-                requirement.search($uda_values_tag).each do | uda_values |
-                    uda_values.search($uda_value_tag).each do | uda_value |
+                requirement.search($uda_values_tag).each_with_index do | uda_values, indx_values |
+                    #@logger.info "        Process the #{uda_values.children.count} <UDAValue> tags..."
+                    uda_values.search($uda_value_tag).each_with_index do | uda_value, indx_value |
                         uda_value_name = uda_value['name']
                         uda_value_value = uda_value['value'] || ""
+                        maxdis=70 #maximum display length for value
+                        if uda_value_value.length > maxdis then
+                            cont="...."
+                        else
+                            cont=""
+                        end
+                        uda_stat="used   "
                         case uda_value_name
                             when $uda_value_name_purpose
                                 this_requirement['caliber_purpose']    = uda_value_value
@@ -291,15 +316,19 @@ begin
                                 this_requirement['remarks']            = uda_value_value
                             when $uda_value_name_open_issues
                                 this_requirement['open_issues']        = uda_value_value
-                when $uda_value_name_input
+                            when $uda_value_name_input
                                 this_requirement['input']              = uda_value_value
-                when $uda_value_name_output
+                            when $uda_value_name_output
                                 this_requirement['output']             = uda_value_value
+                            else
+                                uda_stat="ignored"
                         end
+                        #@logger.info "            UDAValue tag #{indx_value+1} of #{uda_values.children.count}: name='#{uda_value_name}', value='#{uda_value_value[0..maxdis]}#{cont}'"
+                        @logger.info "            UDAValue tag #{indx_value+1} of #{uda_values.children.count}: #{uda_stat} name='#{uda_value_name}'"
                     end
                 end
 
-                @logger.info "    Finished Reading Caliber Requirement ID: #{req_id}; Hierarchy: #{req_hierarchy}; Project: #{req_project}"
+                #@logger.info "    Finished Reading Caliber Requirement ID: #{req_id}; Hierarchy: #{req_hierarchy}; Project: #{req_project}"
 
                 # Dummy story used only when testing
                 story = {
@@ -313,11 +342,13 @@ begin
                 # Import to Rally
                 if $import_to_rally then
                     story = @caliber_helper.create_story_from_caliber(this_requirement)
+                    @logger.info "        Created Rally UserStory: FormattedID=#{story.FormattedID}; ObjectID=#{story.ObjectID}; from Caliber Requirement id=#{requirement['id']}"
                 end
 
                 # Save the Story OID and associated it to the Caliber Hierarchy ID for later use
                 # in stitching
                 @rally_story_hierarchy_hash[req_hierarchy] = story
+            
 
                 # Get the Parent hierarchy ID for this Caliber Requirement
                 parent_hierarchy_id = @caliber_helper.get_parent_hierarchy_id(this_requirement)
@@ -343,10 +374,11 @@ begin
                     description_with_images = this_requirement['description']
                     image_file_objects, image_file_ids = @caliber_helper.get_caliber_image_files(description_with_images)
                     caliber_image_data = {
-                        "files"       => image_file_objects,
-                        "ids"         => image_file_ids,
-                        "description" => description_with_images,
-                        "ref"         => story["_ref"]
+                        "files"         => image_file_objects,
+                        "ids"           => image_file_ids,
+                        "description"   => description_with_images,
+                        "fmtid"         => story["FormattedID"],
+                        "ref"           => story["_ref"]
                     }
                     @rally_stories_with_images_hash[story["ObjectID"].to_s] = caliber_image_data
                 end
