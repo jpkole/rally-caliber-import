@@ -213,7 +213,7 @@ class CaliberHelper
             obj_type_prefix = "REQ"
         elsif object_type == :testcase then
             obj_type_prefix = "TC"
-    else
+        else
             obj_type_prefix = "UNKNOWN"
         end
 
@@ -308,8 +308,7 @@ class CaliberHelper
 
         story = {}
         story["Name"]                   = make_name(requirement, :requirement)
-        story["Description"]            = create_markup_from_hash(requirement, @description_field_hash,
-                                            :requirement)
+        story["Description"]            = create_markup_from_hash(requirement, @description_field_hash, :requirement)
         story["Notes"]                  = make_requirement_notes(requirement)
         story[@caliber_id_field_name]   = requirement['id']
         begin

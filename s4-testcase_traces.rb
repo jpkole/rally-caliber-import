@@ -84,6 +84,7 @@ $jdrequest_tag              = "JDrequest"
 
 # This contains the Caliber ID of the testcase to which we want to associate the traces.
 $jdid_tag                   = "JDid"
+$jdname_tag                 = "JDname"
 
 # Traces From/To
 $jdtracefrom_tag            = "JDtracefrom"
@@ -112,10 +113,10 @@ def cache_testcase_oid(header, row)
 end
 
 def cache_story_oid(header, row)
-    req_name                = row[header[0]].strip
+    story_fid               = row[header[0]].strip
     story_oid               = row[header[1]].strip
-    story_fid               = row[header[2]].strip
-    req_id                  = row[header[3]].strip
+    req_id                  = row[header[2]].strip
+    req_name                = row[header[3]].strip
 
     if !req_id.eql? nil then
         @story_oid_by_reqid[req_id] = story_oid.to_s
@@ -159,7 +160,6 @@ def create_traces_markup_from_traces_array(traces_array) #{
 
         if !is_requirement.nil? then
             story_oid = @story_oid_by_reqid[this_traceid]
-
             if story_oid.nil? then
                 @logger.warn "No Rally Story ObjectID found for Caliber Requirement ID: #{this_traceid} - skipping linkage of this Trace."
                 this_trace = @req_name_by_reqid[this_traceid] || this_traceid
@@ -326,73 +326,77 @@ begin
                 this_testcase_id = jd_id.text
             end
 
+            this_testcase_name = ""
+            jd_request.search($jdname_tag).each do | jd_name |
+                this_testcase_name = jd_name.text
+            end
+
             traces_array = []
-            ##### #####
-            # Find all <JDtraceto>'s
+
             jd_request.search($jdtraceto_tag).each_with_index do | jd_traceto, indx_traceto |
-                @logger.info "        Processing #{$jdtraceto_tag} tag #{indx_traceto+1}..."
+                @logger.info "        Searching #{$jdtraceto_tag} tag #{indx_traceto+1}..."
     
-                jd_traceto.search($jdtrace_tag).each_with_index do | jd_trace, indx_trace |
-                    @logger.info "            Processing #{$jdtrace_tag} tag #{indx_trace+1}..."
-
-                        this_traceid    = jd_trace.search($jdtraceid_tag).first.text
-                        this_tracename  = jd_trace.search($jdtracename_tag).first.text
-    
-                        is_testcase_or_requirement = this_traceid.match(/^(TC|REQ)/)
-    
-                        if !is_testcase_or_requirement.nil? then
-                            traces_array.push(this_traceid)
-                        else
-                            @logger.info "ERROR: Trace was neither for TC or REQ..."
-                        end
-                    end
-                end
-
                 ##### #####
-                # Find all <JDtracefrom>'s
-                jd_request.search($jdtracefrom_tag).each_with_index do | jd_tracefrom, indx_tracefrom |
-                    @logger.info "        Processing #{$jdtracefrom_tag} tag #{indx_tracefrom+1}..."
-    
-                    jd_tracefrom.search($jdtrace_tag).each_with_index do | jd_trace, indx_trace |
-                        @logger.info "            Processing #{$jdtrace_tag} tag #{indx_trace+1}..."
+                # Find all <JDtraceto>'s
+                jd_traceto.search($jdtrace_tag).each_with_index do | jd_trace, indx_trace |                 
 
-                        this_traceid    = jd_trace.search($jdtraceid_tag).first.text
-                        this_tracename  = jd_trace.search($jdtracename_tag).first.text
-    
-                        is_testcase_or_requirement = this_traceid.match(/^(TC|REQ)/)
+                    this_traceid    = jd_trace.search($jdtraceid_tag).first.text
+                    this_tracename  = jd_trace.search($jdtracename_tag).first.text
 
-                        if !is_testcase_or_requirement.nil? then
-                            traces_array.push(this_traceid)
-                        else
-                            @logger.info "ERROR: Trace was neither for TC or REQ..."
-                        end
-                    end
-                end
+                    @logger.info "            Found #{$jdtrace_tag} tag #{indx_trace+1}; JDid=#{this_traceid}; JDname='#{this_tracename}'"
 
-                ##### #####
-                # Create traces text for import to rally
-                if traces_array.length > 0 then
-                    traces_text = create_traces_markup_from_traces_array(traces_array)
-                end
+                    is_testcase_or_requirement = this_traceid.match(/^(TC|REQ)/)
     
-                if $preview_mode then
-                    @logger.info "Rally TestCase needs updated with #{traces_array.length} Caliber Traces from TestCase: #{this_testcase_id}"
-                else
-                    debugger if @jpwantsdebugger
-                    testcase_oid = @testcase_oid_by_caliber_testcase_id[this_testcase_id]
-                    if !testcase_oid.nil?
-                        update_testcase_with_caliber_traces(testcase_oid, this_testcase_id, traces_text)
+                    if !is_testcase_or_requirement.nil? then
+                        traces_array.push(this_traceid)
                     else
-                        @logger.error "Rally TestCase with OID: #{testcase_oid} not found for importing traces."
+                        @logger.info "ERROR: Trace was neither for TC or REQ..."
                     end
                 end
-    
-                # Circuit-breaker for testing purposes
-                if import_count < $max_import_count then
-                    import_count += 1
-                else
-                    break
+            end
+
+            ##### #####
+            # Find all <JDtracefrom>'s
+            jd_request.search($jdtracefrom_tag).each_with_index do | jd_tracefrom, indx_tracefrom |
+                @logger.info "        Searching #{$jdtracefrom_tag} tag #{indx_tracefrom+1}..."
+
+                jd_tracefrom.search($jdtrace_tag).each_with_index do | jd_trace, indx_trace |
+                    this_traceid    = jd_trace.search($jdtraceid_tag).first.text
+                    this_tracename  = jd_trace.search($jdtracename_tag).first.text
+                    @logger.info "            Found #{$jdtrace_tag} tag #{indx_trace+1}; JDid=#{this_traceid}; JDname='#{this_tracename}'"
+
+                    is_testcase_or_requirement = this_traceid.match(/^(TC|REQ)/)
+                    if !is_testcase_or_requirement.nil? then
+                        traces_array.push(this_traceid)
+                    else
+                        @logger.info "ERROR: Trace was neither for TC or REQ..."
+                    end
                 end
+            end
+
+            ##### #####
+            # Create traces text for import to rally
+            if traces_array.length > 0 then
+                traces_text = create_traces_markup_from_traces_array(traces_array)
+            end
+
+            if $preview_mode then
+                @logger.info "Rally TestCase needs updated with #{traces_array.length} Caliber Traces from TestCase: #{this_testcase_id}"
+            else
+                testcase_oid = @testcase_oid_by_caliber_testcase_id[this_testcase_id]
+                if !testcase_oid.nil?
+                    update_testcase_with_caliber_traces(testcase_oid, this_testcase_id, traces_text)
+                else
+                    @logger.error "Rally TestCase OID for Caliber ID=#{this_testcase_id} not found for importing traces."
+                end
+            end
+
+            # Circuit-breaker for testing purposes
+            if import_count < $max_import_count then
+                import_count += 1
+            else
+                break
+            end
         end
     end
 

@@ -288,7 +288,6 @@ begin
                 req_project                         = this_requirement['project']
                 req_name                            = this_requirement['name']
 
-                
 
                 # Loop through UDAValue records and cache fields from them
                 # There are many UDAValue records per requirement and each is different
@@ -398,10 +397,11 @@ begin
 
                 # Output story OID and Caliber requirement name
                 # So we can use this information later when importing traces
-                story_oid_data << req_name
-                story_oid_data << story["ObjectID"]
                 story_oid_data << story["FormattedID"]
+                story_oid_data << story["ObjectID"]
                 story_oid_data << req_id
+                story_oid_data << req_name
+
                 # Post-pend to CSV
                 story_oid_csv  << CSV::Row.new($csv_story_oids_by_req_fields, story_oid_data)
 

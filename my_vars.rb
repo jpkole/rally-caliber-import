@@ -11,7 +11,7 @@ $my_username                     = "paul@acme.com"
 $my_password                     = "RallyON!"
 $my_wsapi_version                = "1.43"
 $my_workspace                    = "Integrations"
-$my_project                      = "JPKole_JDF_Hera-08"
+$my_project                      = "JPKole_JDF_Hera-10"
 
 $max_attachment_length           = 5000000
 
@@ -33,13 +33,13 @@ $caliber_file_tc_traces         = "../from-ftp-site/fetch1/heraTC_and_REQ/heratr
 $caliber_image_directory        = "../from-ftp-site/fetch1/ImageCache"
 
 # Custom fields in Rally: on User Story
-$caliber_id_field_name          = "CaliberID"          # US - type String
-$caliber_req_traces_field_name  = "Externalreference"  # US - type Text
+$caliber_id_field_name          = "CaliberID"           # US - type String
+$caliber_req_traces_field_name  = "External reference"   # US - type Text
 
 # Custom fields in Rally: on TestCase
-$caliber_id_field_name          = "CaliberID"          # TC - type String
-$caliber_weblink_field_name     = "CaliberTCParent"    # TC - type Weblink
-$caliber_tc_traces_field_name   = "Externalreference"  # TC - type Text
+$caliber_id_field_name          = "CaliberID"           # TC - type String
+$caliber_weblink_field_name     = "CaliberTCParent"     # TC - type Weblink
+$caliber_tc_traces_field_name   = "External reference"   # TC - type Text
 
 $max_import_count               = 50000
 
@@ -56,7 +56,7 @@ $csv_requirement_fields         =  %w{id hierarchy name project description vali
 
 # CSV file & fields to allow lookup of Story OID by Caliber Requirement Name (needed for traces import).
 $csv_story_oids_by_req          = "s1-story_oids_by_reqname.csv"
-$csv_story_oids_by_req_fields   =  %w{reqname ObjectID FormattedID CaliberID}
+$csv_story_oids_by_req_fields   =  %w{FmtID  ObjectID  CaliberID  reqname}
 
 # CSV file & fields to allow lookup of ...
 $csv_testcases                  = "s3-testcases.csv"
