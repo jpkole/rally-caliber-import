@@ -99,6 +99,10 @@ def cache_story_oid(header, row)
 
     @story_oid_by_reqid[caliber_id] = story_oid.to_s
 
+    if !req_name.eql? nil then
+        @req_name_by_reqid[caliber_id] = req_name
+    end
+
 end
 
 def create_traces_text_from_traces_array(traces_array)
@@ -123,12 +127,76 @@ def create_traces_text_from_traces_array(traces_array)
     return traces_markup
 end
 
+
+def create_traces_markup_from_traces_array(traces_array) #{
+
+    rally_host = $my_base_url.split("/")[-2]
+    story_detail_url_prefix    = "https://#{rally_host}/#/detail/userstory"
+    testcase_detail_url_prefix = "https://#{rally_host}/#/detail/testcase"
+    traces_markup = '<p><b>Caliber TRACES</b></p><br/>'
+    trace_counter = 1
+
+    traces_array.each do | this_traceid |
+
+        is_testcase = this_traceid.match(/^TC/)
+        is_requirement = this_traceid.match(/^REQ/)
+
+        if !is_testcase.nil? then
+            testcase_oid = @testcase_oid_by_caliber_testcase_id[this_traceid]
+
+            if testcase_oid.nil? then
+                @logger.warn "No Rally TestCase ObjectID found for Caliber TestCase ID: #{this_traceid} - skipping linkage of this Trace."
+                this_trace = @testcase_name_by_caliber_testcase_id[this_traceid] || this_traceid
+            else
+                @logger.info "    Rally TestCase ObjectID: #{testcase_oid} found for Caliber TestCase ID: #{this_traceid} - linking Trace to TestCase: #{testcase_oid}"
+                this_trace_name = @testcase_name_by_caliber_testcase_id[testcase_oid] || this_traceid
+
+                detail_url = "#{testcase_detail_url_prefix}/#{testcase_oid}"
+                this_trace = "<a href=\"#{detail_url}\">#{this_trace_name}</a>"
+            end
+            traces_markup += trace_counter.to_s + ". "
+            traces_markup += this_trace
+            traces_markup += '<br/>'
+            trace_counter += 1
+        end
+
+        if !is_requirement.nil? then
+            story_oid = @story_oid_by_reqid[this_traceid.sub("REQ", "")]
+
+            if story_oid.nil? then
+                @logger.warn "No Rally Story ObjectID found for Caliber Requirement ID: #{this_traceid} - skipping linkage of this Trace."
+                this_trace = @req_name_by_reqid[this_traceid] || this_traceid
+            else
+                #@logger.info "        Rally Story ObjectID: #{story_oid} found for Caliber Requirement ID: #{this_traceid} - linking Trace to Story: #{story_oid}"
+                @logger.info "        Linking Trace JDid=#{this_traceid} to Rally UserStory ObjectID: #{story_oid}"
+                this_trace_name = @req_name_by_reqid[this_traceid.sub("REQ", "")] || this_traceid
+
+                detail_url = "#{story_detail_url_prefix}/#{story_oid}"
+                this_trace = "<a href=\"#{detail_url}\">#{this_traceid}  #{this_trace_name}</a>"
+            end
+            traces_markup += trace_counter.to_s + ". "
+            traces_markup += this_trace
+            traces_markup += '<br/>'
+            trace_counter += 1
+        end
+    end
+    return traces_markup
+end #} end of "def create_traces_markup_from_traces_array(traces_array)"
+
+
 # Take Caliber traces array, process and combine field data and import into corresponding Rally Story
 def update_story_with_caliber_traces(story_oid, req_name, traces_text)
 
     #@logger.info "    Updating Rally Story ObjectID: #{story_oid} with Caliber Traces from Requirement: #{req_name}"
     update_fields                                 = {}
     update_fields[$caliber_req_traces_field_name] = traces_text
+    
+    #if traces_text.nil? then
+    #    @logger.info "DEBUG: trace_text is empty"
+    #else
+    #    @logger.info "DEBUG: Updating trace_text, length=#{traces_text.length}"
+    #end
+
     begin
         @rally.update("hierarchicalrequirement", story_oid, update_fields)
         #@logger.info "    Successfully Imported Caliber Traces for Rally Story: ObjectID #{story_oid}."
@@ -214,6 +282,7 @@ begin
     # Hash to provide a lookup from Caliber reqname -> Rally Story OID
     @story_oid_by_reqname = {}
     @story_oid_by_reqid = {}
+    @req_name_by_reqid = {}
 
     # Read in cached reqname -> Story OID mapping from file
     @logger.info "CSV file reading/caching requirement-name --> Story-OID mapping from #{$csv_story_oids_by_req}..."
@@ -251,145 +320,80 @@ begin
 
             story_oid       = @story_oid_by_reqname[this_req_name][0]    # Rally ObjectID
             story_fid       = @story_oid_by_reqname[this_req_name][1]    # Rally FormattedID
-            caliber_id      = @story_oid_by_reqname[this_req_name][2]    # Caliber ID
+            #caliber_id      = @story_oid_by_reqname[this_req_name][2]    # Caliber ID
 
             if story_oid.nil? then
-                @logger.warn "    Can't find Rally UserStory; FormattedID=#{story_fid}; ObjectID=#{story_oid}; for CaliberID=#{caliber_id}; JDid=#{this_req_id}. Skipping import of this trace."
+                @logger.warn "        Can't find Rally UserStory; FormattedID=#{story_fid}; ObjectID=#{story_oid}; for JDid=#{this_req_id}. Skipping import of this trace."
                 next
             else
-                @logger.info "    From hash, found Rally UserStory; FormattedID=#{story_fid}; ObjectID=#{story_oid}; for CaliberID=#{caliber_id}; JDid=#{this_req_id}"
+                @logger.info "        JDrequest JDid=#{this_req_id}; JDname='#{this_req_name}'; hashed Rally UserStory: FormattedID=#{story_fid}; ObjectID=#{story_oid}"
             end
 
             traces_array = []
 
+            ##### #####
+            # Find all <JDtraceto>'s    
             jd_request.search($jdtraceto_tag).each_with_index do | jd_traceto, indx_traceto |
                 @logger.info "        Searching #{$jdtraceto_tag} tag #{indx_traceto+1}..."
 
-                ##### #####
-                # Find all <JDtraceto>'s    
                 jd_traceto.search($jdtrace_tag).each_with_index do | jd_trace, indx_trace |
 
-                        this_traceid    = jd_trace.search($jdtraceid_tag).first.text
-                        this_tracename  = jd_trace.search($jdtracename_tag).first.text
+                    this_traceid    = jd_trace.search($jdtraceid_tag).first.text
+                    this_tracename  = jd_trace.search($jdtracename_tag).first.text
 
-                        @logger.info "            Found #{$jdtrace_tag} tag #{indx_trace+1}; JDid=#{this_traceid}; JDname='#{this_tracename}'"
+                    @logger.info "            Found #{$jdtrace_tag} tag #{indx_trace+1}; JDid=#{this_traceid}; JDname='#{this_tracename}'"
 
-                        is_requirement = this_traceid.match(/^REQ/)
-                        if !is_requirement.nil? then
-                            traces_array.push(this_traceid)
-                        else
-                            @logger.info "ERROR: TraceTo was not a REQ..."
-                        end
+                    is_requirement = this_traceid.match(/^REQ/)
+                    if !is_requirement.nil? then
+                        traces_array.push(this_traceid)
+                    else
+                        @logger.info "ERROR: TraceTo was not a REQ..."
                     end
                 end
-
-                ##### #####
-                # Find all <JDtracefrom>'s
-                jd_request.search($jdtracefrom_tag).each_with_index do | jd_tracefrom, indx_tracefrom |
-                    @logger.info "        Searching #{$jdtracefrom_tag} tag #{indx_tracefrom+1}..."
-    
-                    jd_tracefrom.search($jdtrace_tag).each_with_index do | jd_trace, indx_trace |
-
-                        this_traceid    = jd_trace.search($jdtraceid_tag).first.text
-                        this_tracename  = jd_trace.search($jdtracename_tag).first.text
-
-                        @logger.info "            Found #{$jdtrace_tag} tag #{indx_trace+1}; JDid=#{this_traceid}; JDname='#{this_tracename}'"
-    
-                        is_requirement = this_traceid.match(/^REQ/)
-                        if !is_requirement.nil? then
-                            traces_array.push(this_traceid)
-                        else
-                            @logger.info "ERROR: TraceFrom was not a REQ..."
-                        end
-                    end
-                end
-
-                ##### #####
-                # Create traces text for import to rally
-                if traces_array.length > 0 then
-                    traces_text = create_traces_text_from_traces_array(traces_array)
-                end
-    
-                if $preview_mode then
-                    @logger.info "    Rally Story ObjectID: #{this_req_id} needs updated with #{traces_array.length} Caliber Traces from Requirement: #{this_req_name}"
-                else
-                    update_story_with_caliber_traces(story_oid, this_req_name, traces_text)
-                    #@logger.info "    Updating Rally Story ObjectID: #{this_req_id} with Caliber Traces from Requirement: #{this_req_name}"
-                    @logger.info "    Successfully Imported Caliber Traces for Rally UserStory."
-                end
-
-                # Circuit-breaker for testing purposes
-                if import_count < $max_import_count then
-                    import_count += 1
-                else
-                    break
-                end
-
             end
-        end
 
-debugger
-######################################################################################################
-    JDrequests = caliber_data.xpath("JDrequestTraces/JDrequest")
-    JDrequests.each_with_index do |r, indx_r|
-        trace_JDid   = r.at_xpath('JDid').text
-        trace_JDname = r.at_xpath('JDname').text
-        @logger.info "Processing Trace #{indx_r+1}; JDid=#{trace_JDid}; JDname='#{trace_JDname}'"
-    
-        traces_array     = []
+            ##### #####
+            # Find all <JDtracefrom>'s
+            jd_request.search($jdtracefrom_tag).each_with_index do | jd_tracefrom, indx_tracefrom |
+                @logger.info "        Searching #{$jdtracefrom_tag} tag #{indx_tracefrom+1}..."
 
-        # Get all <JDtraceto>'s
-        JDtracetos = r.xpath("JDtraceto")
+                jd_tracefrom.search($jdtrace_tag).each_with_index do | jd_trace, indx_trace |
 
-        # Step thru each JDtraceto
-        JDtracetos.each_with_index do | jd_traceto, indx_traceto |
-            @logger.info "    Processing #{$jdtraceto_tag} tag #{indx_traceto+1}..."
-debugger
-            is_requirement = this_traceid.match(/^REQ/)
-            if is_requirement then
-                traces_array.push(trace_JDid)
+                    this_traceid    = jd_trace.search($jdtraceid_tag).first.text
+                    this_tracename  = jd_trace.search($jdtracename_tag).first.text
+
+                    @logger.info "            Found #{$jdtrace_tag} tag #{indx_trace+1}; JDid=#{this_traceid}; JDname='#{this_tracename}'"
+
+                    is_requirement = this_traceid.match(/^REQ/)
+                    if !is_requirement.nil? then
+                        traces_array.push(this_traceid)
+                    else
+                        @logger.info "ERROR: TraceFrom was not a REQ..."
+                    end
+                end
+            end
+
+            ##### #####
+            # Create traces text for import to rally
+            if traces_array.length > 0 then
+                #traces_text = create_traces_text_from_traces_array(traces_array)
+                traces_text = create_traces_markup_from_traces_array(traces_array)
+            end
+
+            if $preview_mode then
+                @logger.info "    Rally Story ObjectID: #{this_req_id} needs updated with #{traces_array.length} Caliber Traces from Requirement: #{this_req_name}"
             else
-                @logger.info "ERROR: Trace was not for REQ..."
+                update_story_with_caliber_traces(story_oid, this_req_name, traces_text)
+                @logger.info "        Updating Rally Story ObjectID: #{story_oid} with Caliber Traces from Requirement: #{this_req_name}"
+                #@logger.info "    Successfully Imported Caliber Traces for Rally UserStory."
             end
-        end
 
-        story_oid       = @story_oid_by_reqname[trace_JDname][0]    # Rally ObjectID
-        story_fid       = @story_oid_by_reqname[trace_JDname][1]    # Rally FormattedID
-        caliber_id      = @story_oid_by_reqname[trace_JDname][2]    # Caliber ID
-
-        if story_oid.nil? then
-            @logger.warn "    Can't find Rally UserStory; FormattedID=#{story_fid}; ObjectID=#{story_oid}. Skipping import of this trace."
-            next
-        else
-            @logger.info "    Found Rally UserStory; FormattedID=#{story_fid}; ObjectID=#{story_oid}"
-        end
-
-        #traceability.search($trace_tag).each do | this_trace |
-        #    trace_name                             = this_trace['name']
-        #    if !trace_name.eql?("") then
-        #        trace_array.push(trace_name)
-        #    end
-        #end
-        if !trace_JDname.eql?("") then
-            traces_array.push(trace_JDname)
-        end
-
-        # Create traces text for import to rally
-        traces_text = create_traces_text_from_traces_array(traces_array)
-
-        if $preview_mode then
-            @logger.info "    Rally Story ObjectID: #{story_oid} needs updated with #{traces_array.length} Caliber Traces from Requirement: #{trace_JDname}"
-        else
-            update_story_with_caliber_traces(story_oid, trace_JDname, traces_text)
-            #@logger.info "    Updating Rally Story ObjectID: #{story_oid} with Caliber Traces from Requirement: #{req_name}"
-            @logger.info "    Successfully Imported Caliber Traces for Rally UserStory."
-        end
-
-        # Circuit-breaker for testing purposes
-        if import_count < $max_import_count then
-            import_count += 1
-        else
-            break
+            # Circuit-breaker for testing purposes
+            if import_count < $max_import_count then
+                import_count += 1
+            else
+                break
+            end
         end
     end
     

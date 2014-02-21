@@ -60,10 +60,10 @@ s05. Pre-Import procedure:
 	   Workspace where it will be seen by all Porjects) to match the
 	   my_vars.rb settings (see next step):
 	    	On UserStories:
-			$caliber_id_field_name (External reference) - type string
+			$caliber_id_field_name (External reference) - type text
 			$caliber_req_traces_field_name (CaliberID) - type string
 		On TestCases:
-			$caliber_id_field_name (External reference) - type string
+			$caliber_id_field_name (External reference) - type text
 			$caliber_weblink_field_name (CaliberTCParent) - type Weblink,
 				https://audemo.rallydev.com/#/detail/testcase/${id}
 			$caliber_tc_traces_field_name (CaliberID) - type string

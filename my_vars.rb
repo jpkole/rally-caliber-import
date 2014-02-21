@@ -11,7 +11,7 @@ $my_username                     = "paul@acme.com"
 $my_password                     = "RallyON!"
 $my_wsapi_version                = "1.43"
 $my_workspace                    = "Integrations"
-$my_project                      = "JPKole_JDF_Hera-10"
+$my_project                      = "JPKole_JDF_Tnavi-3"
 
 $max_attachment_length           = 5000000
 
@@ -32,16 +32,22 @@ $caliber_file_tc                = "../from-ftp-site/fetch1/heraTC_and_REQ/heraTC
 $caliber_file_tc_traces         = "../from-ftp-site/fetch1/heraTC_and_REQ/heratrace.xml"        # 04-Testcases-Traces
 $caliber_image_directory        = "../from-ftp-site/fetch1/ImageCache"
 
+$caliber_file_req               = "../from-ftp-site/fetch2/tnavi2014.xml"                       # 01-Requirements
+$caliber_file_req_traces        = "../from-ftp-site/fetch2/TNavitrace.xml"                      # 02-Requirement-Traces
+$caliber_file_tc                = ""                                                            # 03-Testcases
+$caliber_file_tc_traces         = ""                                                            # 04-Testcases-Traces
+$caliber_image_directory        = "../from-ftp-site/fetch2/ImageCache"
+
 # Custom fields in Rally: on User Story
 $caliber_id_field_name          = "CaliberID"           # US - type String
-$caliber_req_traces_field_name  = "External reference"   # US - type Text
+$caliber_req_traces_field_name  = "Externalreference"   # US - type Text
 
 # Custom fields in Rally: on TestCase
 $caliber_id_field_name          = "CaliberID"           # TC - type String
 $caliber_weblink_field_name     = "CaliberTCParent"     # TC - type Weblink
-$caliber_tc_traces_field_name   = "External reference"   # TC - type Text
+$caliber_tc_traces_field_name   = "Externalreference"   # TC - type Text
 
-$max_import_count               = 50000
+$max_import_count               = 5000
 
 # Runtime preferences
 $html_mode                      = true
