@@ -96,7 +96,6 @@ end
 
 # The following are all types of <UDAValue> records on <Requirement>
 # Example:
-
 # <UDAValue id="4241" req_id="20023" name="JDF Purpose [Pu]" value="This is not a requirement but a chapter title."/>
 # <UDAValue id="4242" req_id="20023" name="JDF Basic Course [Ba]" value="Operating harvester head involves
 # - closing harvester head
@@ -293,7 +292,7 @@ begin
                 # There are many UDAValue records per requirement and each is different
                 # So assign to values of interest via case statement
                 requirement.search($uda_values_tag).each_with_index do | uda_values, indx_values |
-                    #@logger.info "        Process the #{uda_values.children.count} <UDAValue> tags..."
+
                     uda_values.search($uda_value_tag).each_with_index do | uda_value, indx_value |
                         uda_value_name = uda_value['name']
                         uda_value_value = uda_value['value'] || ""
@@ -326,12 +325,9 @@ begin
                             else
                                 uda_stat="ignored"
                         end
-                        #@logger.info "            UDAValue tag #{indx_value+1} of #{uda_values.children.count}: name='#{uda_value_name}', value='#{uda_value_value[0..maxdis]}#{cont}'"
                         @logger.info "            UDAValue tag #{indx_value+1} of #{uda_values.children.count}: #{uda_stat} name='#{uda_value_name}'"
                     end
                 end
-
-                #@logger.info "    Finished Reading Caliber Requirement ID: #{req_id}; Hierarchy: #{req_hierarchy}; Project: #{req_project}"
 
                 # Dummy story used only when testing
                 story = {
@@ -348,14 +344,12 @@ begin
                     @logger.info "        Created Rally UserStory: FormattedID=#{story.FormattedID}; ObjectID=#{story.ObjectID}; from Caliber Requirement id=#{requirement['id']}"
                 end
 
-                # Save the Story OID and associated it to the Caliber Hierarchy ID for later use
-                # in stitching
+                # Save the Story OID and associated it to the Caliber Hierarchy ID for later use in stitching
                 @rally_story_hierarchy_hash[req_hierarchy] = story
             
 
                 # Get the Parent hierarchy ID for this Caliber Requirement
                 parent_hierarchy_id = @caliber_helper.get_parent_hierarchy_id(this_requirement)
-                #@logger.info "    Parent Hierarchy ID: #{parent_hierarchy_id}"
 
                 # Store the requirements Parent Hierarchy ID for use in stitching
                 @caliber_parent_hash[req_hierarchy] = parent_hierarchy_id

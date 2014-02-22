@@ -19,6 +19,7 @@ class CaliberHelper
         @jdf_zeus_control_project        = "JDF-Zeus_Control-project"
     end
 
+
     # Simple lookup for mimetypes by file extension
     def get_mimetype_from_extension(file_ext)
         valid_mime_types = {
@@ -38,6 +39,7 @@ class CaliberHelper
         end
     end
 
+
     # turns 0E2050EC-A2BD-4432-92A3-5B74027FC4AE.JPG (caliber name) into:
     # img961.jpg, image/jpg
     # (img961 is the ID in the Caliber XML)
@@ -50,6 +52,7 @@ class CaliberHelper
         return image_filename, attachment_mimetype
     end
 
+
     # Takes a Rally attachment object and filename string and returns a
     # relative URL to the attachment in Rally of the form:
     # /slm/attachment/12345678910/file.jpg
@@ -58,10 +61,10 @@ class CaliberHelper
         return "/slm/attachment/#{attachment_oid}/#{filename}"
     end
 
+
     # Creates an image (png, gif, jpg, bmp) image in rally
     # and returns the Rally attachment object
     def create_image_attachment(attachment_data_hash)
-
         # Base64-encoded string of image bytes for upload to Rally
         attachment_content_string = Base64.encode64(attachment_data_hash[:bytes])
 
@@ -82,11 +85,11 @@ class CaliberHelper
         return attachment
     end
 
+
     # Loops through Description on Rally Story and replaces embedded <img src="file:\\\blah\blah1\blah2.jpg"
     # References with <img src="/slm/attachment/12345678910/blah2.jpg" type of references once we've imported
     # the embedded images to Rally as attachments
     def fix_description_images(artifact_fmtid, artifact_ref, artifact_description, rally_attachment_sources)
-
         index = 0
         description_doc = Nokogiri::HTML(artifact_description)
         description_doc.css('img').each do | img |
@@ -104,8 +107,8 @@ class CaliberHelper
         update_fields["Description"] = new_description
         updated_artifact = @rally.update(artifact_type, artifact_oid, update_fields)
         @logger.info "        Updated Rally Artifact; FormattedID=#{artifact_fmtid}; ObjectID=#{artifact_oid} with embedded images."
-
     end
+
 
     # Post-import image import service
     # Loops through hash of image data hashes keyed by Rally Artifact OID
@@ -114,7 +117,6 @@ class CaliberHelper
     # - Stitches Rally's image URL back into Rally Artifact description <img src="" tags
     #   to effect "in-lining" of the images in the Rally Artifact description
     def import_images(artifacts_with_images_hash) #{
-
         if artifacts_with_images_hash.count > 0 then
             @logger.info "Starting post-service to import Caliber images for requirements that have embedded images."
         else
@@ -183,11 +185,11 @@ class CaliberHelper
         @logger.info "End of post-service to import Caliber images for requirements that have embedded images."
     end #} end of "def import_images(artifacts_with_images_hash)"
 
+
     # Caliber hierarchy id's look like: 1.1.1, as an example
     # The parent requirement of 1.1.1 would be 1.1
     # This function returns the value "1.1" as the parent of "1.1.1"
     def get_parent_hierarchy_id(requirement)
-
         hierarchy_id = requirement['hierarchy']
         hierarchy_id_split = hierarchy_id.split('.')
         hierarchy_depth = hierarchy_id_split.length
@@ -198,14 +200,13 @@ class CaliberHelper
         else
             parent_id_string = @no_parent_id
         end
-        #@logger.info "    hierarchy_id: #{hierarchy_id} has parent_id: #{parent_id_string}"
         return parent_id_string
     end
+
 
     # Combines Caliber name, Caliber hiearachy id (1.1.1), and Caliber id (1234)
     # fields, into a single string for Rally Story name
     def make_name(caliber_object, object_type)
-
         hierarchy               = caliber_object['hierarchy']
         obj_id                  = caliber_object['id']
         name                    = caliber_object['name']
@@ -220,10 +221,12 @@ class CaliberHelper
         return "<b>Caliber</b> #{hierarchy} #{obj_type_prefix} #{obj_id}: #{name}"
     end
 
+
     # A Bolded Caliber field header for inclusion into Rally Description markup
     def make_header(field_string)
         return "<p><b>#{field_string}</b></p>"
     end
+
 
     # Prepares arrays of File references and Caliber image id attributes from Caliber Description markup
     def get_caliber_image_files(caliber_description)
@@ -248,6 +251,7 @@ class CaliberHelper
         return caliber_image_files, caliber_image_ids
     end
 
+
     # Parses through caliber description markup and looks for
     # <img> tags
     def count_images_in_caliber_description(caliber_description)
@@ -261,10 +265,10 @@ class CaliberHelper
         return image_count
     end
 
+
     # Loop through the Caliber fields we wish to mash up into a Rally Description
     # and combine them as needed into Rally description markup
     def create_markup_from_hash(caliber_object, markup_hash, obj_type)
-
         project = caliber_object['project']
         if project == @jdf_zeus_control_project && obj_type == :testcase then
             @description_field_hash['Caliber Validation'] = 'caliber_validation'
@@ -288,6 +292,7 @@ class CaliberHelper
         return artifact_markup
     end
 
+
     # Mash Caliber Open Issues data into a notes field for Rally Story
     def make_requirement_notes(requirement)
         notes = make_header('Caliber Open Issues')
@@ -296,15 +301,13 @@ class CaliberHelper
         end
     end
 
+
     # Take Caliber Requirement hash, process and combine field data and create a story in Rally
     def create_story_from_caliber(requirement)
-
         req_id          = requirement['id']
         req_hierarchy   = requirement['hierarchy']
         req_project     = requirement['project']
         req_description = requirement['description']
-
-        #@logger.info "    Processing Caliber Requirement ID: #{req_id}; Hierarchy: #{req_hierarchy}; Project: #{req_project}"
 
         story = {}
         story["Name"]                   = make_name(requirement, :requirement)
@@ -316,7 +319,6 @@ class CaliberHelper
             story.read
             story_oid = story['ObjectID']
             story_fid = story['FormattedID']
-            #@logger.info "    Successfully Created Rally Story: #{story_fid}; OID: #{story_oid}; from CaliberID: #{req_id}"
             return story
         rescue => ex
             @logger.error "Error occurred creating Rally Story from Caliber Requirement ID: #{req_id}. Not imported."
@@ -324,6 +326,7 @@ class CaliberHelper
             @logger.error ex.backtrace
         end
     end
+
 
     # Take Caliber TestCase hash, process and combine field data and create a TestCase in Rally
     def create_testcase_from_caliber(testcase)
@@ -342,12 +345,8 @@ class CaliberHelper
 
         testcase_fields = {}
         testcase_fields["Name"]                   = make_name(testcase, :testcase)
-        testcase_fields["Description"]            = create_markup_from_hash(testcase, @description_field_hash,
-                                                    :testcase)
-
-
-        testcase_fields["PreConditions"]          = create_markup_from_hash(testcase, preconditions_field_hash,
-                                                    :testcase)
+        testcase_fields["Description"]            = create_markup_from_hash(testcase, @description_field_hash, :testcase)
+        testcase_fields["PreConditions"]          = create_markup_from_hash(testcase, preconditions_field_hash, :testcase)
         testcase_fields[@caliber_id_field_name]   = testcase_id
 
         # Rally requires the following fields for TestCase
@@ -358,7 +357,6 @@ class CaliberHelper
             testcase = @rally.create("testcase", testcase_fields)
             testcase.read
             testcase_oid = testcase['ObjectID']
-            #@logger.info "    Successfully Created Rally TestCase: ObjectID #{testcase_oid}; from CaliberID: #{testcase_id}"
             return testcase
         rescue => ex
             @logger.error "Error occurred creating Rally TestCase from Caliber TestCase ID: #{testcase_id}. Not imported."
@@ -366,6 +364,7 @@ class CaliberHelper
             @logger.error ex.backtrace
         end
     end
+
 
     # Pulls HTML content out of <html><body> tags
     def process_description_body(description)
@@ -381,6 +380,7 @@ class CaliberHelper
         end
         return body_content
     end
+
 
     # Post-import service to stitch up Story Hierarchy in Rally based on hash of Parent Rally Stories
     # by Caliber Hierarchy ID that we created during initial import
@@ -403,7 +403,6 @@ class CaliberHelper
                 update_fields["Parent"] = parent_story._ref
                 begin
                     @rally.update("hierarchicalrequirement", child_story_oid, update_fields)
-                    #@logger.info "    Successfully Parented Rally UserStory: FormattedID=#{child_story_fid}; ObjectID=#{child_story_oid}; to Rally UserStory: FormattedID=#{parent_story_fid}; OjectID=#{parent_story_oid}"
                 rescue => ex
                     @logger.error "Error occurred attempting to Parent Rally Story: ObjectID #{child_story_oid}; to Story: #{parent_story_oid}"
                     @logger.error ex.message
@@ -413,6 +412,7 @@ class CaliberHelper
         end
         @logger.info "End of post-service to parent Rally User Stories According to Caliber Hierarchy."
     end
+
 
     # Post-import service to create weblinks that link TestCase Hierarchy in Rally
     # based on hash of Parent Rally TestCases
@@ -441,7 +441,6 @@ class CaliberHelper
                 update_fields[@caliber_weblink_field_name] = parent_web_link
                 begin
                     @rally.update("testcase", child_testcase_oid, update_fields)
-                    #@logger.info "    Successfully Linked Rally TestCase: ObjectID #{child_testcase_oid}; to TestCase: #{parent_testcase_oid}"
                 rescue => ex
                     @logger.error "Error occurred attempting to Link Rally TestCase: ObjectID #{child_testcase_oid}; to TestCase: #{parent_testcase_oid}"
                     @logger.error ex.message
@@ -451,5 +450,6 @@ class CaliberHelper
         end
         @logger.info "End of post-service to create weblinks from Rally TestCases to their parents According to Caliber Hierarchy."
     end
+
 
 end
