@@ -1,10 +1,4 @@
 # Rally Connection parameters
-$my_base_url                     = "https://rally1.rallydev.com/slm"
-$my_username                     = "rally_caliber@johndeere.com"
-$my_password                     = "!!nrlad1804"
-$my_wsapi_version                = "1.43"
-$my_workspace                    = "JDF Tampere"
-$my_project                      = "Caliber2Rally_Hera"
 
 $my_base_url                     = "https://audemo.rallydev.com/slm"
 $my_username                     = "paul@acme.com"
@@ -12,6 +6,13 @@ $my_password                     = "RallyON!"
 $my_wsapi_version                = "1.43"
 $my_workspace                    = "Integrations"
 $my_project                      = "JPKole_JDF_Tnavi-4"
+
+$my_base_url                     = "https://rally1.rallydev.com/slm"
+$my_username                     = "rally_caliber@johndeere.com"
+$my_password                     = "!!nrlad1804"
+$my_wsapi_version                = "1.43"
+$my_workspace                    = "JDF Tampere"
+$my_project                      = "TNavi_requirements"
 
 $max_attachment_length           = 5000000
 
