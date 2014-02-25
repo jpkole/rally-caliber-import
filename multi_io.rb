@@ -30,7 +30,7 @@ end
 
 class Logger
     def show_msg_stats
-	info "Logger summary:"
+	info "Logger messages summary:"
         @logdev.dev.get_msg_stats.each do |level, count|
 	    if count > 0 then
 	        info "\t#{count} #{{'D'=>'DEBUG','I'=>'INFO','W'=>'WARN','E'=>'ERROR','F'=>'FATAL','U'=>'UNKNOWN'}[level]}"

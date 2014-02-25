@@ -8,6 +8,7 @@ require 'rally_api'
 require 'logger'
 require './caliber_helper.rb'
 require './multi_io.rb'
+require 'benchmark'
 require 'debugger'
 @jpwantsdebugger=true
 
@@ -135,7 +136,7 @@ end
 #$uda_value_name_machine_type   = "JDF Machine Type"        #15
  $uda_value_name_open_issues    = "JDF Open Issues"         #16
 
-begin
+bm_time = Benchmark.measure {
 
 #==================== Connect to Rally and Import Caliber data ====================
 
@@ -439,4 +440,12 @@ begin
 
     @logger.show_msg_stats
 
-end
+}
+
+puts "\nTimes in seconds:"
+puts "  --User--   -System-   --Total-  --Elapsed-"
+puts bm_time
+
+exit (0)
+
+#the end#

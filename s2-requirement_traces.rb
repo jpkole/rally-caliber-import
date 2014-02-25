@@ -7,6 +7,7 @@ require 'uri'
 require 'rally_api'
 require 'logger'
 require './multi_io.rb'
+require 'benchmark'
 require 'debugger'
 @jpwantsdebugger=true
 
@@ -197,7 +198,7 @@ def update_story_with_caliber_traces(story_oid, req_name, traces_text)
     end
 end
 
-begin
+bm_time = Benchmark.measure {
 
 #==================== Connect to Rally and Import Caliber data ====================
 
@@ -407,4 +408,12 @@ begin
 
     @logger.show_msg_stats
 
-end
+}
+
+puts "\nTimes in seconds:"
+puts "  --User--   -System-   --Total-  --Elapsed-"
+puts bm_time
+
+exit(0)
+
+#the end#

@@ -393,9 +393,13 @@ class CaliberHelper
     def post_import_hierarchy_stitch(caliber_parent_hash, rally_story_hierarchy_hash)
         @logger.info "Starting post-service to parent Rally User Stories according to Caliber Hierarchy."
 
-        parents_stitched = 1
+        parents_stitched = 0
+        tot = caliber_parent_hash.length
         caliber_parent_hash.each_pair do | this_hierarchy_id, this_parent_hierarchy_id |
-            if this_parent_hierarchy_id != @no_parent_id then
+            parents_stitched += 1
+            if this_parent_hierarchy_id == @no_parent_id then
+                @logger.info "    No parenting for (##{parents_stitched} of #{tot}); Child Hierarchy #{this_hierarchy_id}"
+	    else
                 child_story = rally_story_hierarchy_hash[this_hierarchy_id]
                 child_story_oid = child_story['ObjectID']
                 child_story_fid = child_story['FormattedID']
@@ -403,7 +407,7 @@ class CaliberHelper
                 parent_story_oid = parent_story['ObjectID']
                 parent_story_fid = parent_story['FormattedID']
 
-                @logger.info "    Parenting (##{parents_stitched}); Child Hierarchy #{this_hierarchy_id}: Rally UserStory: FormattedID=#{child_story_fid}; ObjectID=#{child_story_oid} to:"
+                @logger.info "    Parenting (##{parents_stitched} of #{tot}); Child Hierarchy #{this_hierarchy_id}: Rally UserStory: FormattedID=#{child_story_fid}; ObjectID=#{child_story_oid} to:"
                 @logger.info "        parent Hierarchy #{this_parent_hierarchy_id}: Rally UserStory: FormattedID=#{parent_story_fid}; ObjectID=#{parent_story_oid}"
                 update_fields = {}
                 update_fields["Parent"] = parent_story._ref
@@ -414,7 +418,6 @@ class CaliberHelper
                     @logger.error ex.message
                     @logger.error ex.backtrace
                 end
-                parents_stitched += 1
             end
         end
         @logger.info "End of post-service to parent Rally User Stories According to Caliber Hierarchy."
