@@ -219,6 +219,7 @@ begin
                 $my_workspace                    = #{$my_workspace}
                 $my_project                      = #{$my_project}
                 $max_attachment_length           = #{$max_attachment_length}
+		$max_description_length          = #{$max_description_length}
                 $caliber_file_req                = #{$caliber_file_req}
                 $caliber_file_req_traces         = #{$caliber_file_req_traces}
                 $caliber_file_tc                 = #{$caliber_file_tc}
@@ -406,5 +407,7 @@ begin
     else
         @logger.info "Finished Importing Caliber Traces to Rally. Total Traces Processed: #{import_count}."
     end
+
+    @logger.show_msg_stats
 
 end

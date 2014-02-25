@@ -5,16 +5,19 @@ $my_username                     = "paul@acme.com"
 $my_password                     = "RallyON!"
 $my_wsapi_version                = "1.43"
 $my_workspace                    = "Integrations"
-$my_project                      = "JPKole_JDF_Tnavi-4"
+$my_project                      = "JDF-Tnavi-3"
 
-$my_base_url                     = "https://rally1.rallydev.com/slm"
-$my_username                     = "rally_caliber@johndeere.com"
-$my_password                     = "!!nrlad1804"
-$my_wsapi_version                = "1.43"
-$my_workspace                    = "JDF Tampere"
-$my_project                      = "TNavi_requirements"
+#$my_base_url                     = "https://rally1.rallydev.com/slm"
+#$my_username                     = "rally_caliber@johndeere.com"
+#$my_password                     = "!!nrlad1804"
+#$my_wsapi_version                = "1.43"
+#$my_workspace                    = "JDF Tampere"
+#$my_project                      = "TNavi_requirements"
 
-$max_attachment_length           = 5000000
+$max_attachment_length          = 5_242_880 # 5mb - https://help.rallydev.com/creating-user-story
+$max_description_length         = 32_768 # fail
+$max_description_length         = 32_702 # I have no idea why this is the max?
+$max_import_count               = 50_000
 
 # Caliber parameters
 
@@ -48,7 +51,6 @@ $caliber_id_field_name          = "CaliberID"           # TC - type String
 $caliber_weblink_field_name     = "CaliberTCParent"     # TC - type Weblink
 $caliber_tc_traces_field_name   = "Externalreference"   # TC - type Text
 
-$max_import_count               = 5000
 
 # Runtime preferences
 $html_mode                      = true

@@ -10,7 +10,7 @@ class CaliberHelper
         @caliber_image_directory         = image_directory
         @logger                          = logger_instance
         @caliber_weblink_field_name      = weblink_fieldname
-        @max_attachment_length           = 5000000
+        @max_attachment_length           = 5_000_000
 
         # Flag to set in @rally_story_hierarchy_hash if Requirement has no Parent
         @no_parent_id                    = "-9999"
@@ -81,7 +81,8 @@ class CaliberHelper
         attachment = @rally.create(:attachment, attachment_fields)
 
         #@logger.info "    Imported #{attachment_data_hash[:name]} to a Rally Attachment Artifact: ObjectID=#{attachment_data_hash[:artifactoid]}"
-        @logger.info "        Created Rally Attachment Artifact: ObjectID=#{attachment.ObjectID}; content=#{attachment_data_hash[:name]}"
+        #@logger.info "        Created Rally Attachment Artifact: ObjectID=#{attachment.ObjectID}; content=#{attachment_data_hash[:name]}"
+        @logger.info "            created Rally Attachment Artifact: ObjectID=#{attachment.ObjectID}; Orig/Base64 sizes=#{attachment_data_hash[:bytes].length}/#{attachment_content_string.length}"
         return attachment
     end
 
@@ -106,48 +107,54 @@ class CaliberHelper
         update_fields = {}
         update_fields["Description"] = new_description
         updated_artifact = @rally.update(artifact_type, artifact_oid, update_fields)
-        @logger.info "        Updated Rally Artifact; FormattedID=#{artifact_fmtid}; ObjectID=#{artifact_oid} with embedded images."
+        @logger.info "        updated Rally Artifact; FormattedID=#{artifact_fmtid}; ObjectID=#{artifact_oid} with embedded images."
     end
 
 
     # Post-import image import service
-    # Loops through hash of image data hashes keyed by Rally Artifact OID
-    # and:
+    # Loops through hash of image data hashes keyed by Rally Artifact OID and:
     # - Creates an attachment in Rally corresponding to the image from Caliber
     # - Stitches Rally's image URL back into Rally Artifact description <img src="" tags
     #   to effect "in-lining" of the images in the Rally Artifact description
     def import_images(artifacts_with_images_hash) #{
         if artifacts_with_images_hash.count > 0 then
-            @logger.info "Starting post-service to import Caliber images for requirements that have embedded images."
+            @logger.info "Starting post-service processing to import Caliber images for requirements that have embedded images."
         else
             @logger.info "No images found for processing."
         end
 
+	artifact_count = 0
         artifacts_with_images_hash.each_pair do | this_artifact_oid, this_caliber_image_data |
+
+            artifact_count += 1
 
             this_image_list             = this_caliber_image_data["files"]
             this_image_id_list          = this_caliber_image_data["ids"]
             this_artifact_description   = this_caliber_image_data["description"]
             this_artifact_fmtid         = this_caliber_image_data["fmtid"]
             this_artifact_ref           = this_caliber_image_data["ref"]
-            index = 0
 
             # Array with relative URL's to Rally-embedded attachments
             new_attachment_sources = []
 
-            this_image_list.each do | this_image_file | #{
-                @logger.info "    Processing image file #{index+1}: #{File.basename(this_image_file)}..."
-                if File.exist?(this_image_file) then
+            @logger.info "    Import #{artifact_count} of #{artifacts_with_images_hash.length}: adding #{this_image_list.length} image(s) to Rally User Story; FormattedID=#{this_artifact_fmtid}; ObjectID=#{this_artifact_oid}"
+            this_image_list.each_with_index do | this_image_file, indx_image | #{
+
+                @logger.info "        importing image file #{indx_image+1} of #{this_image_list.length}: Name=#{File.basename(this_image_file)}"
+
+                if !File.exist?(this_image_file) then
+                    @logger.warn "    *** image file: #{this_image_file} not found; skipping import of this image."
+                else
                     image_bytes = File.open(this_image_file, 'rb') { | file | file.read }
-                    image_id = this_image_id_list[index]
+                    image_id = this_image_id_list[indx_image]
                     attachment_name, mimetype = get_image_metadata(this_image_file, image_id)
 
                     if mimetype.nil? then
-                        @logger.warn "    Invalid mime-type encountered! Skipped importing image file #{this_image_file} to Rally Description on Artifact with ObjectID: #{this_artifact_oid}"
+                        @logger.warn "    *** invalid mime-type; skipping import of this image."
                         next
                     end
                     if image_bytes.length > @max_attachment_length then
-                        @logger.warn "    Attachment size of #{image_bytes.length} exceeds Rally allowed maximum of 5 MB. Skipped importing image file #{this_image_file} on Artifact with ObjectID: #{this_artifact_oid}"
+                        @logger.warn "    *** attachment size #{image_bytes.length} > #{@max_attachment_length} bytes; skipping import of this image."
                         next
                     end
                     begin
@@ -171,10 +178,7 @@ class CaliberHelper
                         @logger.error ex.message
                         @logger.error ex.backtrace
                     end
-                else
-                    @logger.warn "Caliber image file: #{this_image_file} not found. Skipped importing image to Rally Description on Artifact with ObjectID: #{this_artifact_oid}"
                 end
-                index += 1
             end #} end of "this_image_list.each do | this_image_file |"
 
             # Stitch the attachment url into Rally Descritpion and replace embedded
@@ -283,10 +287,11 @@ class CaliberHelper
                 artifact_markup += field_string
             end
         end
-        artifact_markup += "<br>"
-        if artifact_markup.length > 32000
-            @logger.warn "Description Length: #{artifact_markup.length} Exceeds Rally limit of 32K. Description is truncated."
-            artifact_markup_shortened = artifact_markup[0..32000]
+        artifact_markup += "<br/>"
+        if artifact_markup.length > $max_description_length
+            @logger.warn "        *** Description length: #{artifact_markup.length} exceeds Rally limit of #{$max_description_length}; truncated."
+            trunc_warn = '*** Too long; TRUNCATED! ***'
+            artifact_markup_shortened = artifact_markup[0..$max_description_length-trunc_warn.length-1] + trunc_warn
             artifact_markup = artifact_markup_shortened
         end
         return artifact_markup
@@ -304,6 +309,7 @@ class CaliberHelper
 
     # Take Caliber Requirement hash, process and combine field data and create a story in Rally
     def create_story_from_caliber(requirement)
+	# are the following 4 fields even used here?
         req_id          = requirement['id']
         req_hierarchy   = requirement['hierarchy']
         req_project     = requirement['project']
@@ -321,7 +327,7 @@ class CaliberHelper
             story_fid = story['FormattedID']
             return story
         rescue => ex
-            @logger.error "Error occurred creating Rally Story from Caliber Requirement ID: #{req_id}. Not imported."
+            @logger.error "Error occurred creating Rally Story from Caliber Requirement ID: #{requirement['id']}. Not imported."
             @logger.error ex.message
             @logger.error ex.backtrace
         end
@@ -385,9 +391,9 @@ class CaliberHelper
     # Post-import service to stitch up Story Hierarchy in Rally based on hash of Parent Rally Stories
     # by Caliber Hierarchy ID that we created during initial import
     def post_import_hierarchy_stitch(caliber_parent_hash, rally_story_hierarchy_hash)
-        @logger.info "Starting post-service to parent Rally User Stories According to Caliber Hierarchy."
+        @logger.info "Starting post-service to parent Rally User Stories according to Caliber Hierarchy."
 
-        parents_stitched = 0
+        parents_stitched = 1
         caliber_parent_hash.each_pair do | this_hierarchy_id, this_parent_hierarchy_id |
             if this_parent_hierarchy_id != @no_parent_id then
                 child_story = rally_story_hierarchy_hash[this_hierarchy_id]
@@ -397,8 +403,8 @@ class CaliberHelper
                 parent_story_oid = parent_story['ObjectID']
                 parent_story_fid = parent_story['FormattedID']
 
-                @logger.info "    Parenting Child Hierarchy ID: #{this_hierarchy_id} with Rally UserStory: FormattedID=#{child_story_fid}; ObjectID=#{child_story_oid} to:"
-                @logger.info "        Parent Hierarchy ID: #{this_parent_hierarchy_id} with Rally Parent UserStory: FormattedID=#{parent_story_fid}; ObjectID=#{parent_story_oid}"
+                @logger.info "    Parenting (##{parents_stitched}); Child Hierarchy #{this_hierarchy_id}: Rally UserStory: FormattedID=#{child_story_fid}; ObjectID=#{child_story_oid} to:"
+                @logger.info "        parent Hierarchy #{this_parent_hierarchy_id}: Rally UserStory: FormattedID=#{parent_story_fid}; ObjectID=#{parent_story_oid}"
                 update_fields = {}
                 update_fields["Parent"] = parent_story._ref
                 begin
@@ -408,6 +414,7 @@ class CaliberHelper
                     @logger.error ex.message
                     @logger.error ex.backtrace
                 end
+                parents_stitched += 1
             end
         end
         @logger.info "End of post-service to parent Rally User Stories According to Caliber Hierarchy."

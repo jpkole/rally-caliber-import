@@ -12,13 +12,13 @@ require 'debugger'
 @jpwantsdebugger=true
 
 # Rally Connection parameters
-$my_base_url                     = "https://rally1.rallydev.com/slm"
-$my_username                     = "user@company.com"
-$my_password                     = "topsecret"
-$my_wsapi_version                = "1.43"
-$my_workspace                    = "Caliber"
-$my_project                      = "Scratch"
-$max_attachment_length           = 5000000
+$my_base_url                    = "https://rally1.rallydev.com/slm"
+$my_username                    = "user@company.com"
+$my_password                    = "topsecret"
+$my_wsapi_version               = "1.43"
+$my_workspace                   = "Caliber"
+$my_project                     = "Scratch"
+$max_attachment_length          = 5_242_880 # 5mb - https://help.rallydev.com/creating-user-story
 
 # Caliber parameters
 $caliber_file_req                = "hhc.xml"
@@ -158,6 +158,7 @@ begin
                 $my_workspace                    = #{$my_workspace}
                 $my_project                      = #{$my_project}
                 $max_attachment_length           = #{$max_attachment_length}
+		$max_description_length          = #{$max_description_length}
                 $caliber_file_req                = #{$caliber_file_req}
                 $caliber_file_req_traces         = #{$caliber_file_req_traces}
                 $caliber_file_tc                 = #{$caliber_file_tc}
@@ -206,6 +207,16 @@ begin
     @caliber_helper = CaliberHelper.new(@rally, $caliber_project, $caliber_id_field_name,
         $description_field_hash, $caliber_image_directory, @logger, nil)
 
+    # Output CSV of Requirement data
+    @logger.info "CSV file creation of #{$csv_requirements}..."
+    requirements_csv = CSV.open($csv_requirements, "wb", {:col_sep => $my_delim})
+    requirements_csv << $csv_requirement_fields
+
+    # Output CSV of Story OID's by Caliber Requirement Name
+    @logger.info "CSV file creation of #{$csv_story_oids_by_req}..."
+    story_oid_csv    = CSV.open($csv_story_oids_by_req, "wb", {:col_sep => $my_delim})
+    story_oid_csv    << $csv_story_oids_by_req_fields
+
     # HTML Mode vs. XML Mode
     # The following is needed to preserve newlines in formatting of UDAValues when
     # Imported into Rally. Caliber export uses newlines in UDAValue attributes as formatting.
@@ -228,16 +239,6 @@ begin
         end
     end
 
-    # Output CSV of Requirement data
-    @logger.info "CSV file creation of #{$csv_requirements}..."
-    requirements_csv = CSV.open($csv_requirements, "wb", {:col_sep => $my_delim})
-    requirements_csv << $csv_requirement_fields
-
-    # Output CSV of Story OID's by Caliber Requirement Name
-    @logger.info "CSV file creation of #{$csv_story_oids_by_req}..."
-    story_oid_csv    = CSV.open($csv_story_oids_by_req, "wb", {:col_sep => $my_delim})
-    story_oid_csv    << $csv_story_oids_by_req_fields
-
     # The following are used for the post-run stitching
     # Hash of User Stories keyed by Caliber Requirement Hierarchy ID
     @rally_story_hierarchy_hash = {}
@@ -251,20 +252,25 @@ begin
 
     # Read through caliber file and store requirement records in array of requirement hashes
     import_count = 0
-    caliber_data.search($report_tag).each_with_index do | report, indx_report |
-        @logger.info "Processing XML Report tag #{indx_report+1}: project=\"#{report['project']}\" date=\"#{report['date']}\""
 
-        report.search($req_type_tag).each_with_index do | req_type, indx_req_type |
+    tags_report = caliber_data.search($report_tag)
+    tags_report.each_with_index do | report, indx_report |
+        @logger.info "<Report ...> tag #{indx_report+1} of #{tags_report.length}: project=\"#{report['project']}\" date=\"#{report['date']}\""
+
+        tags_reqtype = report.search($req_type_tag)
+        tags_reqtype.each_with_index do | req_type, indx_req_type |
 
             if req_type['name'] == "JDF Requirement (REQ)" then
-                @logger.info "    Processing XML ReqType tag #{indx_req_type+1}: name=\"#{req_type['name']}\" sort_by=\"#{req_type['sort_by']}\""
+                @logger.info "    <ReqType ...> tag #{indx_req_type+1} of #{tags_reqtype.length}: name=\"#{req_type['name']}\" sort_by=\"#{req_type['sort_by']}\""
             else
-                @logger.info "    Ignoring ReqType tag with name=\"#{req_type['name']}\""
+                @logger.info "    Ignoring <ReqType ...> tag with name=\"#{req_type['name']}\""
                 next           
             end
             
-            req_type.search($req_tag).each_with_index do | requirement, indx_req |
-                @logger.info "        Processing XML Requirement tag #{indx_req+1}: index=\"#{requirement['index']}\"\ hierarchy=\"#{requirement['hierarchy']}\" id=\"#{requirement['id']}\" tag=\"#{requirement['tag']}\""
+            total_us = 0
+	    tags_requirement = req_type.search($req_tag)
+            tags_requirement.each_with_index do | requirement, indx_req | #{
+                @logger.info "        <Requirement ...> tag #{indx_req+1} of #{tags_requirement.length}: index=\"#{requirement['index']}\"\ id=\"#{requirement['id']}\" tag=\"#{requirement['tag']}\" hierarchy=\"#{requirement['hierarchy']}\""
 
                 # Data - holds output for CSV
                 requirement_data = []
@@ -296,7 +302,7 @@ begin
                     uda_values.search($uda_value_tag).each_with_index do | uda_value, indx_value |
                         uda_value_name = uda_value['name']
                         uda_value_value = uda_value['value'] || ""
-                        maxdis=70 #maximum display length for value
+                        maxdis=70 # desired maximum display length for value
                         if uda_value_value.length > maxdis then
                             cont="...."
                         else
@@ -325,7 +331,7 @@ begin
                             else
                                 uda_stat="ignored"
                         end
-                        @logger.info "            UDAValue tag #{indx_value+1} of #{uda_values.children.count}: #{uda_stat} name='#{uda_value_name}'"
+                        @logger.info "            <UDAValue ...> tag #{indx_value+1} of #{uda_values.children.count}: #{uda_stat} name='#{uda_value_name}'"
                     end
                 end
 
@@ -341,7 +347,8 @@ begin
                 # Import to Rally
                 if $import_to_rally then
                     story = @caliber_helper.create_story_from_caliber(this_requirement)
-                    @logger.info "        Created Rally UserStory: FormattedID=#{story.FormattedID}; ObjectID=#{story.ObjectID}; from Caliber Requirement id=#{requirement['id']}"
+		    total_us = total_us + 1
+                    @logger.info "            Created Rally UserStory #{total_us} of #{tags_requirement.length}: FormattedID=#{story.FormattedID}; ObjectID=#{story.ObjectID}; from Caliber Requirement id=#{requirement['id']}"
                 end
 
                 # Save the Story OID and associated it to the Caliber Hierarchy ID for later use in stitching
@@ -400,12 +407,13 @@ begin
                 story_oid_csv  << CSV::Row.new($csv_story_oids_by_req_fields, story_oid_data)
 
                 # Circuit-breaker for testing purposes
-                if import_count < $max_import_count then
+                if import_count < $max_import_count-1 then
                     import_count += 1
                 else
+                    @logger.info "Stopping import; 'import_count' reached #{import_count+1} ($max_import_count)"
                     break
                 end
-            end
+            end #} end of "tags_requirement.search($req_tag).each_with_index do | requirement, indx_req |"
         end
     end
 
@@ -413,7 +421,7 @@ begin
     if $preview_mode then
         @logger.info "Finished Processing Caliber Requirements for import to Rally. Total Stories Processed: #{import_count}."
     else
-        @logger.info "Finished Importing Caliber Requirements to Rally. Total Stories Created: #{import_count}."
+        @logger.info "Finished importing Caliber Requirements; total Rally User Stories created: #{import_count}."
     end
 
     # Run the hierarchy stitching service
@@ -428,4 +436,7 @@ begin
     if $import_images_flag
         @caliber_helper.import_images(@rally_stories_with_images_hash)
     end
+
+    @logger.show_msg_stats
+
 end

@@ -11,13 +11,13 @@ require 'debugger'
 @jpwantsdebugger=true
 
 # Rally Connection parameters
-$my_base_url                     = "https://rally1.rallydev.com/slm"
-$my_username                     = "user@company.com"
-$my_password                     = "topsecret"
-$my_wsapi_version                = "1.43"
-$my_workspace                    = "My Workspace"
-$my_project                      = "My Project"
-$max_attachment_length           = 5000000
+$my_base_url                    = "https://rally1.rallydev.com/slm"
+$my_username                    = "user@company.com"
+$my_password                    = "topsecret"
+$my_wsapi_version               = "1.43"
+$my_workspace                   = "My Workspace"
+$my_project                     = "My Project"
+$max_attachment_length          = 5_242_880 # 5mb - https://help.rallydev.com/creating-user-story
 
 # Caliber parameters
 $caliber_file_req_traces         = "hhc_traces.xml"
@@ -164,7 +164,7 @@ def create_traces_markup_from_traces_array(traces_array) #{
             story_oid = @story_oid_by_reqid[this_traceid.sub("REQ", "")]
 
             if story_oid.nil? then
-                @logger.warn "No Rally Story ObjectID found for Caliber Requirement ID: #{this_traceid} - skipping linkage of this Trace."
+                @logger.warn "        *** No Rally Story ObjectID found for Caliber Requirement ID: #{this_traceid} - skipping linkage of this Trace."
                 this_trace = @req_name_by_reqid[this_traceid] || this_traceid
             else
                 @logger.info "        Linking Trace JDtraceId=#{this_traceid} to Rally UserStory ObjectID: #{story_oid}"
@@ -220,6 +220,7 @@ begin
                 $my_workspace                    = #{$my_workspace}
                 $my_project                      = #{$my_project}
                 $max_attachment_length           = #{$max_attachment_length}
+		$max_description_length          = #{$max_description_length}
                 $caliber_file_req                = #{$caliber_file_req}
                 $caliber_file_req_traces         = #{$caliber_file_req_traces}
                 $caliber_file_tc                 = #{$caliber_file_tc}
@@ -292,11 +293,12 @@ begin
 
     # Process traces
     import_count = 0
-    caliber_data.search($jdrequesttraces_tag).each_with_index do | request_traces, indx_req_traces |
-        @logger.info "Processing #{$jdrequesttraces_tag} tag #{indx_req_traces+1}..."
+    tags_jdrequesttraces = caliber_data.search($jdrequesttraces_tag)
+    tags_jdrequesttraces.each_with_index do | request_traces, indx_req_traces |
+        @logger.info "Processing #{$jdrequesttraces_tag} tag #{indx_req_traces+1} of #{tags_jdrequesttraces.length}..."
 
-        request_traces.search($jdrequest_tag).each_with_index do | jd_request, indx_request |
-            @logger.info "    Processing #{$jdrequest_tag} tag #{indx_request+1}..."
+        tags_jdrequest = request_traces.search($jdrequest_tag)
+        tags_jdrequest.each_with_index do | jd_request, indx_request |
 
             this_req_id = ""
             jd_request.search($jdid_tag).each do | jd_id |
@@ -308,22 +310,25 @@ begin
                 this_req_name = jd_name.text
             end
 
+            @logger.info "    Processing #{$jdrequest_tag} tag #{indx_request+1} of #{tags_jdrequest.length}; JDid=#{this_req_id}"
+
             story_oid       = @story_oid_by_reqname[this_req_name][0]    # Rally ObjectID
             story_fid       = @story_oid_by_reqname[this_req_name][1]    # Rally FormattedID
 
             if story_oid.nil? then
-                @logger.warn "        Can't find Rally UserStory; FormattedID=#{story_fid}; ObjectID=#{story_oid}; for JDid=#{this_req_id}. Skipping import of this trace."
+                @logger.warn "        Can't find Rally UserStory; FormattedID=#{story_fid}; ObjectID=#{story_oid}... skipping import of this trace."
                 next
             else
-                @logger.info "        JDrequest JDid=#{this_req_id}; JDname='#{this_req_name}'; hashed Rally UserStory: FormattedID=#{story_fid}; ObjectID=#{story_oid}"
+                @logger.info "        Hashed Rally UserStory: FormattedID=#{story_fid}; ObjectID=#{story_oid} for JDname='#{this_req_name}'"
             end
 
             traces_array = []
 
             ##### #####
             # Find all <JDtraceto>'s    
-            jd_request.search($jdtraceto_tag).each_with_index do | jd_traceto, indx_traceto |
-                @logger.info "        Searching #{$jdtraceto_tag} tag #{indx_traceto+1}..."
+            tags_jdtraceto = jd_request.search($jdtraceto_tag)
+            tags_jdtraceto.each_with_index do | jd_traceto, indx_traceto |
+                @logger.info "        Searching #{$jdtraceto_tag} tag #{indx_traceto+1} of #{tags_jdtraceto.length}..."
 
                 jd_traceto.search($jdtrace_tag).each_with_index do | jd_trace, indx_trace |
 
@@ -343,8 +348,9 @@ begin
 
             ##### #####
             # Find all <JDtracefrom>'s
-            jd_request.search($jdtracefrom_tag).each_with_index do | jd_tracefrom, indx_tracefrom |
-                @logger.info "        Searching #{$jdtracefrom_tag} tag #{indx_tracefrom+1}..."
+            tags_jdtracefrom = jd_request.search($jdtracefrom_tag)
+            tags_jdtracefrom.each_with_index do | jd_tracefrom, indx_tracefrom |
+                @logger.info "        Searching #{$jdtracefrom_tag} tag #{indx_tracefrom+1} of #{tags_jdtracefrom.length}..."
 
                 jd_tracefrom.search($jdtrace_tag).each_with_index do | jd_trace, indx_trace |
 
@@ -372,14 +378,19 @@ begin
             if $preview_mode then
                 @logger.info "    Rally Story ObjectID: #{this_req_id} needs updated with #{traces_array.length} Caliber Traces from Requirement: #{this_req_name}"
             else
-                update_story_with_caliber_traces(story_oid, this_req_name, traces_text)
-                @logger.info "        Updating Rally Story ObjectID: #{story_oid} with Caliber Traces."
+	        if traces_text.nil? then
+                    @logger.info "        Nothing to update for Rally Story ObjectID: #{story_oid} (no traces found)."
+		else
+                    @logger.info "        Updating Rally Story ObjectID: #{story_oid} with Caliber Traces."
+                    update_story_with_caliber_traces(story_oid, this_req_name, traces_text)
+		end
             end
 
             # Circuit-breaker for testing purposes
             if import_count < $max_import_count then
                 import_count += 1
             else
+	        @logger.info "Stopping import; 'import_count' reached #{import_count+1} ($max_import_count)"
                 break
             end
         end
@@ -393,5 +404,7 @@ begin
         @logger.info "Finished Importing Caliber Requirement Traces to Rally."
         @logger.info "Total Traces Created: #{import_count}."
     end
+
+    @logger.show_msg_stats
 
 end

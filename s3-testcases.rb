@@ -192,6 +192,7 @@ begin
                 $my_workspace                    = #{$my_workspace}
                 $my_project                      = #{$my_project}
                 $max_attachment_length           = #{$max_attachment_length}
+		$max_description_length          = #{$max_description_length}
                 $caliber_file_req                = #{$caliber_file_req}
                 $caliber_file_req_traces         = #{$caliber_file_req_traces}
                 $caliber_file_tc                 = #{$caliber_file_tc}
@@ -474,4 +475,7 @@ begin
     if $import_images_flag
         @caliber_helper.import_images(@rally_testcases_with_images_hash)
     end
+
+    @logger.show_msg_stats
+
 end
