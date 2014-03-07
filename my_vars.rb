@@ -1,11 +1,11 @@
 # Rally Connection parameters
 
 $my_base_url                     = "https://audemo.rallydev.com/slm"
-$my_username                     = "paul@acme.com"
-$my_password                     = "RallyON!"
+$my_username                     = "jpkole@rallydev.com"
+$my_password                     = "!!nrlad1804"
 $my_wsapi_version                = "1.43"
-$my_workspace                    = "Integrations"
-$my_project                      = "JDF-Tnavi-3"
+$my_workspace                    = "JohnDeere"
+$my_project                      = "JDF-Tnavi-1"
 
 #$my_base_url                     = "https://rally1.rallydev.com/slm"
 #$my_username                     = "rally_caliber@johndeere.com"
@@ -90,9 +90,9 @@ $description_field_hash_01_jdf_hera = {
         'Exceptions'            => 'exceptions',
         'Remarks'               => 'remarks',
         'Description'           => 'description',
-        'Validation'            => 'validation',
-        'Input'                 => 'input',
-        'Output'                => 'output'
+#       'Validation'            => 'validation',
+#       'Input'                 => 'input',
+#       'Output'                => 'output'
 }
 $description_field_hash_02_jdf_next = {}
 $description_field_hash_03_jdf_next = {}

@@ -125,16 +125,16 @@ end
  $uda_value_name_basic_course   = "JDF Basic Course [Ba]"   #04
  $uda_value_name_post_condition = "JDF Post-condition [Po]" #05
  $uda_value_name_exceptions     = "JDF Exceptions [Ex]"     #06
- $uda_value_name_input          = "JDF Input [In]"          #07
- $uda_value_name_output         = "JDF Output [Ou]"         #08
  $uda_value_name_remarks        = "JDF Remarks [Re]"        #09
+#$uda_value_name_input          = "JDF Input [In]"          #07
+#$uda_value_name_output         = "JDF Output [Ou]"         #08
 #$uda_value_name_project        = "JDF Project"             #10
 #$uda_value_name_software       = "JDF Software Load"       #11
 #$uda_value_name_content        = "JDF Content Status"      #12
 #$uda_value_name_delivery       = "JDF Delivery Status"     #13
 #$uda_value_name_requirement    = "JDF Requirement Class"   #14
 #$uda_value_name_machine_type   = "JDF Machine Type"        #15
- $uda_value_name_open_issues    = "JDF Open Issues"         #16
+#$uda_value_name_open_issues    = "JDF Open Issues"         #16
 
 bm_time = Benchmark.measure {
 
@@ -247,6 +247,7 @@ bm_time = Benchmark.measure {
     # The following are used for the post-run import of images for
     # Caliber requirements whose description contains embedded images
     @rally_stories_with_images_hash = {}
+    @rally_stories_with_images_hash2 = {}
 
     # Hash of Requirement Parent Hierarchy ID's keyed by Self Hierarchy ID
     @caliber_parent_hash = {}
@@ -286,7 +287,7 @@ bm_time = Benchmark.measure {
 
                 # process_description_body pulls HTML content out of <html><body> tags
                 this_requirement['description']     = @caliber_helper.process_description_body(requirement['description'] || "")
-                this_requirement['validation']      = requirement['validation'] || ""
+                #this_requirement['validation']      = requirement['validation'] || ""
 
                 # Store Caliber ID, HierarchyID, Project and Name in variables for convenient logging output
                 req_id                              = this_requirement['id']
@@ -323,12 +324,12 @@ bm_time = Benchmark.measure {
                                 this_requirement['exceptions']         = uda_value_value
                             when $uda_value_name_remarks
                                 this_requirement['remarks']            = uda_value_value
-                            when $uda_value_name_open_issues
-                                this_requirement['open_issues']        = uda_value_value
-                            when $uda_value_name_input
-                                this_requirement['input']              = uda_value_value
-                            when $uda_value_name_output
-                                this_requirement['output']             = uda_value_value
+                            #when $uda_value_name_open_issues
+                            #    this_requirement['open_issues']        = uda_value_value
+                            #when $uda_value_name_input
+                            #    this_requirement['input']              = uda_value_value
+                            #when $uda_value_name_output
+                            #    this_requirement['output']             = uda_value_value
                             else
                                 uda_stat="ignored"
                         end
@@ -352,7 +353,7 @@ bm_time = Benchmark.measure {
                     @logger.info "            Created Rally UserStory #{total_us} of #{tags_requirement.length}: FormattedID=#{story.FormattedID}; ObjectID=#{story.ObjectID}; from Caliber Requirement id=#{requirement['id']}"
                 end
 
-                # Save the Story OID and associated it to the Caliber Hierarchy ID for later use in stitching
+                # Save the Story OID and associate it to the Caliber Hierarchy ID for later use in stitching
                 @rally_story_hierarchy_hash[req_hierarchy] = story
             
 
@@ -377,6 +378,7 @@ bm_time = Benchmark.measure {
 
                 if caliber_image_count > 0 then
                     description_with_images = this_requirement['description']
+                    description_with_images = story.elements[:description]	# jp chasing bug
                     image_file_objects, image_file_ids = @caliber_helper.get_caliber_image_files(description_with_images)
                     caliber_image_data = {
                         "files"         => image_file_objects,
@@ -387,6 +389,15 @@ bm_time = Benchmark.measure {
                     }
                     @logger.info "            Adding #{caliber_image_count} images to hash for later processing."
                     @rally_stories_with_images_hash[story["ObjectID"].to_s] = caliber_image_data
+
+                    caliber_image_data2 = {
+                        "files"         => image_file_objects,
+                        "ids"           => image_file_ids,
+                        "description"   => this_requirement['description'],
+                        "fmtid"         => story["FormattedID"],
+                        "ref"           => story["_ref"]
+                    }
+                    @rally_stories_with_images_hash2[story["ObjectID"].to_s] = caliber_image_data2
                 end
 
                 # Record requirement data for CSV output
@@ -435,7 +446,7 @@ bm_time = Benchmark.measure {
     # Necessary to run the image import as a post-Story creation service
     # Because we have to have an Artifact in Rally to attach _to_.
     if $import_images_flag
-        @caliber_helper.import_images(@rally_stories_with_images_hash)
+        @caliber_helper.import_images(@rally_stories_with_images_hash, @rally_stories_with_images_hash2)
     end
 
     @logger.show_msg_stats
