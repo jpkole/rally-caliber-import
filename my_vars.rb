@@ -82,7 +82,7 @@ $cal2ral_tc_log                 = "s3-testcases.log"
 $cal2ral_tc_traces_log          = "s4-testcase_traces.log"
 
 # JDF_Hera data set ----
-$description_field_hash_01_jdf_hera = {
+$description_field_hash         = {
         'Caliber Purpose'       => 'caliber_purpose',
         'Pre-condition'         => 'pre_condition',
         'Basic course'          => 'basic_course',
@@ -94,11 +94,5 @@ $description_field_hash_01_jdf_hera = {
 #       'Input'                 => 'input',
 #       'Output'                => 'output'
 }
-$description_field_hash_02_jdf_next = {}
-$description_field_hash_03_jdf_next = {}
-$description_field_hash_04_jdf_next = {}
-$description_field_hash_05_jdf_next = {}
-
-$description_field_hash         = $description_field_hash_01_jdf_hera
 
 #the end#

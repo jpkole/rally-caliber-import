@@ -92,27 +92,11 @@ class CaliberHelper
     end #} end of "def create_image_attachment(attachment_data_hash)"
 
 
-    def get_original_desc_data(objectid) #{
-        # ----------------------------------------------
-        # Get the Description field from a Rally User Story with given ObjectID
-
-################################################################################
-	all_us = @rally.find(RallyAPI::RallyQuery.new(
-		:type		=>:hierarchicalrequirement,
-		:query_string	=>"(ObjectID = \"#{objectid}\")",
-		:fetch		=>"Description"))
-	return all_us.first.elements[:description]
-################################################################################
-    end #} end of "def get_original_desc_data(objectid)"
-
-
     def fix_description_images(artifact_fmtid, artifact_ref, artifact_description, rally_attachment_sources) #{
         # ----------------------------------------------
         # Loops through Description on Rally Story and replaces embedded <img src="file:\\\blah\blah1\blah2.jpg"
         # References with <img src="/slm/attachment/12345678910/blah2.jpg" type of references once we've imported
         # the embedded images to Rally as attachments
-#@logger.info "DEBUG(fix_description_images): before updating user story; artifact_description="
-#@logger.info "#{artifact_description}"
         index = 0
         description_doc = Nokogiri::HTML(artifact_description)
         description_doc.css('img').each do | img |
@@ -126,19 +110,9 @@ class CaliberHelper
         artifact_type = artifact_ref.split("/")[-2]
         artifact_oid  = artifact_ref.split("/")[-1].split("\.")[-2]
         update_fields = {}
-#####
-##### JPKole says: we need to get the original description data so as not to overwrite it.
-	od = get_original_desc_data(artifact_oid)
-#@logger.info "DEBUG(fix_description_images): original description field="
-#@logger.info "#{od}"
-#####
         update_fields["Description"] = new_description
-#####
         updated_artifact = @rally.update(artifact_type, artifact_oid, update_fields)
-#@logger.info "DEBUG(fix_description_images): after updating user story #{artifact_fmtid} with new_description="
-#@logger.info "#{new_description}"
         @logger.info "        updated Rally Artifact; FormattedID=#{artifact_fmtid}; ObjectID=#{artifact_oid} with embedded images."
-
     end #} end of "def fix_description_images(artifact_fmtid, artifact_ref, artifact_description, rally_attachment_sources)"
 
 
@@ -260,13 +234,6 @@ class CaliberHelper
     end
 
 
-    #def make_header(field_string)
-    #    # ----------------------------------------------
-    #    # A Bolded Caliber field header for inclusion into Rally Description markup
-    #    return "<p><b>#{field_string}</b></p>"
-    #end
-
-
     def get_caliber_image_files(caliber_description) #{
         # ----------------------------------------------
         # Prepares arrays of File references and Caliber image id attributes
@@ -336,37 +303,19 @@ class CaliberHelper
     end #} end of "def create_markup_from_hash(caliber_object, markup_hash, obj_type)"
 
 
-    #def make_requirement_notes(requirement)
-    #    # ----------------------------------------------
-    #    # Mash Caliber Open Issues data into a notes field for Rally Story
-    #    #notes = make_header('Caliber Open Issues')
-    #    notes = "<p><b>Caliber Open Issues</b></p>"
-    #    if requirement.has_key? 'open_issues'
-    #        notes += requirement['open_issues']
-    #    end
-    #end
-
-
     def create_story_from_caliber(requirement) #{
         # ----------------------------------------------
         # Take Caliber Requirement hash, process and combine field data and create a story in Rally
 
         story = {}
-#debugger
         story["Name"]                   = make_name(requirement, :requirement)
         story["Description"]            = create_markup_from_hash(requirement, @description_field_hash, :requirement)
-##############################
-#       story["Notes"]                  = make_requirement_notes(requirement)
-##############################
         story["Notes"]                  = "<p><b>Caliber Open Issues</b></p>"
 	if requirement.has_key? 'open_issues'
             story["Notes"]             += requirement['open_issues']
         end
-##############################
         story[@caliber_id_field_name]   = requirement['id']
         begin
-#@logger.info "DEBUG(create_story_from_caliber): creating user story with story['Description']="
-#@logger.info "#{story['Description']}"
             newstory = @rally.create("hierarchicalrequirement", story)
             newstory.read
             newstory_oid = newstory['ObjectID']
@@ -423,8 +372,6 @@ class CaliberHelper
         # ----------------------------------------------
         # Pulls HTML content out of <html><body> tags
 
-#@logger.info "DEBUG(process_description_body): before, description="
-#@logger.info "#{description}"
         if !description.eql?("") then
             description_html = Nokogiri::HTML(description, 'UTF-8') do | config |
                 config.strict
@@ -435,8 +382,6 @@ class CaliberHelper
         else
             body_content = ""
         end
-#@logger.info "DEBUG(process_description_body): after, body_content="
-#@logger.info "#{body_content}"
         return body_content
     end #} end of "def process_description_body(description)"
 
