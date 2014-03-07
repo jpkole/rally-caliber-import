@@ -260,11 +260,11 @@ class CaliberHelper
     end
 
 
-    def make_header(field_string)
-        # ----------------------------------------------
-        # A Bolded Caliber field header for inclusion into Rally Description markup
-        return "<p><b>#{field_string}</b></p>"
-    end
+    #def make_header(field_string)
+    #    # ----------------------------------------------
+    #    # A Bolded Caliber field header for inclusion into Rally Description markup
+    #    return "<p><b>#{field_string}</b></p>"
+    #end
 
 
     def get_caliber_image_files(caliber_description) #{
@@ -319,7 +319,8 @@ class CaliberHelper
         artifact_markup = ''
         markup_hash.each do | field_title, field_key |
             field_string = caliber_object[field_key]
-            artifact_markup += make_header(field_title)
+            #artifact_markup += make_header(field_title)
+            artifact_markup += "<p><b>#{field_title}</b></p>"
             if !field_string.nil? then
                 artifact_markup += field_string
             end
@@ -335,14 +336,15 @@ class CaliberHelper
     end #} end of "def create_markup_from_hash(caliber_object, markup_hash, obj_type)"
 
 
-    def make_requirement_notes(requirement)
-        # ----------------------------------------------
-        # Mash Caliber Open Issues data into a notes field for Rally Story
-        notes = make_header('Caliber Open Issues')
-        if requirement.has_key? 'open_issues'
-            notes += requirement['open_issues']
-        end
-    end
+    #def make_requirement_notes(requirement)
+    #    # ----------------------------------------------
+    #    # Mash Caliber Open Issues data into a notes field for Rally Story
+    #    #notes = make_header('Caliber Open Issues')
+    #    notes = "<p><b>Caliber Open Issues</b></p>"
+    #    if requirement.has_key? 'open_issues'
+    #        notes += requirement['open_issues']
+    #    end
+    #end
 
 
     def create_story_from_caliber(requirement) #{
@@ -353,7 +355,14 @@ class CaliberHelper
 #debugger
         story["Name"]                   = make_name(requirement, :requirement)
         story["Description"]            = create_markup_from_hash(requirement, @description_field_hash, :requirement)
-        story["Notes"]                  = make_requirement_notes(requirement)
+##############################
+#       story["Notes"]                  = make_requirement_notes(requirement)
+##############################
+        story["Notes"]                  = "<p><b>Caliber Open Issues</b></p>"
+	if requirement.has_key? 'open_issues'
+            story["Notes"]             += requirement['open_issues']
+        end
+##############################
         story[@caliber_id_field_name]   = requirement['id']
         begin
 #@logger.info "DEBUG(create_story_from_caliber): creating user story with story['Description']="

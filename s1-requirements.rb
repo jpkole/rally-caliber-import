@@ -134,7 +134,7 @@ end
 #$uda_value_name_delivery       = "JDF Delivery Status"     #13
 #$uda_value_name_requirement    = "JDF Requirement Class"   #14
 #$uda_value_name_machine_type   = "JDF Machine Type"        #15
-#$uda_value_name_open_issues    = "JDF Open Issues"         #16
+ $uda_value_name_open_issues    = "JDF Open Issues"         #16
 
 bm_time = Benchmark.measure {
 
@@ -324,8 +324,8 @@ bm_time = Benchmark.measure {
                                 this_requirement['exceptions']         = uda_value_value
                             when $uda_value_name_remarks
                                 this_requirement['remarks']            = uda_value_value
-                            #when $uda_value_name_open_issues
-                            #    this_requirement['open_issues']        = uda_value_value
+                            when $uda_value_name_open_issues
+                                this_requirement['open_issues']        = uda_value_value
                             #when $uda_value_name_input
                             #    this_requirement['input']              = uda_value_value
                             #when $uda_value_name_output
