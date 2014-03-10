@@ -1,11 +1,11 @@
 # Rally Connection parameters
 
-$my_base_url                     = "https://audemo.rallydev.com/slm"
+$my_base_url                     = "https://demo-services1.rallydev.com/slm"
 $my_username                     = "jpkole@rallydev.com"
 $my_password                     = "!!nrlad1804"
 $my_wsapi_version                = "1.43"
-$my_workspace                    = "JohnDeere"
-$my_project                      = "JDF-Tnavi-2"
+$my_workspace                    = "JPKole-Testing"
+$my_project                      = "JDF-Tnavi-1"
 
 #$my_base_url                     = "https://rally1.rallydev.com/slm"
 #$my_username                     = "rally_caliber@johndeere.com"
