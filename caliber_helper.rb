@@ -106,7 +106,6 @@ class CaliberHelper
         new_description = description_doc.to_s
         # Rip out <html><body> tags
         new_description = process_description_body(new_description)
-
         artifact_type = artifact_ref.split("/")[-2]
         artifact_oid  = artifact_ref.split("/")[-1].split("\.")[-2]
         update_fields = {}
@@ -247,7 +246,6 @@ class CaliberHelper
         caliber_description_parser.search('img').each do | this_image |
             image_id = this_image['id']
             image_src = this_image['src']
-
             image_url_unescaped = URI.unescape(image_src)
             image_file_name = image_url_unescaped.split("\\")[-1]
 
@@ -306,10 +304,17 @@ class CaliberHelper
     def create_story_from_caliber(requirement) #{
         # ----------------------------------------------
         # Take Caliber Requirement hash, process and combine field data and create a story in Rally
-
         story = {}
         story["Name"]                   = make_name(requirement, :requirement)
-        story["Description"]            = create_markup_from_hash(requirement, @description_field_hash, :requirement)
+	description = create_markup_from_hash(requirement, @description_field_hash, :requirement)
+	if !description.nil? then
+	    # Within an <img...> tag, Rally no longer allows src= strings which have a leading "file://"; so change it to "http://".
+	    description = description.gsub(/file:\/\//, "http://")
+	    # Within an <img...> tag, Rally no longer allows id= tags; so change it to "title=" (which are allowed).
+	    description = description.gsub(/id=/, "title=")
+	end
+        #story["Description"]            = create_markup_from_hash(requirement, @description_field_hash, :requirement)
+        story["Description"]            = description
         story["Notes"]                  = "<p><b>Caliber Open Issues</b></p>"
 	if requirement.has_key? 'open_issues'
             story["Notes"]             += requirement['open_issues']

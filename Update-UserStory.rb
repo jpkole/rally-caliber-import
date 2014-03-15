@@ -28,11 +28,22 @@ require "base64"
 require "debugger"
 
 util_name       = "Update-UserStory.rb"
-$my_base_url	= "https://audemo.rallydev.com/slm"
+$my_base_url	= "https://.rallydev.com/slm"
 $my_username	= "jpkole@rallydev.com"
 $my_password	= "!!nrlad1804"
 $my_workspace	= "JPKole-Testing"
 $my_project	= "JDF-Tnavi-1"
+
+
+# ------------------------------------------------------------------------------
+# Load (and maybe override with) my personal/private variables from a file...
+my_vars = "./my_vars.rb"
+if FileTest.exist?( my_vars ) then 
+    print "Sourcing #{my_vars}...\n"
+    require my_vars
+else
+    print "File #{my_vars} not found; skipping require...\n"
+end
 
 
 # ------------------------------------------------------------------------------

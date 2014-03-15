@@ -12,28 +12,6 @@ require 'benchmark'
 require 'debugger'
 @jpwantsdebugger=true
 
-# Rally Connection parameters
-$my_base_url                    = "https://rally1.rallydev.com/slm"
-$my_username                    = "user@company.com"
-$my_password                    = "topsecret"
-$my_wsapi_version               = "1.43"
-$my_workspace                   = "Caliber"
-$my_project                     = "Scratch"
-$max_attachment_length          = 5_242_880 # 5mb - https://help.rallydev.com/creating-user-story
-
-# Caliber parameters
-$caliber_file_req                = "hhc.xml"
-$caliber_id_field_name           = "CaliberID"
-$caliber_image_directory         = "foo"
-
-# Runtime preferences
-$max_import_count                = 100000
-$html_mode                       = true
-$preview_mode                    = false
-
-# Flag to set in @rally_story_hierarchy_hash if Requirement has no Parent
-$no_parent_id                    = "-9999"
-
 if $my_delim == nil then $my_delim = "\t" end
 
 # Load (and maybe override with) my personal/private variables from a file...
@@ -377,7 +355,7 @@ bm_time = Benchmark.measure {
                 caliber_image_count = @caliber_helper.count_images_in_caliber_description(this_requirement['description'])
 
                 if caliber_image_count > 0 then
-                    description_with_images = this_requirement['description']
+                    #description_with_images = this_requirement['description']
                     description_with_images = story.elements[:description]	# jp chasing bug
                     image_file_objects, image_file_ids = @caliber_helper.get_caliber_image_files(description_with_images)
                     caliber_image_data = {

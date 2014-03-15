@@ -11,23 +11,6 @@ require 'benchmark'
 require 'debugger'
 @jpwantsdebugger=true
 
-# Rally Connection parameters
-$my_base_url                    = "https://rally1.rallydev.com/slm"
-$my_username                    = "user@company.com"
-$my_password                    = "topsecret"
-$my_wsapi_version               = "1.43"
-$my_workspace                   = "My Workspace"
-$my_project                     = "My Project"
-$max_attachment_length          = 5_242_880 # 5mb - https://help.rallydev.com/creating-user-story
-
-# Caliber parameters
-$caliber_file_req_traces         = "hhc_traces.xml"
-$caliber_req_traces_field_name   = 'Externalreference'
-
-# Runtime preferences
-$max_import_count                = 100000
-$preview_mode                    = false
-
 if $my_delim == nil then $my_delim = "\t" end
 
 # Load (and maybe override with) my personal/private variables from a file...
@@ -36,7 +19,7 @@ if FileTest.exist?( my_vars ) then
         print "Sourcing #{my_vars}...\n"
         require my_vars
 else
-        print "File #{my_vars} not found...\n"
+        print "File #{my_vars} not found; skipping require...\n"
 end
 
 # Tags of interest
@@ -296,7 +279,7 @@ bm_time = Benchmark.measure {
     import_count = 0
     tags_jdrequesttraces = caliber_data.search($jdrequesttraces_tag)
     tags_jdrequesttraces.each_with_index do | request_traces, indx_req_traces |
-        @logger.info "Processing #{$jdrequesttraces_tag} tag #{indx_req_traces+1} of #{tags_jdrequesttraces.length}..."
+        @logger.info "Processing <#{$jdrequesttraces_tag}> tag #{indx_req_traces+1} of #{tags_jdrequesttraces.length}..."
 
         tags_jdrequest = request_traces.search($jdrequest_tag)
         tags_jdrequest.each_with_index do | jd_request, indx_request |
@@ -311,7 +294,7 @@ bm_time = Benchmark.measure {
                 this_req_name = jd_name.text
             end
 
-            @logger.info "    Processing #{$jdrequest_tag} tag #{indx_request+1} of #{tags_jdrequest.length}; JDid=#{this_req_id}"
+            @logger.info "    Processing <#{$jdrequest_tag}> tag #{indx_request+1} of #{tags_jdrequest.length}; JDid=#{this_req_id}"
 
             story_oid       = @story_oid_by_reqname[this_req_name][0]    # Rally ObjectID
             story_fid       = @story_oid_by_reqname[this_req_name][1]    # Rally FormattedID
@@ -329,14 +312,14 @@ bm_time = Benchmark.measure {
             # Find all <JDtraceto>'s    
             tags_jdtraceto = jd_request.search($jdtraceto_tag)
             tags_jdtraceto.each_with_index do | jd_traceto, indx_traceto |
-                @logger.info "        Searching #{$jdtraceto_tag} tag #{indx_traceto+1} of #{tags_jdtraceto.length}..."
+                @logger.info "        Searching <#{$jdtraceto_tag}> tag #{indx_traceto+1} of #{tags_jdtraceto.length}..."
 
                 jd_traceto.search($jdtrace_tag).each_with_index do | jd_trace, indx_trace |
 
                     this_traceid    = jd_trace.search($jdtraceid_tag).first.text
                     this_tracename  = jd_trace.search($jdtracename_tag).first.text
 
-                    @logger.info "            Found #{$jdtrace_tag} tag #{indx_trace+1}; JDtraceId=#{this_traceid}; JDtraceName='#{this_tracename}'"
+                    @logger.info "            Found <#{$jdtrace_tag}> tag #{indx_trace+1}; JDtraceId=#{this_traceid}; JDtraceName='#{this_tracename}'"
 
                     is_requirement = this_traceid.match(/^REQ/)
                     if !is_requirement.nil? then
@@ -351,14 +334,14 @@ bm_time = Benchmark.measure {
             # Find all <JDtracefrom>'s
             tags_jdtracefrom = jd_request.search($jdtracefrom_tag)
             tags_jdtracefrom.each_with_index do | jd_tracefrom, indx_tracefrom |
-                @logger.info "        Searching #{$jdtracefrom_tag} tag #{indx_tracefrom+1} of #{tags_jdtracefrom.length}..."
+                @logger.info "        Searching <#{$jdtracefrom_tag}> tag #{indx_tracefrom+1} of #{tags_jdtracefrom.length}..."
 
                 jd_tracefrom.search($jdtrace_tag).each_with_index do | jd_trace, indx_trace |
 
                     this_traceid    = jd_trace.search($jdtraceid_tag).first.text
                     this_tracename  = jd_trace.search($jdtracename_tag).first.text
 
-                    @logger.info "            Found #{$jdtrace_tag} tag #{indx_trace+1}; JDtraceId=#{this_traceid}; JDtraceName='#{this_tracename}'"
+                    @logger.info "            Found <#{$jdtrace_tag}> tag #{indx_trace+1}; JDtraceId=#{this_traceid}; JDtraceName='#{this_tracename}'"
 
                     is_requirement = this_traceid.match(/^REQ/)
                     if !is_requirement.nil? then
@@ -408,7 +391,7 @@ bm_time = Benchmark.measure {
 
     @logger.show_msg_stats
 
-}
+} # end of "bm_time = Benchmark.measure"
 
 puts "\nTimes in seconds:"
 puts "  --User--   -System-   --Total-  --Elapsed-"

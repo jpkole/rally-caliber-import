@@ -1,58 +1,91 @@
 # Rally Connection parameters
 
-$my_base_url                     = "https://demo-services1.rallydev.com/slm"
-$my_username                     = "jpkole@rallydev.com"
-$my_password                     = "!!nrlad1804"
-$my_wsapi_version                = "1.43"
-$my_workspace                    = "JPKole-Testing"
-$my_project                      = "JDF-Tnavi-1"
+# --------------------------------------------------------------------------
+# My test environment.
+#
+#$my_base_url                    = "https://demo-services1.rallydev.com/slm"
+#$my_username                    = "jpkole@rallydev.com"
+#$my_password                    = "!!nrlad1804"
+#$my_wsapi_version               = "1.43"
+#$my_workspace                   = "JDF Tampere"
+#$my_project                     = "TNavi_requirements"
 
-#$my_base_url                     = "https://rally1.rallydev.com/slm"
-#$my_username                     = "rally_caliber@johndeere.com"
-#$my_password                     = "!!nrlad1804"
-#$my_wsapi_version                = "1.43"
-#$my_workspace                    = "JDF Tampere"
-#$my_project                      = "TNavi_requirements"
+# --------------------------------------------------------------------------
+# The real deal...
+#
+$my_base_url                    = "https://rally1.rallydev.com/slm"
+$my_username                    = "rally_caliber@johndeere.com"
+$my_password                    = "!!nrlad1804"
+$my_wsapi_version               = "1.43"
+$my_workspace                   = "JDF Tampere"
+$my_project                     = "TNavi_requirements"
 
-$max_attachment_length          = 5_242_880 # 5mb - https://help.rallydev.com/creating-user-story
-$max_description_length         = 32_768 # fail
-$max_description_length         = 32_702 # I have no idea why this is the max?
-$max_import_count               = 50_000
 
-# Caliber parameters
+# ------------------------------------------------------------------------------
+# JDF_zeuscontrol project (proof of concept)
+#
+#$caliber_file_req               = "../from-marks-dropbox/hhc.xml"                                   # 01-Requirements
+#$caliber_file_req_traces        = "../from-marks-dropbox/hhc_traces.xml"                            # 02-Requirement-Traces
+#$caliber_file_tc                = "../from-marks-dropbox/jdf_testcase_zeuscontrol.xml"              # 03-Testcases
+#$caliber_file_tc_traces         = "../from-marks-dropbox/jdf_testcase_traces_zeuscontrol.xml"       # 04-Testcases-Traces
+#$caliber_image_directory        = "../from-marks-dropbox/images"                                    # 05-Image data
 
-# JDF_zeuscontrol project:
-# (proof of concept project)                                                                    # Order of import:
-# --------------------------                                                                    # ---------------------
-#$caliber_file_req               = "../from-marks-dropbox/hhc.xml"                               # 01-Requirements
-#$caliber_file_req_traces        = "../from-marks-dropbox/hhc_traces.xml"                        # 02-Requirement-Traces
-#$caliber_file_tc                = "../from-marks-dropbox/jdf_testcase_zeuscontrol.xml"          # 03-Testcases
-#$caliber_file_tc_traces         = "../from-marks-dropbox/jdf_testcase_traces_zeuscontrol.xml"   # 04-Testcases-Traces
-#$caliber_image_directory        = "../from-marks-dropbox/images"
+# ------------------------------------------------------------------------------
+# Proj1: Hera project
+#
+#$caliber_file_req               = "../from-ftp-site/fetch1/heraTC_and_REQ/heraTC_and_REQ.xml"       # 01-Requirements
+#$caliber_file_req_traces        = "../from-ftp-site/fetch1/heraTC_and_REQ/heratrace.xml"            # 02-Requirement-Traces
+#$caliber_file_tc                = "../from-ftp-site/fetch1/heraTC_and_REQ/heraTC_and_REQ.xml"       # 03-Testcases
+#$caliber_file_tc_traces         = "../from-ftp-site/fetch1/heraTC_and_REQ/heratrace.xml"            # 04-Testcases-Traces
+#$caliber_image_directory        = "../from-ftp-site/fetch1/ImageCache"                              # 05-Image data
 
-$caliber_file_req               = "../from-ftp-site/fetch1/heraTC_and_REQ/heraTC_and_REQ.xml"   # 01-Requirements
-$caliber_file_req_traces        = "../from-ftp-site/fetch1/heraTC_and_REQ/heratrace.xml"        # 02-Requirement-Traces
-$caliber_file_tc                = "../from-ftp-site/fetch1/heraTC_and_REQ/heraTC_and_REQ.xml"   # 03-Testcases
-$caliber_file_tc_traces         = "../from-ftp-site/fetch1/heraTC_and_REQ/heratrace.xml"        # 04-Testcases-Traces
-$caliber_image_directory        = "../from-ftp-site/fetch1/ImageCache"
+# ------------------------------------------------------------------------------
+# Proj2: Tnavi project
+#
+$caliber_file_req               = "../from-ftp-site/fetch2-TNvai/tnavi2014.xml"                     # 01-Requirements
+$caliber_file_req_traces        = "../from-ftp-site/fetch2-TNvai/TNavitrace.xml"                    # 02-Requirement-Traces
+$caliber_file_tc                = ""                                                                # 03-Testcases
+$caliber_file_tc_traces         = ""                                                                # 04-Testcases-Traces
+$caliber_image_directory        = "../from-ftp-site/fetch2-TNvai/ImageCache"                        # 05-Image data
 
-$caliber_file_req               = "../from-ftp-site/fetch2/tnavi2014.xml"                       # 01-Requirements
-$caliber_file_req_traces        = "../from-ftp-site/fetch2/TNavitrace.xml"                      # 02-Requirement-Traces
-$caliber_file_tc                = ""                                                            # 03-Testcases
-$caliber_file_tc_traces         = ""                                                            # 04-Testcases-Traces
-$caliber_image_directory        = "../from-ftp-site/fetch2/ImageCache"
+# ------------------------------------------------------------------------------
+# Proj3: TimberOffice project
+#
+#$caliber_file_req               = "../from-ftp-site/fetch3-TimberOffice/Toffice_toRally.xml"        # 01-Requirements
+#$caliber_file_req_traces        = "../from-ftp-site/fetch3-TimberOffice/JDF_tofficetrace2.xml"      # 02-Requirement-Traces
+#$caliber_file_tc                = ""                                                                # 03-Testcases
+#$caliber_file_tc_traces         = ""                                                                # 04-Testcases-Traces
+#$caliber_image_directory        = "../from-ftp-site/fetch3-TimberOffice/ImageCache"                 # 05-Image data
 
-# Custom fields in Rally: on User Story
+# ------------------------------------------------------------------------------
+# Proj4: Rimu project
+#
+#$caliber_file_req               = "../from-ftp-site/fetch4-Rimu_Reqs_and_Traces/rimu.xml"           # 01-Requirements
+#$caliber_file_req_traces        = "../from-ftp-site/fetch4-Rimu_Reqs_and_Traces/JDF_rimutraces.xml" # 02-Requirement-Traces
+#$caliber_file_tc                = ""                                                                # 03-Testcases
+#$caliber_file_tc_traces         = ""                                                                # 04-Testcases-Traces
+#$caliber_image_directory        = "../from-ftp-site/fetch4-Rimu_Reqs_and_Traces/???? ask Mika"      # 05-Image data
+
+
+# ------------------------------------------------------------------------------
+# Custom fields in Rally:
+#
 $caliber_id_field_name          = "CaliberID"           # US - type String
 $caliber_req_traces_field_name  = "Externalreference"   # US - type Text
 
-# Custom fields in Rally: on TestCase
 $caliber_id_field_name          = "CaliberID"           # TC - type String
 $caliber_weblink_field_name     = "CaliberTCParent"     # TC - type Weblink
 $caliber_tc_traces_field_name   = "Externalreference"   # TC - type Text
 
 
+# ------------------------------------------------------------------------------
 # Runtime preferences
+#
+$max_attachment_length          = 5_242_880 # 5mb - https://help.rallydev.com/creating-user-story
+$max_description_length         = 32_768 # fail
+$max_description_length         = 31_000 # This apparently needs to be lower than the published 32,768... maybe nokigiri adds more?
+$max_import_count               = 50_000
+
 $html_mode                      = true
 $preview_mode                   = false
 
