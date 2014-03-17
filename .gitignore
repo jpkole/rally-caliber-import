@@ -3,10 +3,9 @@ s2-requirement_traces.log
 s3-testcases.log
 s4-testcase_traces.log
 
-s1-requirements.csv
-s1-story_oids_by_reqname.csv
-s3-testcase_oids_by_testcaseid.csv
-s3-testcases.csv
+*.csv
+Desc-REQ*.txt
+run-output-*
 
 Print-UserStory.rb.orig
 desc0-REQ36721-orig.txt
@@ -23,7 +22,6 @@ x.html
 x2.html
 
 dog.html
-run-output-01
-run-output-03
 x-logger-example.rb
 x.log
+

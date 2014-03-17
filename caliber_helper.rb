@@ -85,9 +85,9 @@ class CaliberHelper
         attachment_fields["Size"]        = attachment_data_hash[:size]
         attachment = @rally.create(:attachment, attachment_fields)
 
-        #@logger.info "    Imported #{attachment_data_hash[:name]} to a Rally Attachment Artifact: ObjectID=#{attachment_data_hash[:artifactoid]}"
-        #@logger.info "        Created Rally Attachment Artifact: ObjectID=#{attachment.ObjectID}; content=#{attachment_data_hash[:name]}"
-        @logger.info "            created Rally Attachment Artifact: ObjectID=#{attachment.ObjectID}; Orig/Base64 sizes=#{attachment_data_hash[:bytes].length}/#{attachment_content_string.length}"
+        #@logger.info "    Imported #{attachment_data_hash[:name]} to a Rally Attachment Artifact: OID=#{attachment_data_hash[:artifactoid]}"
+        #@logger.info "        Created Rally Attachment Artifact: OID=#{attachment.ObjectID}; content=#{attachment_data_hash[:name]}"
+        @logger.info "            created Rally Attachment Artifact: OID=#{attachment.ObjectID}; Orig/Base64 sizes=#{attachment_data_hash[:bytes].length}/#{attachment_content_string.length}"
         return attachment
     end #} end of "def create_image_attachment(attachment_data_hash)"
 
@@ -111,7 +111,7 @@ class CaliberHelper
         update_fields = {}
         update_fields["Description"] = new_description
         updated_artifact = @rally.update(artifact_type, artifact_oid, update_fields)
-        @logger.info "        updated Rally Artifact; FormattedID=#{artifact_fmtid}; ObjectID=#{artifact_oid} with embedded images."
+        @logger.info "        updated Rally Artifact; FmtID=#{artifact_fmtid}; OID=#{artifact_oid} with embedded images."
     end #} end of "def fix_description_images(artifact_fmtid, artifact_ref, artifact_description, rally_attachment_sources)"
 
 
@@ -142,7 +142,7 @@ class CaliberHelper
             # Array with relative URL's to Rally-embedded attachments
             new_attachment_sources = []
 
-            @logger.info "    Import #{artifact_count} of #{artifacts_with_images_hash.length}: adding #{this_image_list.length} image(s) to Rally User Story; FormattedID=#{this_artifact_fmtid}; ObjectID=#{this_artifact_oid}"
+            @logger.info "    Import #{artifact_count} of #{artifacts_with_images_hash.length}: adding #{this_image_list.length} image(s) to Rally User Story; FmtID=#{this_artifact_fmtid}; OID=#{this_artifact_oid}"
             this_image_list.each_with_index do | this_image_file, indx_image | #{
 
                 @logger.info "        importing image file #{indx_image+1} of #{this_image_list.length}: Name=#{File.basename(this_image_file)}"
@@ -179,7 +179,7 @@ class CaliberHelper
                         # So that we can stitch it back into the Description to "in-line" the image
                         new_attachment_sources.push(attachment_src_url)
                     rescue => ex
-                        @logger.error "Error occurred trying to create attachment from #{this_image_file} for Rally Artifact with ObjectID: #{this_artifact_oid}"
+                        @logger.error "Error occurred trying to create attachment from #{this_image_file} for Rally Artifact with OID=#{this_artifact_oid}"
                         @logger.error ex.message
                         @logger.error ex.backtrace
                     end
@@ -291,13 +291,19 @@ class CaliberHelper
             end
         end
         artifact_markup += "<br/>"
-        if artifact_markup.length > $max_description_length
+        if artifact_markup.length <= $max_description_length
+            return artifact_markup
+        else
             @logger.warn "        *** Description length: #{artifact_markup.length} exceeds Rally limit of #{$max_description_length}; truncated."
+            @logger.warn "        *** Truncating Description on Caliber REQ#{caliber_object["id"]}"
             trunc_warn = '*** Too long; TRUNCATED! ***'
-            artifact_markup_shortened = artifact_markup[0..$max_description_length-trunc_warn.length-1] + trunc_warn
-            artifact_markup = artifact_markup_shortened
+
+            # Save a copy of the description that is too long, into its own file
+            File.open("Desc-REQ"+caliber_object["id"]+".txt", 'w') { |file| file.write(artifact_markup) }
+
+            # Return a truncated Description with an appended warning
+            return (artifact_markup[0..$max_description_length-trunc_warn.length-1] + trunc_warn)
         end
-        return artifact_markup
     end #} end of "def create_markup_from_hash(caliber_object, markup_hash, obj_type)"
 
 
@@ -412,14 +418,14 @@ class CaliberHelper
                 parent_story_oid = parent_story['ObjectID']
                 parent_story_fid = parent_story['FormattedID']
 
-                @logger.info "    Parenting (##{parents_stitched} of #{tot}); Child Hierarchy #{this_hierarchy_id}: Rally UserStory: FormattedID=#{child_story_fid}; ObjectID=#{child_story_oid} to:"
-                @logger.info "        parent Hierarchy #{this_parent_hierarchy_id}: Rally UserStory: FormattedID=#{parent_story_fid}; ObjectID=#{parent_story_oid}"
+                @logger.info "    Parenting (##{parents_stitched} of #{tot}); Child Hierarchy #{this_hierarchy_id}: Rally UserStory: FmtID=#{child_story_fid}; OID=#{child_story_oid} to:"
+                @logger.info "        parent Hierarchy #{this_parent_hierarchy_id}: Rally UserStory: FmtID=#{parent_story_fid}; OID=#{parent_story_oid}"
                 update_fields = {}
                 update_fields["Parent"] = parent_story._ref
                 begin
                     @rally.update("hierarchicalrequirement", child_story_oid, update_fields)
                 rescue => ex
-                    @logger.error "Error occurred attempting to Parent Rally Story: ObjectID #{child_story_oid}; to Story: #{parent_story_oid}"
+                    @logger.error "Error occurred attempting to Parent Rally Story: OID=#{child_story_oid}; to Story: OID=#{parent_story_oid}"
                     @logger.error ex.message
                     @logger.error ex.backtrace
                 end
@@ -446,8 +452,8 @@ class CaliberHelper
                 parent_testcase_oid = parent_testcase['ObjectID']
                 parent_testcase_fid = parent_testcase['FormattedID']
 
-                @logger.info "    Parenting Child Hierarchy ID: #{this_hierarchy_id} with Rally TestCase: FormattedID=#{child_testcase_fid}; ObjectID=#{child_testcase_oid} to:"
-                @logger.info "        Parent Hierarchy ID: #{this_parent_hierarchy_id} with Rally TestCase: FormattedID=#{parent_testcase_fid}; ObjectID: #{parent_testcase_oid}"
+                @logger.info "    Parenting Child Hierarchy ID: #{this_hierarchy_id} with Rally TestCase: FmtID=#{child_testcase_fid}; OID=#{child_testcase_oid} to:"
+                @logger.info "        Parent Hierarchy ID: #{this_parent_hierarchy_id} with Rally TestCase: FmtID=#{parent_testcase_fid}; OID=#{parent_testcase_oid}"
 
                 parent_web_link = {}
                 parent_web_link["LinkID"] = parent_testcase_oid
@@ -458,7 +464,7 @@ class CaliberHelper
                 begin
                     @rally.update("testcase", child_testcase_oid, update_fields)
                 rescue => ex
-                    @logger.error "Error occurred attempting to Link Rally TestCase: ObjectID #{child_testcase_oid}; to TestCase: #{parent_testcase_oid}"
+                    @logger.error "Error occurred attempting to Link Rally TestCase: OID=#{child_testcase_oid}; to TestCase: OID=#{parent_testcase_oid}"
                     @logger.error ex.message
                     @logger.error ex.backtrace
                 end

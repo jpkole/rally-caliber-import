@@ -3,22 +3,22 @@
 # --------------------------------------------------------------------------
 # My test environment.
 #
-#$my_base_url                    = "https://demo-services1.rallydev.com/slm"
-#$my_username                    = "jpkole@rallydev.com"
-#$my_password                    = "!!nrlad1804"
-#$my_wsapi_version               = "1.43"
-#$my_workspace                   = "JDF Tampere"
-#$my_project                     = "TNavi_requirements"
+$my_base_url                    = "https://demo-services1.rallydev.com/slm"
+$my_username                    = "jpkole@rallydev.com"
+$my_password                    = "!!nrlad1804"
+$my_wsapi_version               = "1.43"
+$my_workspace                   = "JDF Tampere"
+$my_project                     = "Toffice"
 
 # --------------------------------------------------------------------------
 # The real deal...
 #
-$my_base_url                    = "https://rally1.rallydev.com/slm"
-$my_username                    = "rally_caliber@johndeere.com"
-$my_password                    = "!!nrlad1804"
-$my_wsapi_version               = "1.43"
-$my_workspace                   = "JDF Tampere"
-$my_project                     = "TNavi_requirements"
+#$my_base_url                    = "https://rally1.rallydev.com/slm"
+#$my_username                    = "rally_caliber@johndeere.com"
+#$my_password                    = "!!nrlad1804"
+#$my_wsapi_version               = "1.43"
+#$my_workspace                   = "JDF Tampere"
+#$my_project                     = "Toffice"
 
 
 # ------------------------------------------------------------------------------
@@ -42,20 +42,20 @@ $my_project                     = "TNavi_requirements"
 # ------------------------------------------------------------------------------
 # Proj2: Tnavi project
 #
-$caliber_file_req               = "../from-ftp-site/fetch2-TNvai/tnavi2014.xml"                     # 01-Requirements
-$caliber_file_req_traces        = "../from-ftp-site/fetch2-TNvai/TNavitrace.xml"                    # 02-Requirement-Traces
-$caliber_file_tc                = ""                                                                # 03-Testcases
-$caliber_file_tc_traces         = ""                                                                # 04-Testcases-Traces
-$caliber_image_directory        = "../from-ftp-site/fetch2-TNvai/ImageCache"                        # 05-Image data
+#$caliber_file_req               = "../from-ftp-site/fetch2-TNvai/tnavi2014.xml"                     # 01-Requirements
+#$caliber_file_req_traces        = "../from-ftp-site/fetch2-TNvai/TNavitrace.xml"                    # 02-Requirement-Traces
+#$caliber_file_tc                = ""                                                                # 03-Testcases
+#$caliber_file_tc_traces         = ""                                                                # 04-Testcases-Traces
+#$caliber_image_directory        = "../from-ftp-site/fetch2-TNvai/ImageCache"                        # 05-Image data
 
 # ------------------------------------------------------------------------------
 # Proj3: TimberOffice project
 #
-#$caliber_file_req               = "../from-ftp-site/fetch3-TimberOffice/Toffice_toRally.xml"        # 01-Requirements
-#$caliber_file_req_traces        = "../from-ftp-site/fetch3-TimberOffice/JDF_tofficetrace2.xml"      # 02-Requirement-Traces
-#$caliber_file_tc                = ""                                                                # 03-Testcases
-#$caliber_file_tc_traces         = ""                                                                # 04-Testcases-Traces
-#$caliber_image_directory        = "../from-ftp-site/fetch3-TimberOffice/ImageCache"                 # 05-Image data
+$caliber_file_req               = "../from-ftp-site/fetch3-TimberOffice/Toffice_toRally.xml"        # 01-Requirements
+$caliber_file_req_traces        = "../from-ftp-site/fetch3-TimberOffice/JDF_tofficetrace2.xml"      # 02-Requirement-Traces
+$caliber_file_tc                = ""                                                                # 03-Testcases
+$caliber_file_tc_traces         = ""                                                                # 04-Testcases-Traces
+$caliber_image_directory        = "../from-ftp-site/fetch3-TimberOffice/ImageCache"                 # 05-Image data
 
 # ------------------------------------------------------------------------------
 # Proj4: Rimu project
@@ -83,7 +83,8 @@ $caliber_tc_traces_field_name   = "Externalreference"   # TC - type Text
 #
 $max_attachment_length          = 5_242_880 # 5mb - https://help.rallydev.com/creating-user-story
 $max_description_length         = 32_768 # fail
-$max_description_length         = 31_000 # This apparently needs to be lower than the published 32,768... maybe nokigiri adds more?
+$max_description_length         = 31_310 # This apparently needs to be lower than the published 32,768... maybe nokigiri adds more?
+#maybe try 31310 for Toffice (above)
 $max_import_count               = 50_000
 
 $html_mode                      = true

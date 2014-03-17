@@ -328,7 +328,7 @@ bm_time = Benchmark.measure {
                 if $import_to_rally then
                     story = @caliber_helper.create_story_from_caliber(this_requirement)
 		    total_us = total_us + 1
-                    @logger.info "            Created Rally UserStory #{total_us} of #{tags_requirement.length}: FormattedID=#{story.FormattedID}; ObjectID=#{story.ObjectID}; from Caliber Requirement id=#{requirement['id']}"
+                    @logger.info "            Created Rally UserStory #{total_us} of #{tags_requirement.length}: FmtID=#{story.FormattedID}; OID=#{story.ObjectID}; from Caliber Requirement id=#{requirement['id']}"
                 end
 
                 # Save the Story OID and associate it to the Caliber Hierarchy ID for later use in stitching
@@ -431,9 +431,10 @@ bm_time = Benchmark.measure {
 
 }
 
-puts "\nTimes in seconds:"
-puts "  --User--   -System-   --Total-  --Elapsed-"
-puts bm_time
+@logger.info ""
+@logger.info "This script (#{$PROGRAM_NAME}) is finished; benchmark time in seconds:"
+@logger.info "  --User--   -System-   --Total-  --Elapsed-"
+@logger.info bm_time.to_s
 
 exit (0)
 
