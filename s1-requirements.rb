@@ -152,18 +152,16 @@ bm_time = Benchmark.measure {
                 $preview_mode                    = #{$preview_mode}
                 $no_parent_id                    = #{$no_parent_id}
                 $csv_requirements                = #{$csv_requirements}
-                $csv_requirement_fields          = #{$csv_requirement_fields}
                 $csv_story_oids_by_req           = #{$csv_story_oids_by_req}
                 $csv_story_oids_by_req_fields    = #{$csv_story_oids_by_req_fields}
                 $csv_testcases                   = #{$csv_testcases}
-                $csv_testcase_fields             = #{$csv_testcase_fields}
                 $csv_testcase_oid_output         = #{$csv_testcase_oid_output}
                 $csv_testcase_oid_output_fields  = #{$csv_testcase_oid_output_fields}
                 $cal2ral_req_log                 = #{$cal2ral_req_log}
                 $cal2ral_req_traces_log          = #{$cal2ral_req_traces_log}
                 $cal2ral_tc_log                  = #{$cal2ral_tc_log}
                 $cal2ral_tc_traces_log           = #{$cal2ral_tc_traces_log}
-                $description_field_hash          = #{$description_field_hash}"
+"
 
     # Set up custom headers for Rally connection
     $headers                    = RallyAPI::CustomHttpHeader.new()
@@ -250,7 +248,7 @@ bm_time = Benchmark.measure {
             total_us = 0
 	    tags_requirement = req_type.search($req_tag)
             tags_requirement.each_with_index do | requirement, indx_req | #{
-                @logger.info "        <Requirement ...> tag #{indx_req+1} of #{tags_requirement.length}: index=\"#{requirement['index']}\"\ id=\"#{requirement['id']}\" tag=\"#{requirement['tag']}\" hierarchy=\"#{requirement['hierarchy']}\""
+                @logger.info "        <Requirement ...> tag #{indx_req+1} of #{tags_requirement.length}: index=\"#{requirement['index']}\"\ id=\"#{requirement['id']}\" tag=\"#{requirement['tag']}\" hierarchy=\"#{requirement['hierarchy']}\" name=\"#{requirement['name']}\""
 
                 # Data - holds output for CSV
                 requirement_data = []

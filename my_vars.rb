@@ -3,27 +3,25 @@
 # --------------------------------------------------------------------------
 # My test environment.
 #
-$my_base_url                    = "https://demo-services1.rallydev.com/slm"
-$my_username                    = "jpkole@rallydev.com"
-$my_password                    = "!!nrlad1804"
-$my_wsapi_version               = "1.43"
-$my_workspace                   = "JDF Tampere"
-$my_project                     = "Toffice"
+#$my_base_url                    = "https://demo-services1.rallydev.com/slm"
+#$my_username                    = "jpkole@rallydev.com"
+#$my_password                    = "!!nrlad1804"
+#$my_wsapi_version               = "1.43"
+#$my_workspace                   = "JDF Tampere"
 
 # --------------------------------------------------------------------------
 # The real deal...
 #
-#$my_base_url                    = "https://rally1.rallydev.com/slm"
-#$my_username                    = "rally_caliber@johndeere.com"
-#$my_password                    = "!!nrlad1804"
-#$my_wsapi_version               = "1.43"
-#$my_workspace                   = "JDF Tampere"
-#$my_project                     = "Toffice"
-
+$my_base_url                    = "https://rally1.rallydev.com/slm"
+$my_username                    = "rally_caliber@johndeere.com"
+$my_password                    = "!!nrlad1804"
+$my_wsapi_version               = "1.43"
+$my_workspace                   = "JDF Tampere"
 
 # ------------------------------------------------------------------------------
 # JDF_zeuscontrol project (proof of concept)
 #
+#$my_project                     = ""                                                                # Rally Project name
 #$caliber_file_req               = "../from-marks-dropbox/hhc.xml"                                   # 01-Requirements
 #$caliber_file_req_traces        = "../from-marks-dropbox/hhc_traces.xml"                            # 02-Requirement-Traces
 #$caliber_file_tc                = "../from-marks-dropbox/jdf_testcase_zeuscontrol.xml"              # 03-Testcases
@@ -33,6 +31,7 @@ $my_project                     = "Toffice"
 # ------------------------------------------------------------------------------
 # Proj1: Hera project
 #
+#$my_project                     = ""                                                                # Rally Project name
 #$caliber_file_req               = "../from-ftp-site/fetch1/heraTC_and_REQ/heraTC_and_REQ.xml"       # 01-Requirements
 #$caliber_file_req_traces        = "../from-ftp-site/fetch1/heraTC_and_REQ/heratrace.xml"            # 02-Requirement-Traces
 #$caliber_file_tc                = "../from-ftp-site/fetch1/heraTC_and_REQ/heraTC_and_REQ.xml"       # 03-Testcases
@@ -42,6 +41,7 @@ $my_project                     = "Toffice"
 # ------------------------------------------------------------------------------
 # Proj2: Tnavi project
 #
+#$my_project                     = "TNavi_requirements"                                              # Rally Project name
 #$caliber_file_req               = "../from-ftp-site/fetch2-TNvai/tnavi2014.xml"                     # 01-Requirements
 #$caliber_file_req_traces        = "../from-ftp-site/fetch2-TNvai/TNavitrace.xml"                    # 02-Requirement-Traces
 #$caliber_file_tc                = ""                                                                # 03-Testcases
@@ -51,6 +51,7 @@ $my_project                     = "Toffice"
 # ------------------------------------------------------------------------------
 # Proj3: TimberOffice project
 #
+$my_project                     = "TimberOffice_requirements"                                       # Rally Project name
 $caliber_file_req               = "../from-ftp-site/fetch3-TimberOffice/Toffice_toRally.xml"        # 01-Requirements
 $caliber_file_req_traces        = "../from-ftp-site/fetch3-TimberOffice/JDF_tofficetrace2.xml"      # 02-Requirement-Traces
 $caliber_file_tc                = ""                                                                # 03-Testcases
@@ -60,11 +61,22 @@ $caliber_image_directory        = "../from-ftp-site/fetch3-TimberOffice/ImageCac
 # ------------------------------------------------------------------------------
 # Proj4: Rimu project
 #
+#$my_project                     = "JDF_Rimu"                                                        # Rally Project name
 #$caliber_file_req               = "../from-ftp-site/fetch4-Rimu_Reqs_and_Traces/rimu.xml"           # 01-Requirements
 #$caliber_file_req_traces        = "../from-ftp-site/fetch4-Rimu_Reqs_and_Traces/JDF_rimutraces.xml" # 02-Requirement-Traces
 #$caliber_file_tc                = ""                                                                # 03-Testcases
 #$caliber_file_tc_traces         = ""                                                                # 04-Testcases-Traces
-#$caliber_image_directory        = "../from-ftp-site/fetch4-Rimu_Reqs_and_Traces/???? ask Mika"      # 05-Image data
+#$caliber_image_directory        = "../from-ftp-site/fetch3-TimberOffice/ImageCache"                 # 05-Image data (Same as TOffice)
+
+# ------------------------------------------------------------------------------
+# Proj5: DTI project
+#
+#$my_project                     = "DTI_requirements"                                                # Rally Project name
+#$caliber_file_req               = "../from-ftp-site/fetch5-DTI/JDF_DTI_reqs_without_trash.xml"      # 01-Requirements
+#$caliber_file_req_traces        = "../from-ftp-site/fetch5-DTI/JDF_DTItracereq.xml"                 # 02-Requirement-Traces
+#$caliber_file_tc                = "../from-ftp-site/fetch5-DTI/JDF_DTI_TC_without_trash.xml"        # 03-Testcases
+#$caliber_file_tc_traces         = "../from-ftp-site/fetch5-DTI/JDF_DTItraceTC.xml"                  # 04-Testcases-Traces
+#$caliber_image_directory        = "../from-ftp-site/fetch5-DTI/???? ask Mika"                       # 05-Image data
 
 
 # ------------------------------------------------------------------------------

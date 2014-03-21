@@ -229,7 +229,7 @@ class CaliberHelper
             obj_type_prefix = "UNKNOWN"
         end
 
-        return "<b>Caliber</b> #{hierarchy} #{obj_type_prefix} #{obj_id}: #{name}"
+        return "Caliber #{hierarchy} #{obj_type_prefix} #{obj_id}: #{name}"
     end
 
 
@@ -298,8 +298,11 @@ class CaliberHelper
             @logger.warn "        *** Truncating Description on Caliber REQ#{caliber_object["id"]}"
             trunc_warn = '*** Too long; TRUNCATED! ***'
 
-            # Save a copy of the description that is too long, into its own file
-            File.open("Desc-REQ"+caliber_object["id"]+".txt", 'w') { |file| file.write(artifact_markup) }
+            # Save a copy of the description (that is too long), into its own file.
+            # (the block around write has the added benefit of closing the file)
+            File.open("Desc-REQ"+caliber_object["id"]+".txt", 'w') do |file|
+                file.write(artifact_markup)
+            end
 
             # Return a truncated Description with an appended warning
             return (artifact_markup[0..$max_description_length-trunc_warn.length-1] + trunc_warn)

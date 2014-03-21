@@ -75,17 +75,17 @@ $trace_tag          = "Trace"
 def cache_story_oid(header, row)
     story_fid       = row[header[0]].strip  # Rally FormattedID
     story_oid       = row[header[1]].strip  # Rally ObjectID
-    caliber_id      = row[header[2]].strip  # Caliber ID
+    req_id          = row[header[2]].strip  # Caliber ID
     req_name        = row[header[3]].strip  # Caliber Req Name
 
-    if !req_name.eql? nil then
-        @story_fidoidcid_by_reqname[req_name] = [story_fid.to_s, story_oid.to_s, caliber_id.to_s]
-    end
+    #if !req_name.eql? nil then
+    #    @story_fidoidcid_by_reqname[req_name] = [story_fid.to_s, story_oid.to_s, req_id.to_s]
+    #end
 
-    @story_fidoid_by_reqid[caliber_id] = [story_fid.to_s, story_oid.to_s]
+    @story_FidOidName_by_reqid[req_id] = [story_fid.to_s, story_oid.to_s, req_name]
 
     if !req_name.eql? nil then
-        @req_name_by_reqid[caliber_id] = req_name
+        @req_name_by_reqid[req_id] = req_name
     end
 end
 
@@ -97,7 +97,7 @@ def create_traces_text_from_traces_array(traces_array)
     trace_counter = 1
 
     traces_array.each do | this_trace |
-        story_oid = @story_fidoid_by_reqid[this_trace][1]
+        story_oid = @story_FidOidName_by_reqid[this_trace][1]
         if !story_oid.nil? then
             this_trace_name = this_trace
             story_url_detail = "#{detail_url_prefix}/#{story_oid}"
@@ -145,7 +145,7 @@ def create_traces_markup_from_traces_array(traces_array) #{
         end
 
         if !is_requirement.nil? then
-            story_fid, story_oid = @story_fidoid_by_reqid[this_traceid.sub("REQ", "")]
+            story_fid, story_oid, story_name = @story_FidOidName_by_reqid[this_traceid.sub("REQ", "")]
 
             if story_oid.nil? then
                 @logger.warn "        *** No Rally Story ObjectID found for Caliber Requirement ID: #{this_traceid} - skipping linkage of this Trace."
@@ -219,18 +219,16 @@ bm_time = Benchmark.measure {
                 $preview_mode                    = #{$preview_mode}
                 $no_parent_id                    = #{$no_parent_id}
                 $csv_requirements                = #{$csv_requirements}
-                $csv_requirement_fields          = #{$csv_requirement_fields}
                 $csv_story_oids_by_req           = #{$csv_story_oids_by_req}
                 $csv_story_oids_by_req_fields    = #{$csv_story_oids_by_req_fields}
                 $csv_testcases                   = #{$csv_testcases}
-                $csv_testcase_fields             = #{$csv_testcase_fields}
                 $csv_testcase_oid_output         = #{$csv_testcase_oid_output}
                 $csv_testcase_oid_output_fields  = #{$csv_testcase_oid_output_fields}
                 $cal2ral_req_log                 = #{$cal2ral_req_log}
                 $cal2ral_req_traces_log          = #{$cal2ral_req_traces_log}
                 $cal2ral_tc_log                  = #{$cal2ral_tc_log}
                 $cal2ral_tc_traces_log           = #{$cal2ral_tc_traces_log}
-                $description_field_hash          = #{$description_field_hash}"
+"
 
     # Set up custom headers for Rally connection
     $headers                    = RallyAPI::CustomHttpHeader.new()
@@ -255,8 +253,8 @@ bm_time = Benchmark.measure {
     end
 
     # Hash to provide a lookup from Caliber reqname -> Rally Story OID
-    @story_fidoidcid_by_reqname = {}
-    @story_fidoid_by_reqid = {}
+    #@story_fidoidcid_by_reqname = {}
+    @story_FidOidName_by_reqid = {}
     @req_name_by_reqid = {}
 
     # Read in cached reqname -> Story OID mapping from file
@@ -296,8 +294,7 @@ bm_time = Benchmark.measure {
 
             @logger.info "    Processing <#{$jdrequest_tag}> tag #{indx_request+1} of #{tags_jdrequest.length}; JDid=#{this_req_id}"
 
-            story_fid, story_oid, story_cid = @story_fidoidcid_by_reqname[this_req_name]
-
+            story_fid, story_oid, story_name = @story_FidOidName_by_reqid[this_req_id.sub("REQ", "")]
             if story_oid.nil? then
                 @logger.warn "        Can't find Rally UserStory: JDname=#{this_req_name}... skipping import of this trace."
                 next
@@ -364,7 +361,7 @@ bm_time = Benchmark.measure {
 	        if traces_text.nil? then
                     @logger.info "        Nothing to update for Rally Story OID=#{story_oid} (no traces found)."
 		else
-                    @logger.info "        Updating Rally Story: FmtID=#{story_fid}; OID=#{story_oid}; with Caliber Traces."
+                    @logger.info "        Updating Rally Story with Caliber Traces: FmtID=#{story_fid}; OID=#{story_oid};  CID=#{this_req_id}"
                     update_story_with_caliber_traces(story_oid, this_req_name, traces_text)
 		end
             end
@@ -390,15 +387,15 @@ bm_time = Benchmark.measure {
 
     ####----####
     # Output a CSV file of ...
-    $csv_story_fidoidcid_by_reqname = "s2-requirement_traces.csv"
-    @logger.info "CSV file creation of #{$csv_story_fidoidcid_by_reqname}..."
-    wholefile = CSV.generate do |csv|
-        csv << %w{reqname  FmtID  ObjectID  CaliberID}
-        @story_fidoidcid_by_reqname.each do |this_HASHENTRY|
-            csv << this_HASHENTRY
-        end
-    end
-    File.write($csv_story_fidoidcid_by_reqname, wholefile)
+    #$csv_story_fidoidcid_by_reqname = "s2-requirement_traces.csv"
+    #@logger.info "CSV file creation of #{$csv_story_fidoidcid_by_reqname}..."
+    #wholefile = CSV.generate do |csv|
+    #    csv << %w{reqname  FmtID  ObjectID  CaliberID}
+    #    @story_fidoidcid_by_reqname.each do |this_HASHENTRY|
+    #        csv << this_HASHENTRY
+    #    end
+    #end
+    #File.write($csv_story_fidoidcid_by_reqname, wholefile)
     ####----####
     #$csv_story_fidoid_by_reqid     = ""
     #$req_name_by_reqid             = ""

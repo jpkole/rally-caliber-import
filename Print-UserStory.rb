@@ -16,11 +16,11 @@
 # Define our constants / variables.
 #
 util_name       = "Print-UserStory.rb"
-$my_base_url	= "https://rally1.rallydev.com/slm"
-$my_username	= "rally_caliber@johndeere.com"
+$my_base_url	= "https://demo-services1.rallydev.com/slm"
+$my_username	= "jpkole@rallydev.com"
 $my_password	= "!!nrlad1804"
 $my_workspace	= "JDF Tampere"
-$my_project	= "TNavi_requirements"
+$my_project	= "Toffice"
 
 require "rally_api"
 require "debugger"
