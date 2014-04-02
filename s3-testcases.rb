@@ -8,31 +8,9 @@ require 'rally_api'
 require 'logger'
 require './caliber_helper.rb'
 require './multi_io.rb'
+require 'benchmark'
 require 'debugger'
 @jpwantsdebugger=true
-
-# Rally Connection parameters
-$my_base_url                     = "https://rally1.rallydev.com/slm"
-$my_username                     = "user@company.com"
-$my_password                     = "topsecret"
-$my_wsapi_version                = "1.43"
-$my_workspace                    = "My Workspace"
-$my_project                      = "My Project"
-$max_attachment_length           = 5000000
-
-# Caliber parameters
-$caliber_file_tc                 = "jdf_testcase_zeuscontrol.xml"
-$caliber_id_field_name           = 'CaliberID'
-$caliber_weblink_field_name      = 'CaliberTCParentLink'
-$caliber_image_directory         = "/images"
-
-# Runtime preferences
-$max_import_count                = 100000
-$html_mode                       = true
-$preview_mode                    = false
-
-# Flag to set in @rally_testcase_hierarchy_hash if Requirement has no Parent
-$no_parent_id                    = "-9999"
 
 if $my_delim == nil then $my_delim = "\t" end
 
@@ -42,10 +20,8 @@ if FileTest.exist?( my_vars ) then
     print "Sourcing #{my_vars}...\n"
     require my_vars
 else
-    print "File #{my_vars} not found...\n"
+    print "File #{my_vars} not found; skipping require...\n"
 end
-
-
 
 
 # set preview mode
@@ -77,25 +53,25 @@ end
 #      name_tag="Operating harvester headREQ20023">
 
 # Tags of interest
-$report_tag                              = "Report"
-$requirement_type_tag                    = "ReqType"
-$requirement_tag                         = "Requirement"
-$uda_values_tag                          = "UDAValues"
-$uda_value_tag                           = "UDAValue"
+$tag_Report                 = "Report"
+$tag_ReqType                = "ReqType"
+$tag_Requirement            = "Requirement"
+$tag_UDAValues              = "UDAValues"
+$tag_UDAValue               = "UDAValue"
 
 # These are the value tags to look/parse for once on the <Requirement> tag
-$requirement_name                        = "name"
-$requirement_hierarchy                   = "hierarchy"
-$requirement_id                          = "id"
-$requirement_validation                  = "validation"
+$requirement_name           = "name"
+$requirement_hierarchy      = "hierarchy"
+$requirement_id             = "id"
+$requirement_validation     = "validation"
 
 # In HTML mode, the tags are all lowercase so downcase them
 if $html_mode then
-    $report_tag                          = $report_tag.downcase
-    $requirement_type_tag                = $requirement_type_tag.downcase
-    $requirement_tag                     = $requirement_tag.downcase
-    $uda_values_tag                      = $uda_values_tag.downcase
-    $uda_value_tag                       = $uda_value_tag.downcase
+    $tag_Report             = $tag_Report.downcase
+    $tag_ReqType            = $tag_ReqType.downcase
+    $tag_Requirement        = $tag_Requirement.downcase
+    $tag_UDAValues          = $tag_UDAValues.downcase
+    $tag_UDAValue           = $tag_UDAValue.downcase
 end
 
 # Caliber TestCases are just a flavor of a Caliber Requirement
@@ -169,7 +145,7 @@ $description_field_hash = {
     'Description'             => 'description'
 }
 
-begin
+bm_time = Benchmark.measure {
 
 #==================== Connect to Rally and Import Caliber data ====================
 
@@ -285,20 +261,26 @@ begin
 
     # Read through caliber file and store requirement records in array of requirement hashes
     import_count = 0
-    caliber_data.search($report_tag).each_with_index do | report, indx_report | #{
-        @logger.info "Processing XML Report tag #{indx_report+1}: project=\"#{report['project']}\" date=\"#{report['date']}\""
 
-        report.search($requirement_type_tag).each_with_index do | req_type, indx_req_type |
-            
-            if req_type['name'] == "JDF Test Case (TC)" then
-                @logger.info "    Processing XML ReqType tag #{indx_req_type+1}: name=\"#{req_type['name']}\" sort_by=\"#{req_type['sort_by']}\""         
+    tags_report = caliber_data.search($tag_Report)
+    tags_report.each_with_index do | this_Report, indx_Report | #{
+        @logger.info "<Report ...> tag #{indx_Report+1} of #{tags_report.length}: project=\"#{this_Report['project']}\" date=\"#{this_Report['date']}\""
+
+        tags_reqtype = this_Report.search($tag_ReqType)
+        tags_reqtype.each_with_index do | this_ReqType, indx_ReqType | #{
+
+            if this_ReqType['name'] == "JDF Test Case (TC)" then
+                @logger.info "    <ReqType ...> tag #{indx_ReqType+1} of #{tags_reqtype.length}: name=\"#{this_ReqType['name']}\" sort_by=\"#{this_ReqType['sort_by']}\""
             else
-                @logger.info "    Ignoring ReqType tag with name=\"#{req_type['name']}\""
-                next  
+                @logger.info "    Ignoring <ReqType ...> tag with name=\"#{this_ReqType['name']}\""
+                next           
             end
+            
+            total_tc = 0
+            tags_requirement = this_ReqType.search($tag_Requirement)
+                tags_requirement.each_with_index do | this_Requirement, indx_Requirement | #{
 
-            req_type.search($requirement_tag).each_with_index do | requirement, indx_req |
-                @logger.info "        Processing XML Requirement tag #{indx_req+1}: index=\"#{requirement['index']}\"\ hierarchy=\"#{requirement['hierarchy']}\" id=\"#{requirement['id']}\" tag=\"#{requirement['tag']}\""
+                @logger.info "        <Requirement ...> tag #{indx_Requirement+1} of #{tags_requirement.length}: index=\"#{this_Requirement['index']}\"\ id=\"#{this_Requirement['id']}\" tag=\"#{this_Requirement['tag']}\" hierarchy=\"#{this_Requirement['hierarchy']}\" name=\"#{this_Requirement['name']}\""
 
                 # Data - holds output for CSV
                 testcase_data                        = []
@@ -306,22 +288,22 @@ begin
 
                 # Store fields that derive from Project and Requirement objects
                 this_testcase                        = {}
-                this_testcase['project']             = report['project']
-                this_testcase['hierarchy']           = requirement['hierarchy']
-                this_testcase['id']                  = requirement['id']
-                this_testcase['tag']                 = requirement['tag']
-                this_testcase['name']                = requirement['name'] || ""
+                this_testcase['project']             = this_Report['project']
+                this_testcase['hierarchy']           = this_Requirement['hierarchy']
+                this_testcase['id']                  = this_Requirement['id']
+                this_testcase['tag']                 = this_Requirement['tag']
+                this_testcase['name']                = this_Requirement['name'] || ""
 
                 # process_description_body pulls HTML content out of <html><body> tags
-                this_testcase['description']         = @caliber_helper.process_description_body(requirement['description'] || "")
-                this_testcase['validation']          = @caliber_helper.process_description_body(requirement['validation'] || "")
+                this_testcase['description']         = @caliber_helper.process_description_body(this_Requirement['description'] || "")
+                this_testcase['validation']          = @caliber_helper.process_description_body(this_Requirement['validation'] || "")
 
                 # Store Caliber ID, HierarchyID, Project and Name in variables for convenient logging output
-                testcase_id                                  = requirement['id']
-                testcase_tag                                 = requirement['tag']
-                testcase_hierarchy                           = requirement['hierarchy']
-                testcase_project                             = report['project']
-                testcase_name                                = requirement['name']
+                testcase_id                          = this_Requirement['id']
+                testcase_tag                         = this_Requirement['tag']
+                testcase_hierarchy                   = this_Requirement['hierarchy']
+                testcase_project                     = this_Report['project']
+                testcase_name                        = this_Requirement['name']
 
                 #@logger.info "Started Reading Caliber TestCase ID: #{testcase_id}; Hierarchy: #{testcase_hierarchy}; Project: #{testcase_project}"
 
@@ -329,16 +311,10 @@ begin
                 # There are many UDAValue records per testcase and each is different
                 # So assign to values of interest via case statement
 
-                requirement.search($uda_values_tag).each_with_index do | uda_values, indx_values | #{
-                    uda_values.search($uda_value_tag).each_with_index do | uda_value, indx_value |
-                        uda_value_name = uda_value['name']
-                        uda_value_value = uda_value['value'] || ""
-                        maxdis=70 #maximum display length for value
-                        if uda_value_value.length > maxdis then
-                            cont="...."
-                        else
-                            cont=""
-                        end
+                this_Requirement.search($tag_UDAValues ).each_with_index do | this_UDAValues, indx_UDAValues | #{
+                    this_UDAValues.search($tag_UDAValue).each_with_index do | this_UDAValue, indx_UDAValue | #{
+                        uda_value_name = this_UDAValue['name']
+                        uda_value_value = this_UDAValue['value'] || ""
                         uda_stat="used   "
                         case uda_value_name
                             when $uda_value_name_source
@@ -368,9 +344,11 @@ begin
                             else
                                 uda_stat="ignored"
                         end
-                        @logger.info "            UDAValue tag #{indx_value+1} of #{uda_values.children.count}: #{uda_stat} name='#{uda_value_name}'"
-                    end
-                end #} end of "requirement.search($uda_values_tag).each do | uda_values |"
+                        @logger.info "            <UDAValue ...> tag #{indx_UDAValue+1} of #{this_UDAValues.children.count}: #{uda_stat} name='#{uda_value_name}'"
+
+                    end #} end of "this_UDAValues.search($tag_UDAValue).each_with_index do | this_UDAValue, indx_UDAValue |"
+
+                end #} end of "this_Requirement.search($tag_UDAValues ).each do | this_UDAValues |"
 
                 #@logger.info "    Finished Reading Caliber TestCase ID: #{testcase_id}; Hierarchy: #{testcase_hierarchy}; Project: #{testcase_project}"
 
@@ -389,7 +367,8 @@ begin
                 # Import to Rally
                 if $import_to_rally then
                     testcase = @caliber_helper.create_testcase_from_caliber(this_testcase)
-                    @logger.info "        Created Rally TestCase: FormattedID=#{testcase.FormattedID}; ObjectID=#{testcase.ObjectID}; from Caliber Requirement id=#{requirement['id']}"
+                    total_tc = total_tc + 1
+                    @logger.info "            Created Rally TestCase #{total_tc} of #{tags_requirement.length}:  FmtID=#{testcase.FormattedID}; OID=#{testcase.ObjectID}; from Caliber Requirement id=#{this_Requirement['id']}"
                 end
 
                 # Save the TestCase OID and associated it to the Caliber Hierarchy ID for later use
@@ -416,7 +395,9 @@ begin
                 # Count embedded images inside Caliber description
                 caliber_image_count = @caliber_helper.count_images_in_caliber_description(this_testcase['description'])
 
-                if caliber_image_count > 0 then
+                if caliber_image_count < 1 then
+                    @logger.info "            No images found for this Requirement."
+                else
                     description_with_images = this_testcase['description']
                     image_file_objects, image_file_ids = @caliber_helper.get_caliber_image_files(description_with_images)
                     caliber_image_data = {
@@ -448,14 +429,18 @@ begin
                 testcase_oid_csv  << CSV::Row.new($csv_testcase_oid_output_fields, testcase_oid_data)
 
                 # Circuit-breaker for testing purposes
-                if import_count < $max_import_count then
+                if import_count < $max_import_count-1 then
                     import_count += 1
                 else
+                    @logger.info "Stopping import; 'import_count' reached #{import_count+1} ($max_import_count)"
                     break
                 end
-            end
-        end
-    end #} end of "caliber_data.search($report_tag).each do | report |"
+
+            end #} end of "this_ReqType.search($tag_Requirement).each_with_index do | this_Requirement, indx_Requirement |"
+
+        end #} end of "tags_reqtype.each_with_index do | this_ReqType, indx_ReqType |"
+
+    end #} end of "tags_report.each_with_index do | this_Report, indx_Report |"
 
     # Only import into Rally if we're not in "preview_mode" for testing
     if $preview_mode then
@@ -478,4 +463,13 @@ begin
 
     @logger.show_msg_stats
 
-end
+}
+
+@logger.info ""
+@logger.info "This script (#{$PROGRAM_NAME}) is finished; benchmark time in seconds:"
+@logger.info "  --User--   -System-   --Total-  --Elapsed-"
+@logger.info bm_time.to_s
+
+exit (0)
+
+#the end#

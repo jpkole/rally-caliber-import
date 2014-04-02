@@ -23,32 +23,21 @@ else
 end
 
 # Tags of interest
-$jdrequesttraces_tag        = "JDrequestTraces"
-
-# The name attribute of the Traceability tag is the name of the
-# Caliber Requirement to which this set of Traces corresponds
-$jdrequest_tag              = "JDrequest"
-
-# This contains the Caliber ID of the testcase to which we want to associate the traces.
-$jdid_tag                   = "JDid"
-$jdname_tag                 = "JDname"
-
-# Traces From/To
-$jdtracefrom_tag            = "JDtracefrom"
-$jdtraceto_tag              = "JDtraceto"
-
-# Trace
-$jdtrace_tag                = "JDtrace"
-
-#TraceID
-$jdtraceid_tag              = "JDtraceId"
-$jdtracename_tag            = "JDtraceName"
+$tag_JDrequestTraces    = "JDrequestTraces"
+$tag_JDrequest          = "JDrequest"   # The name attribute of the Traceability tag is the name of the Caliber Requirement to which this set of Traces corresponds
+$tag_JDid               = "JDid"        # This contains the Caliber ID of the testcase to which we want to associate the traces.
+$tag_JDname             = "JDname"
+$tag_JDtracefrom        = "JDtracefrom" # Traces From
+$tag_JDtraceto          = "JDtraceto"   # Traces To
+$tag_JDtrace            = "JDtrace"     # Trace
+$tag_JDtraceId          = "JDtraceId"   # TraceID
+$tag_JDtraceName        = "JDtraceName"
 
 # set preview mode
 if $preview_mode then
-    $import_to_rally        = false
+    $import_to_rally    = false
 else
-    $import_to_rally        = true
+    $import_to_rally    = true
 end
 
 # The following are all attributes inside the Traces file itself.
@@ -62,14 +51,6 @@ end
 # <Trace name="Manual harvesting by saw" type="-1" col="4"/>
 # </Traceability>
 # </Report>
-
-# Tags of interest
-$report_tag         = "Report"
-
-# The name attribute of the Traceability tag is the name of the
-# Caliber Requirement to which this set of Traces corresponds
-$traceability_tag   = "Traceability"
-$trace_tag          = "Trace"
 
 
 def cache_story_oid(header, row)
@@ -148,7 +129,7 @@ def create_traces_markup_from_traces_array(traces_array) #{
             story_fid, story_oid, story_name = @story_FidOidName_by_reqid[this_traceid.sub("REQ", "")]
 
             if story_oid.nil? then
-                @logger.warn "        *** No Rally Story ObjectID found for Caliber Requirement ID: #{this_traceid} - skipping linkage of this Trace."
+                @logger.warn "    *** No Rally Story ObjectID found for Caliber Requirement ID: #{this_traceid} - skipping linkage of this Trace."
                 this_trace = @req_name_by_reqid[this_traceid] || this_traceid
             else
                 @logger.info "        Linking Trace JDtraceId=#{this_traceid} to Rally UserStory: FmtID=#{story_fid} OID=#{story_oid}"
@@ -204,7 +185,7 @@ bm_time = Benchmark.measure {
                 $my_workspace                    = #{$my_workspace}
                 $my_project                      = #{$my_project}
                 $max_attachment_length           = #{$max_attachment_length}
-		$max_description_length          = #{$max_description_length}
+		        $max_description_length          = #{$max_description_length}
                 $caliber_file_req                = #{$caliber_file_req}
                 $caliber_file_req_traces         = #{$caliber_file_req_traces}
                 $caliber_file_tc                 = #{$caliber_file_tc}
@@ -275,24 +256,25 @@ bm_time = Benchmark.measure {
 
     # Process traces
     import_count = 0
-    tags_jdrequesttraces = caliber_data.search($jdrequesttraces_tag)
-    tags_jdrequesttraces.each_with_index do | request_traces, indx_req_traces |
-        @logger.info "Processing <#{$jdrequesttraces_tag}> tag #{indx_req_traces+1} of #{tags_jdrequesttraces.length}..."
 
-        tags_jdrequest = request_traces.search($jdrequest_tag)
-        tags_jdrequest.each_with_index do | jd_request, indx_request |
+    all_JDrequestTraces_tags = caliber_data.search($tag_JDrequestTraces)
+    all_JDrequestTraces_tags.each_with_index do | this_JDrequestTraces, indx_JDrequestTraces |
+        @logger.info "<#{$tag_JDrequestTraces}> tag #{indx_JDrequestTraces+1} of #{all_JDrequestTraces_tags.length}..."
+
+        all_JDrequest_tags = this_JDrequestTraces.search($tag_JDrequest)
+        all_JDrequest_tags.each_with_index do | this_JDrequest, indx_JDrequest |
 
             this_req_id = ""
-            jd_request.search($jdid_tag).each do | jd_id |
-                this_req_id = jd_id.text
+            this_JDrequest.search($tag_JDid).each do | this_JDid |
+                this_req_id = this_JDid.text
             end
 
             this_req_name = ""
-            jd_request.search($jdname_tag).each do | jd_name |
-                this_req_name = jd_name.text
+            this_JDrequest.search($tag_JDname).each do | this_JDname |
+                this_req_name = this_JDname.text
             end
 
-            @logger.info "    Processing <#{$jdrequest_tag}> tag #{indx_request+1} of #{tags_jdrequest.length}; JDid=#{this_req_id}"
+            @logger.info "    <#{$tag_JDrequest}> tag #{indx_JDrequest+1} of #{all_JDrequest_tags.length}; JDid=#{this_req_id}"
 
             story_fid, story_oid, story_name = @story_FidOidName_by_reqid[this_req_id.sub("REQ", "")]
             if story_oid.nil? then
@@ -306,44 +288,46 @@ bm_time = Benchmark.measure {
 
             ##### #####
             # Find all <JDtraceto>'s    
-            tags_jdtraceto = jd_request.search($jdtraceto_tag)
-            tags_jdtraceto.each_with_index do | jd_traceto, indx_traceto |
-                @logger.info "        Searching <#{$jdtraceto_tag}> tag #{indx_traceto+1} of #{tags_jdtraceto.length}..."
+            all_JDtraceto_tags = this_JDrequest.search($tag_JDtraceto)
+            all_JDtraceto_tags.each_with_index do | this_JDtraceto, indx_JDtraceto |
+                @logger.info "        Searching <#{$tag_JDtraceto}> tag #{indx_JDtraceto+1} of #{all_JDtraceto_tags.length}..."
 
-                jd_traceto.search($jdtrace_tag).each_with_index do | jd_trace, indx_trace |
+                all_JDtrace_tags = this_JDtraceto.search($tag_JDtrace)
+                all_JDtrace_tags.search($tag_JDtrace).each_with_index do | this_JDtrace, indx_JDtrace |
 
-                    this_traceid    = jd_trace.search($jdtraceid_tag).first.text
-                    this_tracename  = jd_trace.search($jdtracename_tag).first.text
+                    this_traceid    = this_JDtrace.search($tag_JDtraceId).first.text
+                    this_tracename  = this_JDtrace.search($tag_JDtraceName).first.text
 
-                    @logger.info "            Found <#{$jdtrace_tag}> tag #{indx_trace+1}; JDtraceId=#{this_traceid}; JDtraceName='#{this_tracename}'"
+                    @logger.info "            Found <#{$tag_JDtrace}> tag #{indx_JDtrace+1}; JDtraceId=#{this_traceid}; JDtraceName='#{this_tracename}'"
 
                     is_requirement = this_traceid.match(/^REQ/)
                     if !is_requirement.nil? then
                         traces_array.push(this_traceid)
                     else
-                        @logger.info "ERROR: TraceTo was not a REQ..."
+                        @logger.info "                ERROR: TraceTo was not a REQ..."
                     end
                 end
             end
 
             ##### #####
             # Find all <JDtracefrom>'s
-            tags_jdtracefrom = jd_request.search($jdtracefrom_tag)
-            tags_jdtracefrom.each_with_index do | jd_tracefrom, indx_tracefrom |
-                @logger.info "        Searching <#{$jdtracefrom_tag}> tag #{indx_tracefrom+1} of #{tags_jdtracefrom.length}..."
+            all_JDtracefrom_tags = this_JDrequest.search($tag_JDtracefrom)
+            all_JDtracefrom_tags.each_with_index do | this_JDtracefrom, indx_JDtracefrom |
+                @logger.info "        Searching <#{$tag_JDtracefrom}> tag #{indx_JDtracefrom+1} of #{all_JDtracefrom_tags.length}..."
 
-                jd_tracefrom.search($jdtrace_tag).each_with_index do | jd_trace, indx_trace |
+                all_JDtrace_tags = this_JDtracefrom.search($tag_JDtrace)
+                all_JDtrace_tags.each_with_index do | this_JDtrace, indx_JDtrace |
 
-                    this_traceid    = jd_trace.search($jdtraceid_tag).first.text
-                    this_tracename  = jd_trace.search($jdtracename_tag).first.text
+                    this_traceid    = this_JDtrace.search($tag_JDtraceId).first.text
+                    this_tracename  = this_JDtrace.search($tag_JDtraceName).first.text
 
-                    @logger.info "            Found <#{$jdtrace_tag}> tag #{indx_trace+1}; JDtraceId=#{this_traceid}; JDtraceName='#{this_tracename}'"
+                    @logger.info "            Found <#{$tag_JDtrace}> tag #{indx_JDtrace+1}; JDtraceId=#{this_traceid}; JDtraceName='#{this_tracename}'"
 
                     is_requirement = this_traceid.match(/^REQ/)
                     if !is_requirement.nil? then
                         traces_array.push(this_traceid)
                     else
-                        @logger.info "ERROR: TraceFrom was not a REQ..."
+                        @logger.info "                ERROR: TraceFrom was not a REQ..."
                     end
                 end
             end

@@ -115,7 +115,7 @@ class CaliberHelper
     end #} end of "def fix_description_images(artifact_fmtid, artifact_ref, artifact_description, rally_attachment_sources)"
 
 
-    def import_images(artifacts_with_images_hash, artifacts_with_images_hash2) #{
+    def import_images(artifacts_with_images_hash) #{
         # ----------------------------------------------
         # Post-import image import service
         # Loops through hash of image data hashes keyed by Rally Artifact OID and:
@@ -315,17 +315,17 @@ class CaliberHelper
         # Take Caliber Requirement hash, process and combine field data and create a story in Rally
         story = {}
         story["Name"]                   = make_name(requirement, :requirement)
-	description = create_markup_from_hash(requirement, @description_field_hash, :requirement)
-	if !description.nil? then
-	    # Within an <img...> tag, Rally no longer allows src= strings which have a leading "file://"; so change it to "http://".
-	    description = description.gsub(/file:\/\//, "http://")
-	    # Within an <img...> tag, Rally no longer allows id= tags; so change it to "title=" (which are allowed).
-	    description = description.gsub(/id=/, "title=")
-	end
+	    description = create_markup_from_hash(requirement, @description_field_hash, :requirement)
+	    if !description.nil? then
+	        # Within an <img...> tag, Rally no longer allows src= strings which have a leading "file://"; so change it to "http://".
+	        description = description.gsub(/file:\/\//, "http://")
+	        # Within an <img...> tag, Rally no longer allows id= tags; so change it to "title=" (which are allowed).
+	        description = description.gsub(/id=/, "title=")
+	    end
         #story["Description"]            = create_markup_from_hash(requirement, @description_field_hash, :requirement)
         story["Description"]            = description
         story["Notes"]                  = "<p><b>Caliber Open Issues</b></p>"
-	if requirement.has_key? 'open_issues'
+	    if requirement.has_key? 'open_issues'
             story["Notes"]             += requirement['open_issues']
         end
         story[@caliber_id_field_name]   = requirement['id']
@@ -357,7 +357,7 @@ class CaliberHelper
             'Machine Type'               => 'machine_type'
         }
 
-        @logger.info "    Processing Caliber TestCase ID: #{testcase_id}; Hierarchy: #{testcase_hierarchy}; Project: #{testcase_project}"
+        #@logger.info "    Processing Caliber TestCase ID: #{testcase_id}; Hierarchy: #{testcase_hierarchy}; Project: #{testcase_project}"
 
         testcase_fields = {}
         testcase_fields["Name"]                   = make_name(testcase, :testcase)
@@ -407,34 +407,42 @@ class CaliberHelper
 
         @logger.info "Starting post-service to parent Rally User Stories according to Caliber Hierarchy."
 
-        parents_stitched = 0
-        tot = caliber_parent_hash.length
-        caliber_parent_hash.each_pair do | this_hierarchy_id, this_parent_hierarchy_id |
-            parents_stitched += 1
+        us_parents_stitched = 0
+        tot_us = caliber_parent_hash.length
+        caliber_parent_hash.each_pair do | this_hierarchy_id, this_parent_hierarchy_id | #{
+            us_parents_stitched += 1
             if this_parent_hierarchy_id == @no_parent_id then
-                @logger.info "    No parenting for (##{parents_stitched} of #{tot}); Child Hierarchy #{this_hierarchy_id}"
-	    else
-                child_story = rally_story_hierarchy_hash[this_hierarchy_id]
-                child_story_oid = child_story['ObjectID']
-                child_story_fid = child_story['FormattedID']
-                parent_story = rally_story_hierarchy_hash[this_parent_hierarchy_id]
-                parent_story_oid = parent_story['ObjectID']
-                parent_story_fid = parent_story['FormattedID']
-
-                @logger.info "    Parenting (##{parents_stitched} of #{tot}); Child Hierarchy #{this_hierarchy_id}: Rally UserStory: FmtID=#{child_story_fid}; OID=#{child_story_oid} to:"
-                @logger.info "        parent Hierarchy #{this_parent_hierarchy_id}: Rally UserStory: FmtID=#{parent_story_fid}; OID=#{parent_story_oid}"
-                update_fields = {}
-                update_fields["Parent"] = parent_story._ref
-                begin
-                    @rally.update("hierarchicalrequirement", child_story_oid, update_fields)
-                rescue => ex
-                    @logger.error "Error occurred attempting to Parent Rally Story: OID=#{child_story_oid}; to Story: OID=#{parent_story_oid}"
-                    @logger.error ex.message
-                    @logger.error ex.backtrace
-                end
+                @logger.info "    No parenting for (##{us_parents_stitched} of #{tot_us}); top-level Child Hierarchy #{this_hierarchy_id}"
+                next
             end
-        end
-        @logger.info "End of post-service to parent Rally User Stories According to Caliber Hierarchy."
+            child_story = rally_story_hierarchy_hash[this_hierarchy_id]
+            child_story_oid = child_story['ObjectID']
+            child_story_fid = child_story['FormattedID']
+
+            if rally_story_hierarchy_hash[this_parent_hierarchy_id].nil? then
+                @logger.info "    No parent found for (##{us_parents_stitched} of #{tot_us}); Child Hierarchy #{this_hierarchy_id}"
+                next
+            end
+
+            parent_story = rally_story_hierarchy_hash[this_parent_hierarchy_id]
+            parent_story_oid = parent_story['ObjectID']
+            parent_story_fid = parent_story['FormattedID']
+            update_fields = {}
+            update_fields["Parent"] = parent_story._ref
+
+            @logger.info "    Parenting (##{us_parents_stitched} of #{tot_us}); Child Hierarchy #{this_hierarchy_id}: Rally UserStory: FmtID=#{child_story_fid}; OID=#{child_story_oid} to:"
+            @logger.info "        parent Hierarchy #{this_parent_hierarchy_id}: Rally UserStory: FmtID=#{parent_story_fid}; OID=#{parent_story_oid}"
+            begin
+                @rally.update("hierarchicalrequirement", child_story_oid, update_fields)
+            rescue => ex
+                @logger.error "Error occurred attempting to Parent Rally Story: OID=#{child_story_oid}; to Story: OID=#{parent_story_oid}"
+                @logger.error ex.message
+                @logger.error ex.backtrace
+            end
+        end #} end of "caliber_parent_hash.each_pair do | this_hierarchy_id, this_parent_hierarchy_id |"
+
+        @logger.info "End of post-service to parent Rally UserStoryies according to Caliber hierarchy."
+
     end #} end of "def post_import_hierarchy_stitch(caliber_parent_hash, rally_story_hierarchy_hash)"
 
 
@@ -445,35 +453,45 @@ class CaliberHelper
         # by Caliber Hierarchy ID that we created during initial import
         @logger.info "Starting post-service to create weblinks from Rally TestCases to their parents According to Caliber Hierarchy."
 
-        parents_stitched = 0
-        caliber_parent_hash.each_pair do | this_hierarchy_id, this_parent_hierarchy_id |
-            if this_parent_hierarchy_id != @no_parent_id then
-                child_testcase = rally_testcase_hierarchy_hash[this_hierarchy_id]
-                child_testcase_oid = child_testcase['ObjectID']
-                child_testcase_fid = child_testcase['FormattedID']
-                parent_testcase = rally_testcase_hierarchy_hash[this_parent_hierarchy_id]
-                parent_testcase_oid = parent_testcase['ObjectID']
-                parent_testcase_fid = parent_testcase['FormattedID']
-
-                @logger.info "    Parenting Child Hierarchy ID: #{this_hierarchy_id} with Rally TestCase: FmtID=#{child_testcase_fid}; OID=#{child_testcase_oid} to:"
-                @logger.info "        Parent Hierarchy ID: #{this_parent_hierarchy_id} with Rally TestCase: FmtID=#{parent_testcase_fid}; OID=#{parent_testcase_oid}"
-
-                parent_web_link = {}
-                parent_web_link["LinkID"] = parent_testcase_oid
-                parent_web_link["DisplayString"] = "Caliber Parent TestCase"
-
-                update_fields = {}
-                update_fields[@caliber_weblink_field_name] = parent_web_link
-                begin
-                    @rally.update("testcase", child_testcase_oid, update_fields)
-                rescue => ex
-                    @logger.error "Error occurred attempting to Link Rally TestCase: OID=#{child_testcase_oid}; to TestCase: OID=#{parent_testcase_oid}"
-                    @logger.error ex.message
-                    @logger.error ex.backtrace
-                end
+        tc_parents_stitched = 0
+        tot_tc = caliber_parent_hash.length
+        caliber_parent_hash.each_pair do | this_hierarchy_id, this_parent_hierarchy_id | #{
+            tc_parents_stitched += 1
+            if this_parent_hierarchy_id == @no_parent_id then
+                @logger.info "    No parenting for (##{tc_parents_stitched} of #{tot_tc}); top-level Child Hierarchy #{this_hierarchy_id}"
+                next
             end
-        end
-        @logger.info "End of post-service to create weblinks from Rally TestCases to their parents According to Caliber Hierarchy."
+            child_testcase = rally_testcase_hierarchy_hash[this_hierarchy_id]
+            child_testcase_oid = child_testcase['ObjectID']
+            child_testcase_fid = child_testcase['FormattedID']
+
+            if rally_testcase_hierarchy_hash[this_parent_hierarchy_id].nil? then
+                @logger.info "    No parent found for (##{tc_parents_stitched} of #{tot_tc}); Child Hierarchy #{this_hierarchy_id}"
+                next
+            end
+
+            parent_testcase = rally_testcase_hierarchy_hash[this_parent_hierarchy_id]
+            parent_testcase_oid = parent_testcase['ObjectID']
+            parent_testcase_fid = parent_testcase['FormattedID']
+            parent_web_link = {}
+            parent_web_link["LinkID"] = parent_testcase_oid
+            parent_web_link["DisplayString"] = "Caliber Parent TestCase"
+            update_fields = {}
+            update_fields[@caliber_weblink_field_name] = parent_web_link
+
+            @logger.info "    Parenting (##{tc_parents_stitched} of #{tot_tc}); Child Hierarchy #{this_hierarchy_id}: Rally TestCase: FmtID=#{child_testcase_fid}; OID=#{child_testcase_oid} to:"
+            @logger.info "        parent Hierarchy #{this_parent_hierarchy_id}: Rally Testcase: FmtID=#{parent_testcase}; OID=#{parent_testcase}"
+            begin
+                @rally.update("testcase", child_testcase_oid, update_fields)
+            rescue => ex
+                @logger.error "Error occurred attempting to Link Rally TestCase: OID=#{child_testcase_oid}; to TestCase: OID=#{parent_testcase_oid}"
+                @logger.error ex.message
+                @logger.error ex.backtrace
+            end
+        end #} end of "caliber_parent_hash.each_pair do | this_hierarchy_id, this_parent_hierarchy_id |"
+
+        @logger.info "End of post-service to parent Rally TestCases according to Caliber hierarchy."
+
     end #} end of "def post_import_testcase_hierarchy_linker(caliber_parent_hash, rally_testcase_hierarchy_hash)"
 
 end

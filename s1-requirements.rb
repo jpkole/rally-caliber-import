@@ -20,7 +20,7 @@ if FileTest.exist?( my_vars ) then
     print "Sourcing #{my_vars}...\n"
     require my_vars
 else
-    print "File #{my_vars} not found...\n"
+    print "File #{my_vars} not found; skipping require...\n"
 end
 
 # set preview mode
@@ -104,8 +104,8 @@ end
  $uda_value_name_post_condition = "JDF Post-condition [Po]" #05
  $uda_value_name_exceptions     = "JDF Exceptions [Ex]"     #06
  $uda_value_name_remarks        = "JDF Remarks [Re]"        #09
-#$uda_value_name_input          = "JDF Input [In]"          #07
-#$uda_value_name_output         = "JDF Output [Ou]"         #08
+ $uda_value_name_input          = "JDF Input [In]"          #07
+ $uda_value_name_output         = "JDF Output [Ou]"         #08
 #$uda_value_name_project        = "JDF Project"             #10
 #$uda_value_name_software       = "JDF Software Load"       #11
 #$uda_value_name_content        = "JDF Content Status"      #12
@@ -223,7 +223,6 @@ bm_time = Benchmark.measure {
     # The following are used for the post-run import of images for
     # Caliber requirements whose description contains embedded images
     @rally_stories_with_images_hash = {}
-    @rally_stories_with_images_hash2 = {}
 
     # Hash of Requirement Parent Hierarchy ID's keyed by Self Hierarchy ID
     @caliber_parent_hash = {}
@@ -280,12 +279,6 @@ bm_time = Benchmark.measure {
                     uda_values.search($uda_value_tag).each_with_index do | uda_value, indx_value |
                         uda_value_name = uda_value['name']
                         uda_value_value = uda_value['value'] || ""
-                        maxdis=70 # desired maximum display length for value
-                        if uda_value_value.length > maxdis then
-                            cont="...."
-                        else
-                            cont=""
-                        end
                         uda_stat="used   "
                         case uda_value_name
                             when $uda_value_name_purpose
@@ -352,7 +345,9 @@ bm_time = Benchmark.measure {
                 # Count embedded images inside Caliber description
                 caliber_image_count = @caliber_helper.count_images_in_caliber_description(this_requirement['description'])
 
-                if caliber_image_count > 0 then
+                if caliber_image_count < 1 then
+                    @logger.info "            No images found for this Requirement."
+                else
                     #description_with_images = this_requirement['description']
                     description_with_images = story.elements[:description]	# jp chasing bug
                     image_file_objects, image_file_ids = @caliber_helper.get_caliber_image_files(description_with_images)
@@ -365,15 +360,6 @@ bm_time = Benchmark.measure {
                     }
                     @logger.info "            Adding #{caliber_image_count} images to hash for later processing."
                     @rally_stories_with_images_hash[story["ObjectID"].to_s] = caliber_image_data
-
-                    caliber_image_data2 = {
-                        "files"         => image_file_objects,
-                        "ids"           => image_file_ids,
-                        "description"   => this_requirement['description'],
-                        "fmtid"         => story["FormattedID"],
-                        "ref"           => story["_ref"]
-                    }
-                    @rally_stories_with_images_hash2[story["ObjectID"].to_s] = caliber_image_data2
                 end
 
                 # Record requirement data for CSV output
@@ -414,15 +400,14 @@ bm_time = Benchmark.measure {
 
     # Run the hierarchy stitching service
     if $stitch_hierarchy then
-        @caliber_helper.post_import_hierarchy_stitch(@caliber_parent_hash,
-            @rally_story_hierarchy_hash)
+        @caliber_helper.post_import_hierarchy_stitch(@caliber_parent_hash, @rally_story_hierarchy_hash)
     end
 
     # Run the image import service
     # Necessary to run the image import as a post-Story creation service
     # Because we have to have an Artifact in Rally to attach _to_.
     if $import_images_flag
-        @caliber_helper.import_images(@rally_stories_with_images_hash, @rally_stories_with_images_hash2)
+        @caliber_helper.import_images(@rally_stories_with_images_hash)
     end
 
     @logger.show_msg_stats

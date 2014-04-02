@@ -1,0 +1,120 @@
+                                                                              Zeus     Zeus     Zeus
+                        Hera     DTI      Harald   Rimu     Tcenter  Tnavi    Control  Harvest  PC
+----------------------- -------  -------  -------  -------  -------  -------  -------  -------  ------- 
+Caliber Purpose                  yes
+JDF Purpose [Pu]
+----------------------- -------  -------  -------  -------  -------  -------  -------  -------  ------- 
+Pre-condition                    yes
+JDF Pre-condition [Pr]
+----------------------- -------  -------  -------  -------  -------  -------  -------  -------  ------- 
+Basic course                     yes
+JDF Basic Course [Ba]
+----------------------- -------  -------  -------  -------  -------  -------  -------  -------  ------- 
+Post-condition                   yes
+JDF Post-condition [Po]
+----------------------- -------  -------  -------  -------  -------  -------  -------  -------  ------- 
+Exceptions                       yes
+JDF Exceptions [Ex]
+----------------------- -------  -------  -------  -------  -------  -------  -------  -------  ------- 
+Remarks                          yes
+JDF Remarks [Re]
+----------------------- -------  -------  -------  -------  -------  -------  -------  -------  ------- 
+Description                      yes
+<<description>>
+
+Caliber <<validation>>           yes
+JDF input
+JDF output
+----------------------- -------  -------  -------  -------  -------  -------  -------  -------  ------- 
+
+•  JDF Test Case
+•    JDF_Harald new1
+•    JDF requirement(not exported yet) fields
+•  Caliber Purpose
+•  <<JDF Purpose [Pu]>>
+•  Pre-condition
+•  <<JDF Pre-condition [Pr]>>
+•  Basic course
+•  <<JDF Basic Course [Ba]>>
+•  Post-condition
+•  <<JDF Post-condition [Po]>>
+•  Exceptions
+•  <<JDF Exceptions [Ex]>>
+•  Remarks
+•  <<JDF Remarks [Re]>>
+•  Description
+•       <<description>>
+•       Caliber <<validation>> 
+•       JDF input
+•    JDF output
+•    JDF_Rimu ongoing2
+•    JDF requirement
+•  Caliber Purpose
+•  <<JDF Purpose [Pu]>>
+•  Pre-condition
+•  <<JDF Pre-condition [Pr]>>
+•  Basic course
+•  <<JDF Basic Course [Ba]>>
+•  Post-condition
+•  <<JDF Post-condition [Po]>>
+•  Exceptions
+•  <<JDF Exceptions [Ex]>>
+•  Remarks
+•  <<JDF Remarks [Re]>>
+•  Description
+•       <<description>>
+•    JDF_Tcenter Ongoing3
+•    JDF Requirement
+•    ONLY description field
+•    JDF_Tnavi Done
+•    JDF_ZeusControl New2
+•    JDF Requirement fields to be imported
+•  Caliber Purpose
+•  <<JDF Purpose [Pu]>>
+•  Pre-condition
+•  <<JDF Pre-condition [Pr]>>
+•  Basic course
+•  <<JDF Basic Course [Ba]>>
+•  Post-condition
+•  <<JDF Post-condition [Po]>>
+•  Exceptions
+•  <<JDF Exceptions [Ex]>>
+•  Remarks
+•  <<JDF Remarks [Re]>>
+•  Description
+•       <<description>>
+•       Caliber <<validation>> 
+•    JDF input
+•    JDF output
+•    JDF_ZeusHarvesting new3
+•    JDF Requirement fields to be imported
+•  Caliber Purpose
+•  <<JDF Purpose [Pu]>>
+•  Pre-condition
+•  <<JDF Pre-condition [Pr]>>
+•  Basic course
+•  <<JDF Basic Course [Ba]>>
+•  Post-condition
+•  <<JDF Post-condition [Po]>>
+•  Exceptions
+•  <<JDF Exceptions [Ex]>>
+•  Remarks
+•  <<JDF Remarks [Re]>>
+•  Description
+•       <<description>>
+•    JDF_ZeusPC new4
+•    JDF Requirement fields to be imported
+•  Caliber Purpose
+•  <<JDF Purpose [Pu]>>
+•  Pre-condition
+•  <<JDF Pre-condition [Pr]>>
+•  Basic course
+•  <<JDF Basic Course [Ba]>>
+•  Post-condition
+•  <<JDF Post-condition [Po]>>
+•  Exceptions
+•  <<JDF Exceptions [Ex]>>
+•  Remarks
+•  <<JDF Remarks [Re]>>
+•  Description
+•       <<description>>
