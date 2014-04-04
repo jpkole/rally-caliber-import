@@ -304,7 +304,7 @@ bm_time = Benchmark.measure {
                     if !is_requirement.nil? then
                         traces_array.push(this_traceid)
                     else
-                        @logger.info "                ERROR: TraceTo was not a REQ..."
+                        @logger.error "                ERROR: TraceTo was not a REQ..."
                     end
                 end
             end
@@ -327,7 +327,7 @@ bm_time = Benchmark.measure {
                     if !is_requirement.nil? then
                         traces_array.push(this_traceid)
                     else
-                        @logger.info "                ERROR: TraceFrom was not a REQ..."
+                        @logger.error "                ERROR: TraceFrom was not a REQ..."
                     end
                 end
             end

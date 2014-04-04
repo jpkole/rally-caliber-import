@@ -70,7 +70,8 @@ $tag_JDtrace            = "JDtrace"         # Trace
 $tag_JDtraceId          = "JDtraceId"       # TraceID
 $tag_JDtraceName        = "JDtraceName"
 
-def cache_testcase_oid(header, row, indx)
+
+def cache_testcase_oid(header, row, indx) #{
     testcase_cid        = row[header[0]].strip
     testcase_oid        = row[header[1]].strip
     testcase_fid        = row[header[2]].strip
@@ -84,9 +85,10 @@ def cache_testcase_oid(header, row, indx)
     end
 
     @testcase_FidOidName_by_cid[testcase_cid] = [testcase_fid.to_s, testcase_oid.to_s, testcase_name]
-end
+end #} end of "def cache_testcase_oid(header, row, indx)"
 
-def cache_story_oid(header, row)
+
+def cache_story_oid(header, row) #{
     story_fid               = row[header[0]].strip
     story_oid               = row[header[1]].strip
     req_id                  = row[header[2]].strip
@@ -98,10 +100,11 @@ def cache_story_oid(header, row)
     if !req_name.eql? nil then
         @req_name_by_reqid[req_id] = req_name
     end
-end
+    @story_FidOidName_by_cid[req_id] = [story_fid.to_s, story_oid.to_s, req_name]
+end #} end of "def cache_story_oid(header, row)"
+
 
 def create_traces_markup_from_traces_array(traces_array) #{
-
     rally_host = $my_base_url.split("/")[-2]
     story_detail_url_prefix    = "https://#{rally_host}/#/detail/userstory"
     testcase_detail_url_prefix = "https://#{rally_host}/#/detail/testcase"
@@ -114,13 +117,13 @@ def create_traces_markup_from_traces_array(traces_array) #{
         is_requirement = this_traceid.match(/^REQ/)
 
         if !is_testcase.nil? then
-            testcase_oid = @testcase_oid_by_caliber_testcase_id[this_traceid]
+            testcase_fid, testcase_oid, testcase_name = @testcase_FidOidName_by_cid[this_traceid]
 
             if testcase_oid.nil? then
-                @logger.warn "No Rally TestCase ObjectID found for Caliber TestCase ID: #{this_traceid} - skipping linkage of this Trace."
+                @logger.warn "        *** No Rally TestCase found for Caliber TestCase; CID=#{this_traceid} - skipping linkage."
                 this_trace = @testcase_name_by_caliber_testcase_id[this_traceid] || this_traceid
             else
-                @logger.info "Rally TestCase ObjectID: #{testcase_oid} found for Caliber TestCase ID: #{this_traceid} - linking Trace to TestCase: #{testcase_oid}"
+                @logger.info "            Linking Caliber Trace: CID=#{this_traceid}; to Rally TestCase: FID=#{testcase_fid}; OID=#{testcase_oid}"
                 this_trace_name = @testcase_name_by_caliber_testcase_id[testcase_oid] || this_traceid
 
                 detail_url = "#{testcase_detail_url_prefix}/#{testcase_oid}"
@@ -133,12 +136,13 @@ def create_traces_markup_from_traces_array(traces_array) #{
         end
 
         if !is_requirement.nil? then
-            story_oid = @story_oid_by_reqid[this_traceid]
+            story_oid = @story_oid_by_reqid[this_traceid.sub("REQ", "")]
+            story_fid, story_oid, req_name = @story_FidOidName_by_cid[this_traceid.sub("REQ", "")]
             if story_oid.nil? then
-                @logger.warn "No Rally Story ObjectID found for Caliber Requirement ID: #{this_traceid} - skipping linkage of this Trace."
+                @logger.warn "        *** No Rally UserStory found for Caliber Requirement; CID=#{this_traceid} - skipping linkage."
                 this_trace = @req_name_by_reqid[this_traceid] || this_traceid
             else
-                @logger.info "Rally Story ObjectID: #{story_oid} found for Caliber Requirement ID: #{this_traceid} - linking Trace to Story: #{story_oid}"
+                @logger.info "            Linking Caliber Trace: CID=#{this_traceid}; to Rally UserStory: FID=#{story_fid}; OID=#{story_oid}."
                 this_trace_name = @req_name_by_reqid[this_traceid] || this_traceid
 
                 detail_url = "#{story_detail_url_prefix}/#{story_oid}"
@@ -153,22 +157,21 @@ def create_traces_markup_from_traces_array(traces_array) #{
     return traces_markup
 end #} end of "def create_traces_markup_from_traces_array(traces_array)"
 
-# Take Caliber traces array, process and combine field data and import into corresponding Rally Story
-def update_testcase_with_caliber_traces(testcase_oid, testcase_id, traces_text)
 
-    @logger.info "Updating Rally TestCase ObjectID: #{testcase_oid} with Traces from Caliber TestCase: #{testcase_id}"
-
+def update_testcase_with_caliber_traces(testcase_oid, testcase_id, traces_text) #{
+    # Take Caliber traces array, process and combine field data and import into corresponding Rally Story
     update_fields                                = {}
     update_fields[$caliber_tc_traces_field_name] = traces_text
     begin
         @rally.update("testcase", testcase_oid, update_fields)
-        @logger.info "    Successfully Imported Caliber Traces for Rally TestCase: ObjectID #{testcase_oid}"
+        #@logger.info "        Imported Caliber Traces for Rally TestCase: OID=#{testcase_oid}"
     rescue => ex
         @logger.error "Error occurred attempting to Import Caliber Traces to Rally Story: ObjectID #{testcase_oid}"
         @logger.error ex.message
         @logger.error ex.backtrace
     end
-end
+end #} end of "def update_testcase_with_caliber_traces(testcase_oid, testcase_id, traces_text)"
+
 
 bm_time = Benchmark.measure {
 
@@ -243,6 +246,7 @@ bm_time = Benchmark.measure {
     @testcase_oid_by_caliber_testcase_id    = {}
     @testcase_name_by_caliber_testcase_id   = {}
     @testcase_FidOidName_by_cid             = {}
+    @story_FidOidName_by_cid                = {}
 
     @logger.info "Opening for reading XML data file #{$caliber_file_tc_traces}..."
     caliber_data = Nokogiri::XML(File.open($caliber_file_tc_traces), 'UTF-8') do | config |
@@ -317,9 +321,9 @@ bm_time = Benchmark.measure {
 
             @logger.info "    <#{$tag_JDrequest}> tag #{indx_JDrequest+1} of #{all_JDrequest_tags.length}; JDid=#{this_testcase_id}"
 
-            testcase_fid, testcase_oid, testcase_name = @testcase_FidOidName_by_cid[this_req_id.sub("TC", "")]
+            testcase_fid, testcase_oid, testcase_name = @testcase_FidOidName_by_cid[this_testcase_id]
             if testcase_oid.nil? then
-                @logger.warn "        Can't find Rally TestCase: JDname=#{this_testcase_name}... skipping import of this trace."
+                @logger.warn "        Can't find Rally TestCase: JDname='#{this_testcase_name}'; skipping import."
                 next
             else
                 @logger.info "        Hashed Rally TestCase: FmtID=#{testcase_fid}; OID=#{testcase_oid} for JDname='#{this_testcase_name}'"
@@ -346,7 +350,7 @@ bm_time = Benchmark.measure {
                     if !is_testcase_or_requirement.nil? then
                         traces_array.push(this_traceid)
                     else
-                        @logger.info "ERROR: <JDtraceto> was neither for TC or REQ..."
+                        @logger.error "        *** ERROR: Above <JDtraceto> was neither for TC or REQ..."
                     end
                 end
             end #} end of "all_JDtraceto_tags.each_with_index do | this_JDtraceto, indx_JDtraceto |"
@@ -367,7 +371,7 @@ bm_time = Benchmark.measure {
                     if !is_testcase_or_requirement.nil? then
                         traces_array.push(this_traceid)
                     else
-                        @logger.info "ERROR: <JDtracefrom> was neither for TC or REQ..."
+                        @logger.error "        *** ERROR: Above <JDtracefrom> was neither for TC or REQ..."
                     end
                 end
             end #} end of "all_JDtracefrom_tags.each_with_index do | this_JDtracefrom, indx_JDtracefrom |"
@@ -382,9 +386,9 @@ bm_time = Benchmark.measure {
                 @logger.info "    Rally TestCase OID=#{this_testcase_id} needs updated with #{traces_array.length} Caliber Traces from TestCase: #{this_testcase_name}"
             else
                 if traces_text.nil? then
-                    @logger.info "        Nothing to update for Rally TestCase OID=#{testcase_oid} (no traces found)."
+                    @logger.info "            No traces found."
                 else
-                    @logger.info "        Updating Rally TestCase with Caliber Traces: FmtID=#{testcase_fid}; OID=#{testcase_oid};  CID=#{this_testcase_id}"
+                    @logger.info "        Updating Rally TestCase: FmtID=#{testcase_fid}; OID=#{testcase_oid}; with Caliber Traces: CID=#{this_testcase_id}"
                     update_testcase_with_caliber_traces(testcase_oid, this_testcase_id, traces_text)
                 end
             end
