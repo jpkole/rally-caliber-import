@@ -198,7 +198,6 @@ bm_time = Benchmark.measure {
                 $max_import_count                = #{$max_import_count}
                 $html_mode                       = #{$html_mode}
                 $preview_mode                    = #{$preview_mode}
-                $no_parent_id                    = #{$no_parent_id}
                 $csv_requirements                = #{$csv_requirements}
                 $csv_story_oids_by_req           = #{$csv_story_oids_by_req}
                 $csv_story_oids_by_req_fields    = #{$csv_story_oids_by_req_fields}

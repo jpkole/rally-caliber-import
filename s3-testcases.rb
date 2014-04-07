@@ -109,31 +109,6 @@ $uda_value_name_include                  = "JDF Include"
 $uda_value_name_testing_status           = "JDF Testing Status"
 $uda_value_name_test_running             = "JDF Test Running"
 
-#-JPK-old## Record template hash for a requirement from Caliber
-#-JPK-old## Hash fields are in same order as CSV output format
-#-JPK-old#
-#-JPK-old#$caliber_testcase_record_template = {
-#-JPK-old#    'id'                    => 0,
-#-JPK-old#    'hierarchy'             => 0,
-#-JPK-old#    'tag'                   => "",
-#-JPK-old#    'name'                  => "",
-#-JPK-old#    'project'               => "",
-#-JPK-old#    'source'                => "",
-#-JPK-old#    'purpose'               => "",
-#-JPK-old#    'pre_condition'         => "",
-#-JPK-old#    'testing_course'        => "",
-#-JPK-old#    'post_condition'        => "",
-#-JPK-old#    'machine_type'          => "",
-#-JPK-old#    'software_load'         => "",
-#-JPK-old#    'content_status'        => "",
-#-JPK-old#    'remarks'               => "",
-#-JPK-old#    'validation'            => "",
-#-JPK-old#    'description'           => "",
-#-JPK-old#    'include'               => "",
-#-JPK-old#    'testing_status'        => "",
-#-JPK-old#    'test_running'          => ""
-#-JPK-old#}
-
 $description_field_hash = {
     'Source [So]'             => 'source',
     'Purpose [Pu]'            => 'purpose',
@@ -168,7 +143,7 @@ bm_time = Benchmark.measure {
                 $my_workspace                    = #{$my_workspace}
                 $my_project                      = #{$my_project}
                 $max_attachment_length           = #{$max_attachment_length}
-		$max_description_length          = #{$max_description_length}
+		        $max_description_length          = #{$max_description_length}
                 $caliber_file_req                = #{$caliber_file_req}
                 $caliber_file_req_traces         = #{$caliber_file_req_traces}
                 $caliber_file_tc                 = #{$caliber_file_tc}
@@ -181,20 +156,17 @@ bm_time = Benchmark.measure {
                 $max_import_count                = #{$max_import_count}
                 $html_mode                       = #{$html_mode}
                 $preview_mode                    = #{$preview_mode}
-                $no_parent_id                    = #{$no_parent_id}
                 $csv_requirements                = #{$csv_requirements}
-                $csv_requirement_fields          = #{$csv_requirement_fields}
                 $csv_story_oids_by_req           = #{$csv_story_oids_by_req}
                 $csv_story_oids_by_req_fields    = #{$csv_story_oids_by_req_fields}
                 $csv_testcases                   = #{$csv_testcases}
-                $csv_testcase_fields             = #{$csv_testcase_fields}
                 $csv_testcase_oid_output         = #{$csv_testcase_oid_output}
                 $csv_testcase_oid_output_fields  = #{$csv_testcase_oid_output_fields}
                 $cal2ral_req_log                 = #{$cal2ral_req_log}
                 $cal2ral_req_traces_log          = #{$cal2ral_req_traces_log}
                 $cal2ral_tc_log                  = #{$cal2ral_tc_log}
                 $cal2ral_tc_traces_log           = #{$cal2ral_tc_traces_log}
-                $description_field_hash          = #{$description_field_hash}"
+"
 
     # Set up custom headers for Rally connection
     $headers                    = RallyAPI::CustomHttpHeader.new()
@@ -399,7 +371,7 @@ bm_time = Benchmark.measure {
                     @logger.info "            No images found for this Requirement."
                 else
                     description_with_images = this_testcase['description']
-                    image_file_objects, image_file_ids = @caliber_helper.get_caliber_image_files(description_with_images)
+                    image_file_objects, image_file_ids, image_titles = @caliber_helper.get_caliber_image_files(description_with_images)
                     caliber_image_data = {
                         "files"         => image_file_objects,
                         "ids"           => image_file_ids,

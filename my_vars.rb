@@ -59,24 +59,34 @@ $my_workspace                   = "JDF Tampere"
 #$caliber_image_directory        = "../from-ftp-site/fetch3-TimberOffice/ImageCache"                 # 05-Image data
 
 # ------------------------------------------------------------------------------
-# Proj4: DTI project
+# Proj4: HHC Harvest project
 #
-$my_project                     = "DTI_requirements"                                                # Rally Project name
-$caliber_file_req               = "../from-ftp-site/fetch4-DTI/JDF_DTI_reqs_without_trash.xml"      # 01-Requirements
-$caliber_file_req_traces        = "../from-ftp-site/fetch4-DTI/JDF_DTItracereq.xml"                 # 02-Requirement-Traces
-$caliber_file_tc                = "../from-ftp-site/fetch4-DTI/JDF_DTI_TC_without_trash.xml"        # 03-Testcases
-$caliber_file_tc_traces         = "../from-ftp-site/fetch4-DTI/JDF_DTItraceTC.xml"                  # 04-Testcases-Traces
+$my_project                     = "HHC_requirements"                                                # Rally Project name
+$caliber_file_req               = "../from-ftp-site/fetch4-HHC_Harvest/HHC_to_rally.xml"            # 01-Requirements
+$caliber_file_req_traces        = "../from-ftp-site/fetch4-HHC_Harvest/HHC_traces.xml"              # 02-Requirement-Traces
+$caliber_file_tc                = ""                                                                # 03-Testcases
+$caliber_file_tc_traces         = ""                                                                # 04-Testcases-Traces
 $caliber_image_directory        = "../from-ftp-site/fetch3-TimberOffice/ImageCache"                 # 05-Image data
 
 # ------------------------------------------------------------------------------
-# Proj5: Rimu project
+# Proj5: DTI project
+#
+#$my_project                     = "DTI_requirements"                                                # Rally Project name
+#$caliber_file_req               = "../from-ftp-site/fetch5-DTI/JDF_DTI_reqs_without_trash.xml"      # 01-Requirements
+#$caliber_file_req_traces        = "../from-ftp-site/fetch5-DTI/JDF_DTItracereq.xml"                 # 02-Requirement-Traces
+#$caliber_file_tc                = "../from-ftp-site/fetch5-DTI/JDF_DTI_TC_without_trash.xml"        # 03-Testcases
+#$caliber_file_tc_traces         = "../from-ftp-site/fetch5-DTI/JDF_DTItraceTC.xml"                  # 04-Testcases-Traces
+#$caliber_image_directory        = "../from-ftp-site/fetch3-TimberOffice/ImageCache"                 # 05-Image data
+
+# ------------------------------------------------------------------------------
+# Proj6: Rimu project
 #
 #$my_project                     = "JDF_Rimu"                                                        # Rally Project name
-#$caliber_file_req               = "../from-ftp-site/fetch5-Rimu_Reqs_and_Traces/rimu.xml"           # 01-Requirements
-#$caliber_file_req_traces        = "../from-ftp-site/fetch5-Rimu_Reqs_and_Traces/JDF_rimutraces.xml" # 02-Requirement-Traces
+#$caliber_file_req               = "../from-ftp-site/fetch6-Rimu_Reqs_and_Traces/rimu.xml"           # 01-Requirements
+#$caliber_file_req_traces        = "../from-ftp-site/fetch6-Rimu_Reqs_and_Traces/JDF_rimutraces.xml" # 02-Requirement-Traces
 #$caliber_file_tc                = ""                                                                # 03-Testcases
 #$caliber_file_tc_traces         = ""                                                                # 04-Testcases-Traces
-#$caliber_image_directory        = "../from-ftp-site/fetch5-TimberOffice/ImageCache"                 # 05-Image data (Same as TOffice)
+#$caliber_image_directory        = "../from-ftp-site/fetch3-TimberOffice/ImageCache"                 # 05-Image data (Same as TOffice)
 
 # ------------------------------------------------------------------------------
 # Custom fields in Rally:
@@ -101,9 +111,6 @@ $max_import_count               = 50_000
 $html_mode                      = true
 $preview_mode                   = false
 
-# Flag to set in @rally_story_hierarchy_hash if Requirement has no Parent
-$no_parent_id                   = "-9999"
-
 # CSV file & fields to allow lookup of ...
 $csv_requirements               = "s1-requirements.csv"
 $csv_requirement_fields         =  %w{id hierarchy name project description validation purpose pre_condition basic_course post_condition exceptions remarks}
@@ -125,19 +132,5 @@ $cal2ral_req_log                = "s1-requirements.log"
 $cal2ral_req_traces_log         = "s2-requirement_traces.log"
 $cal2ral_tc_log                 = "s3-testcases.log"
 $cal2ral_tc_traces_log          = "s4-testcase_traces.log"
-
-# JDF_Hera data set ----
-$description_field_hash         = {
-        'Caliber Purpose'       => 'caliber_purpose',
-        'Pre-condition'         => 'pre_condition',
-        'Basic course'          => 'basic_course',
-        'Post-condition'        => 'post_condition',
-        'Exceptions'            => 'exceptions',
-        'Remarks'               => 'remarks',
-        'Description'           => 'description',
-        'Validation'            => 'validation',
-        'Input'                 => 'input',
-        'Output'                => 'output'
-}
 
 #the end#

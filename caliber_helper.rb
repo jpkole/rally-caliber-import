@@ -1,7 +1,7 @@
 class CaliberHelper
 
-    def initialize(rally_connection, project, id_fieldname, field_hash,
-        image_directory, logger_instance, weblink_fieldname = nil )
+    def initialize(rally_connection, project, id_fieldname,
+        field_hash, image_directory, logger_instance, weblink_fieldname = nil )
         # ----------------------------------------------------------------------
         @rally                           = rally_connection
         @caliber_project                 = project
@@ -55,14 +55,14 @@ class CaliberHelper
     end #} end of "def get_image_metadata(image_file, image_id)"
 
 
-    def get_url_from_attachment(rally_attachment, filename) #{
-        # ----------------------------------------------
-        # Takes a Rally attachment object and filename string and returns a
-        # relative URL to the attachment in Rally of the form:
-        # /slm/attachment/12345678910/file.jpg
-        attachment_oid = rally_attachment["ObjectID"].to_s
-        return "/slm/attachment/#{attachment_oid}/#{filename}"
-    end #} end of "def get_url_from_attachment(rally_attachment, filename)"
+    #def get_url_from_attachment(rally_attachment, filename) #{
+    #    # ----------------------------------------------
+    #    # Takes a Rally attachment object and filename string and returns a
+    #    # relative URL to the attachment in Rally of the form:
+    #    # /slm/attachment/12345678910/file.jpg
+    #    attachment_oid = rally_attachment["ObjectID"].to_s
+    #    return "/slm/attachment/#{attachment_oid}/#{filename}"
+    #end #} end of "def get_url_from_attachment(rally_attachment, filename)"
 
 
     def create_image_attachment(attachment_data_hash) #{
@@ -128,31 +128,33 @@ class CaliberHelper
             @logger.info "No images found for processing."
         end
 
-	artifact_count = 0
+        artifact_count = 0
         artifacts_with_images_hash.each_pair do | this_artifact_oid, this_caliber_image_data |
 
             artifact_count += 1
 
             this_image_list             = this_caliber_image_data["files"]
             this_image_id_list          = this_caliber_image_data["ids"]
+            this_image_title_list       = this_caliber_image_data["titles"]
             this_artifact_description   = this_caliber_image_data["description"]
             this_artifact_fmtid         = this_caliber_image_data["fmtid"]
             this_artifact_ref           = this_caliber_image_data["ref"]
-
             # Array with relative URL's to Rally-embedded attachments
             new_attachment_sources = []
 
             @logger.info "    Import #{artifact_count} of #{artifacts_with_images_hash.length}: adding #{this_image_list.length} image(s) to Rally User Story; FmtID=#{this_artifact_fmtid}; OID=#{this_artifact_oid}"
             this_image_list.each_with_index do | this_image_file, indx_image | #{
 
-                @logger.info "        importing image file #{indx_image+1} of #{this_image_list.length}: Name=#{File.basename(this_image_file)}"
+                @logger.info "        importing image file #{indx_image+1} of #{this_image_list.length}: id=#{this_image_title_list[indx_image]}; Name=#{File.basename(this_image_file)}"
 
                 if !File.exist?(this_image_file) then #{
                     @logger.warn "    *** image file: #{this_image_file} not found; skipping import of this image."
                 else
                     image_bytes = File.open(this_image_file, 'rb') { | file | file.read }
                     image_id = this_image_id_list[indx_image]
-                    attachment_name, mimetype = get_image_metadata(this_image_file, image_id)
+                    image_title = this_image_title_list[indx_image]
+                    #attachment_name, mimetype = get_image_metadata(this_image_file, image_id)
+                    attachment_name, mimetype = get_image_metadata(this_image_file, image_title)
 
                     if mimetype.nil? then
                         @logger.warn "    *** invalid mime-type; skipping import of this image."
@@ -172,7 +174,9 @@ class CaliberHelper
                             :size            => image_bytes.length
                         }
                         attachment_object = create_image_attachment(attachment_info_hash)
-                        attachment_src_url = get_url_from_attachment(attachment_object, attachment_name)
+                        #attachment_src_url = get_url_from_attachment(attachment_object, attachment_name)
+                        # Rally attachment object and filename ->into-> relative URL to the attachment in Rally of the form: /slm/attachment/12345678910/file.jpg
+                        attachment_src_url = "/slm/attachment/#{attachment_object["ObjectID"].to_s}/#{attachment_name}"
 
                         # Store the actual Rally URL (not REST URL) of the attachment, looks like this:
                         # /slm/attachment/1234578910/myAttachment.jpg
@@ -218,9 +222,10 @@ class CaliberHelper
         # ----------------------------------------------
         # Combines Caliber name, Caliber hiearachy id (1.1.1), and Caliber id (1234)
         # fields, into a single string for Rally Story name
-        hierarchy               = caliber_object['hierarchy']
-        obj_id                  = caliber_object['id']
-        name                    = caliber_object['name']
+        hierarchy   = caliber_object['hierarchy']
+        obj_id      = caliber_object['id']
+        name        = caliber_object['name']
+
         if object_type == :requirement then
             obj_type_prefix = "REQ"
         elsif object_type == :testcase then
@@ -236,31 +241,33 @@ class CaliberHelper
     def get_caliber_image_files(caliber_description) #{
         # ----------------------------------------------
         # Prepares arrays of File references and Caliber image id attributes
-	# from Caliber Description markup
+        # from Caliber Description markup
         caliber_description_parser = Nokogiri::HTML(caliber_description, 'UTF-8') do | config |
             config.strict
         end
 
         caliber_image_files = []
         caliber_image_ids = []
+        caliber_image_titles = []
         caliber_description_parser.search('img').each do | this_image |
-            image_id = this_image['id']
-            image_src = this_image['src']
+            image_id            = this_image['id']
+            image_title         = this_image['title']
+            image_src           = this_image['src']
             image_url_unescaped = URI.unescape(image_src)
-            image_file_name = image_url_unescaped.split("\\")[-1]
-
-            image_file = File.dirname(__FILE__) + "/#{@caliber_image_directory}/#{image_file_name}"
+            image_file_name     = image_url_unescaped.split("\\")[-1]
+            image_file          = File.dirname(__FILE__) + "/#{@caliber_image_directory}/#{image_file_name}"
             caliber_image_files.push(image_file)
             caliber_image_ids.push(image_id)
+            caliber_image_titles.push(image_title)
         end
-        return caliber_image_files, caliber_image_ids
+        return caliber_image_files, caliber_image_ids, caliber_image_titles
     end #} end of "def get_caliber_image_files(caliber_description)"
 
 
     def count_images_in_caliber_description(caliber_description)
         # ----------------------------------------------
         # Parses through caliber description markup and
-	# looks for <img> tags
+        # looks for <img> tags
         caliber_description_parser = Nokogiri::HTML(caliber_description, 'UTF-8') do | config |
             config.strict
         end
@@ -284,7 +291,6 @@ class CaliberHelper
         artifact_markup = ''
         markup_hash.each do | field_title, field_key |
             field_string = caliber_object[field_key]
-            #artifact_markup += make_header(field_title)
             artifact_markup += "<p><b>#{field_title}</b></p>"
             if !field_string.nil? then
                 artifact_markup += field_string
@@ -294,8 +300,7 @@ class CaliberHelper
         if artifact_markup.length <= $max_description_length
             return artifact_markup
         else
-            @logger.warn "        *** Description length: #{artifact_markup.length} exceeds Rally limit of #{$max_description_length}; truncated."
-            @logger.warn "        *** Truncating Description on Caliber REQ#{caliber_object["id"]}"
+            @logger.warn "        *** Description length: #{artifact_markup.length} exceeds Rally limit of #{$max_description_length}; truncated; CID=#{caliber_object["id"]}"
             trunc_warn = '*** Too long; TRUNCATED! ***'
 
             # Save a copy of the description (that is too long), into its own file.
@@ -315,19 +320,26 @@ class CaliberHelper
         # Take Caliber Requirement hash, process and combine field data and create a story in Rally
         story = {}
         story["Name"]                   = make_name(requirement, :requirement)
-	    description = create_markup_from_hash(requirement, @description_field_hash, :requirement)
-	    if !description.nil? then
-	        # Within an <img...> tag, Rally no longer allows src= strings which have a leading "file://"; so change it to "http://".
-	        description = description.gsub(/file:\/\//, "http://")
-	        # Within an <img...> tag, Rally no longer allows id= tags; so change it to "title=" (which are allowed).
-	        description = description.gsub(/id=/, "title=")
-	    end
+        description = create_markup_from_hash(requirement, @description_field_hash, :requirement)
+        if !description.nil? then
+            # Within an <img...> tag, Rally no longer allows src= strings which have a leading "file://"; so change it to "http://".
+            description = description.gsub(/file:\/\//, "http://")
+            # Within an <img...> tag, Rally no longer allows id= tags; so change it to "title=" (which are allowed).
+            description = description.gsub(/id=/, "title=")
+        end
         #story["Description"]            = create_markup_from_hash(requirement, @description_field_hash, :requirement)
         story["Description"]            = description
-        story["Notes"]                  = "<p><b>Caliber Open Issues</b></p>"
-	    if requirement.has_key? 'open_issues'
+
+        story["Notes"]                  = ""
+        story["Notes"]                 += "<p><b>Caliber Open Issues</b></p>"
+        if requirement.has_key? 'open_issues'
             story["Notes"]             += requirement['open_issues']
         end
+        story["Notes"]                 += "<p><b>Caliber Remarks</b></p>"
+        if requirement.has_key? 'remarks'
+            story["Notes"]             += requirement['remarks']
+        end
+
         story[@caliber_id_field_name]   = requirement['id']
         begin
             newstory = @rally.create("hierarchicalrequirement", story)

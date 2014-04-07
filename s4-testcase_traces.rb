@@ -209,20 +209,17 @@ bm_time = Benchmark.measure {
                 $max_import_count                = #{$max_import_count}
                 $html_mode                       = #{$html_mode}
                 $preview_mode                    = #{$preview_mode}
-                $no_parent_id                    = #{$no_parent_id}
                 $csv_requirements                = #{$csv_requirements}
-                $csv_requirement_fields          = #{$csv_requirement_fields}
                 $csv_story_oids_by_req           = #{$csv_story_oids_by_req}
                 $csv_story_oids_by_req_fields    = #{$csv_story_oids_by_req_fields}
                 $csv_testcases                   = #{$csv_testcases}
-                $csv_testcase_fields             = #{$csv_testcase_fields}
                 $csv_testcase_oid_output         = #{$csv_testcase_oid_output}
                 $csv_testcase_oid_output_fields  = #{$csv_testcase_oid_output_fields}
                 $cal2ral_req_log                 = #{$cal2ral_req_log}
                 $cal2ral_req_traces_log          = #{$cal2ral_req_traces_log}
                 $cal2ral_tc_log                  = #{$cal2ral_tc_log}
                 $cal2ral_tc_traces_log           = #{$cal2ral_tc_traces_log}
-                $description_field_hash          = #{$description_field_hash}"
+"
 
     # Set up custom headers for Rally connection
     $headers                    = RallyAPI::CustomHttpHeader.new()
