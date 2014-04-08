@@ -245,7 +245,7 @@ bm_time = Benchmark.measure {
     @testcase_FidOidName_by_cid             = {}
     @story_FidOidName_by_cid                = {}
 
-    @logger.info "Opening for reading XML data file #{$caliber_file_tc_traces}..."
+    @logger.info "Opening for reading: XML data file '#{$caliber_file_tc_traces}'"
     caliber_data = Nokogiri::XML(File.open($caliber_file_tc_traces), 'UTF-8') do | config |
         config.strict
     end

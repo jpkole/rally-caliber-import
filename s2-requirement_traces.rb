@@ -227,7 +227,7 @@ bm_time = Benchmark.measure {
     @logger.info "Initiating connection to Rally at #{$my_base_url}..."
     @rally = RallyAPI::RallyRestJson.new(config)
 
-    @logger.info "Opening for reading XML data file #{$caliber_file_req_traces}..."
+    @logger.info "Opening for reading: XML data file '#{$caliber_file_req_traces}'"
     caliber_data = Nokogiri::XML(File.open($caliber_file_req_traces), 'UTF-8') do | config |
         config.strict
     end
@@ -286,12 +286,11 @@ bm_time = Benchmark.measure {
             traces_array = []
 
             ##### #####
-            # Find all <JDtraceto>'s    
-            all_JDtraceto_tags = this_JDrequest.search($tag_JDtraceto)
-            all_JDtraceto_tags.each_with_index do | this_JDtraceto, indx_JDtraceto |
-                @logger.info "        Searching <#{$tag_JDtraceto}> tag #{indx_JDtraceto+1} of #{all_JDtraceto_tags.length}..."
-
-                all_JDtrace_tags = this_JDtraceto.search($tag_JDtrace)
+            # Find all <JDtraceto>'s & <JDtracefrom>'s    
+            all_JDtraceTOandFROM_tags = this_JDrequest.search($tag_JDtraceto, $tag_JDtracefrom)
+            all_JDtraceTOandFROM_tags.each_with_index do | this_JDtraceTOandFROM, indx_JDtraceTOandFROM |
+                @logger.info "        Searching <#{$tag_JDtraceto}>/<#{$tag_JDtracefrom}> tag #{indx_JDtraceTOandFROM+1} of #{all_JDtraceTOandFROM_tags.length}..."
+                all_JDtrace_tags = this_JDtraceTOandFROM.search($tag_JDtrace)
                 all_JDtrace_tags.search($tag_JDtrace).each_with_index do | this_JDtrace, indx_JDtrace |
 
                     this_traceid    = this_JDtrace.search($tag_JDtraceId).first.text
@@ -299,34 +298,11 @@ bm_time = Benchmark.measure {
 
                     @logger.info "            Found <#{$tag_JDtrace}> tag #{indx_JDtrace+1}; JDtraceId=#{this_traceid}; JDtraceName='#{this_tracename}'"
 
-                    is_requirement = this_traceid.match(/^REQ/)
-                    if !is_requirement.nil? then
+                    is_testcase_or_requirement = this_traceid.match(/^(TC|REQ)/)
+                    if !is_testcase_or_requirement.nil? then
                         traces_array.push(this_traceid)
                     else
-                        @logger.error "                ERROR: TraceTo was not a REQ..."
-                    end
-                end
-            end
-
-            ##### #####
-            # Find all <JDtracefrom>'s
-            all_JDtracefrom_tags = this_JDrequest.search($tag_JDtracefrom)
-            all_JDtracefrom_tags.each_with_index do | this_JDtracefrom, indx_JDtracefrom |
-                @logger.info "        Searching <#{$tag_JDtracefrom}> tag #{indx_JDtracefrom+1} of #{all_JDtracefrom_tags.length}..."
-
-                all_JDtrace_tags = this_JDtracefrom.search($tag_JDtrace)
-                all_JDtrace_tags.each_with_index do | this_JDtrace, indx_JDtrace |
-
-                    this_traceid    = this_JDtrace.search($tag_JDtraceId).first.text
-                    this_tracename  = this_JDtrace.search($tag_JDtraceName).first.text
-
-                    @logger.info "            Found <#{$tag_JDtrace}> tag #{indx_JDtrace+1}; JDtraceId=#{this_traceid}; JDtraceName='#{this_tracename}'"
-
-                    is_requirement = this_traceid.match(/^REQ/)
-                    if !is_requirement.nil? then
-                        traces_array.push(this_traceid)
-                    else
-                        @logger.error "                ERROR: TraceFrom was not a REQ..."
+                        @logger.error "        *** ERROR: Above <#{$tag_JDtraceto}>/<#{$tag_JDtracefrom}> was neither for TC or REQ..."
                     end
                 end
             end

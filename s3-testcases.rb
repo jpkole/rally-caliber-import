@@ -101,23 +101,23 @@ $uda_value_name_pre_condition            = "JDF Pre-condition [Pr]"
 $uda_value_name_project                  = "JDF Project"
 $uda_value_name_post_condition           = "JDF Post-condition [Po]"
 $uda_value_name_machine_type             = "JDF Machine Type"
-$uda_value_name_software_load            = "JDF Software Load"
-$uda_value_name_content_status           = "JDF Content Status"
+#$uda_value_name_software_load            = "JDF Software Load"
+#$uda_value_name_content_status           = "JDF Content Status"
 $uda_value_name_remarks                  = "JDF Remarks [Re]"
 $uda_value_name_testing_course           = "JDF Testing Course [Te]"
-$uda_value_name_include                  = "JDF Include"
-$uda_value_name_testing_status           = "JDF Testing Status"
-$uda_value_name_test_running             = "JDF Test Running"
+#$uda_value_name_include                  = "JDF Include"
+#$uda_value_name_testing_status           = "JDF Testing Status"
+#$uda_value_name_test_running             = "JDF Test Running"
 
 $description_field_hash = {
     'Source [So]'             => 'source',
     'Purpose [Pu]'            => 'purpose',
     'Pre-condition [Pr]'      => 'pre_condition',
     'Testing Course [Te]'     => 'testing_course',
-    'Post-condition [Po]'     => 'post_condition',
-    'Remarks [Re]'            => 'remarks',
     'Validation'              => 'validation',
-    'Description'             => 'description'
+    'Description'             => 'description',
+    'Post-condition [Po]'     => 'post_condition',
+    'Remarks [Re]'            => 'remarks'
 }
 
 bm_time = Benchmark.measure {
@@ -195,7 +195,7 @@ bm_time = Benchmark.measure {
     # When importing straight XML, the newlines are ignored completely
     # Rally (and Nokogiri, really) needs markup. This step replaces newlines with <br>
     # And reads the resulting input as HTML rather than XML
-    @logger.info "Opening for reading XML data file #{$caliber_file_tc}..."
+    @logger.info "Opening for reading: XML data file '#{$caliber_file_tc}'"
     caliber_file = File.open($caliber_file_tc, 'rb')
     caliber_content = caliber_file.read
     caliber_content_html = caliber_content.gsub("\n", "&lt;br/&gt;\n")
@@ -303,16 +303,16 @@ bm_time = Benchmark.measure {
                                 this_testcase['remarks']            = uda_value_value
                             when $uda_value_name_machine_type
                                 this_testcase['machine_type']       = uda_value_value
-                            when $uda_value_name_software_load
-                                this_testcase['software_load']      = uda_value_value
-                            when $uda_value_name_content_status
-                                this_testcase['content_status']     = uda_value_value
-                            when $uda_value_name_include
-                                this_testcase['include']            = uda_value_value
-                            when $uda_value_name_testing_status
-                                this_testcase['testing_status']     = uda_value_value
-                            when $uda_value_name_test_running
-                                this_testcase['test_running']       = uda_value_value
+                            #when $uda_value_name_software_load
+                            #    this_testcase['software_load']      = uda_value_value
+                            #when $uda_value_name_content_status
+                            #    this_testcase['content_status']     = uda_value_value
+                            #when $uda_value_name_include
+                            #    this_testcase['include']            = uda_value_value
+                            #when $uda_value_name_testing_status
+                            #    this_testcase['testing_status']     = uda_value_value
+                            #when $uda_value_name_test_running
+                            #    this_testcase['test_running']       = uda_value_value
                             else
                                 uda_stat="ignored"
                         end
@@ -371,15 +371,16 @@ bm_time = Benchmark.measure {
                     @logger.info "            No images found for this Requirement."
                 else
                     description_with_images = this_testcase['description']
-                    image_file_objects, image_file_ids, image_titles = @caliber_helper.get_caliber_image_files(description_with_images)
+                    image_file_objects, image_file_ids, image_file_titles = @caliber_helper.get_caliber_image_files(description_with_images)
                     caliber_image_data = {
                         "files"         => image_file_objects,
                         "ids"           => image_file_ids,
+                        "titles"        => image_file_titles,
                         "description"   => description_with_images,
                         "fmtid"         => testcase["FormattedID"],
                         "ref"           => testcase["_ref"]
                     }
-                    @logger.info "            Adding #{caliber_image_count} images to hash for later processing."
+                    @logger.info "            Adding #{caliber_image_count} images to hash for later processing; id(s)=#{image_file_titles}."
                     @rally_testcases_with_images_hash[testcase["ObjectID"].to_s] = caliber_image_data
                 end
 

@@ -218,7 +218,7 @@ bm_time = Benchmark.measure {
     # When importing straight XML, the newlines are ignored completely
     # Rally (and Nokogiri, really) needs markup. This step replaces newlines with <br>
     # And reads the resulting input as HTML rather than XML
-    @logger.info "Opening for reading XML data file #{$caliber_file_req}..."
+    @logger.info "Opening for reading: XML data file '#{$caliber_file_req}'"
     caliber_file = File.open($caliber_file_req, 'rb')
     caliber_content = caliber_file.read
 
@@ -258,7 +258,7 @@ bm_time = Benchmark.measure {
             if this_ReqType['name'] == "JDF Requirement (REQ)" then
                 @logger.info "    <ReqType ...> tag #{indx_ReqType+1} of #{tags_reqtype.length}: name=\"#{this_ReqType['name']}\" sort_by=\"#{this_ReqType['sort_by']}\""
             else
-                @logger.info "    Ignoring <ReqType ...> tag with name=\"#{this_ReqType['name']}\""
+                @logger.warn "*** Ignoring <ReqType ...> tag with name=\"#{this_ReqType['name']}\""
                 next           
             end
             

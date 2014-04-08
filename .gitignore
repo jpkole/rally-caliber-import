@@ -3,6 +3,8 @@ s2-requirement_traces.log
 s3-testcases.log
 s4-testcase_traces.log
 
+s2-requirement_traces.rb-ORIG
+
 *.csv
 Desc-REQ*.txt
 run-output-*
