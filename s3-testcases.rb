@@ -134,68 +134,20 @@ bm_time = Benchmark.measure {
     if $preview_mode then
         @logger.info "----PREVIEW MODE----"
     end
-   
-    # Report vars
-    @logger.info "Running #{$PROGRAM_NAME} with the following settings:
-                $my_base_url                     = #{$my_base_url}
-                $my_username                     = #{$my_username}
-                $my_wsapi_version                = #{$my_wsapi_version}
-                $my_workspace                    = #{$my_workspace}
-                $my_project                      = #{$my_project}
-                $max_attachment_length           = #{$max_attachment_length}
-		        $max_description_length          = #{$max_description_length}
-                $caliber_file_req                = #{$caliber_file_req}
-                $caliber_file_req_traces         = #{$caliber_file_req_traces}
-                $caliber_file_tc                 = #{$caliber_file_tc}
-                $caliber_file_tc_traces          = #{$caliber_file_tc_traces}
-                $caliber_image_directory         = #{$caliber_image_directory}
-                $caliber_id_field_name           = #{$caliber_id_field_name}
-                $caliber_weblink_field_name      = #{$caliber_weblink_field_name}
-                $caliber_req_traces_field_name   = #{$caliber_req_traces_field_name}
-                $caliber_tc_traces_field_name    = #{$caliber_tc_traces_field_name}
-                $max_import_count                = #{$max_import_count}
-                $html_mode                       = #{$html_mode}
-                $preview_mode                    = #{$preview_mode}
-                $csv_requirements                = #{$csv_requirements}
-                $csv_story_oids_by_req           = #{$csv_story_oids_by_req}
-                $csv_story_oids_by_req_fields    = #{$csv_story_oids_by_req_fields}
-                $csv_testcases                   = #{$csv_testcases}
-                $csv_testcase_oid_output         = #{$csv_testcase_oid_output}
-                $csv_testcase_oid_output_fields  = #{$csv_testcase_oid_output_fields}
-                $cal2ral_req_log                 = #{$cal2ral_req_log}
-                $cal2ral_req_traces_log          = #{$cal2ral_req_traces_log}
-                $cal2ral_tc_log                  = #{$cal2ral_tc_log}
-                $cal2ral_tc_traces_log           = #{$cal2ral_tc_traces_log}
-"
 
-    # Set up custom headers for Rally connection
-    $headers                    = RallyAPI::CustomHttpHeader.new()
-    $headers.name               = "Caliber Testcase Importer"
-    $headers.vendor             = "Rally Technical Services"
-    $headers.version            = "0.50"
-
-    config = {  :base_url       => $my_base_url,
-                :username       => $my_username,
-                :password       => $my_password,
-                :workspace      => $my_workspace,
-                :project        => $my_project,
-                :version        => $my_wsapi_version,
-                :headers        => $headers}
-
-    @logger.info "Initiating connection to Rally at #{$my_base_url}..."
-    @rally = RallyAPI::RallyRestJson.new(config)
- 
     # Initialize Caliber Helper
-    @caliber_helper = CaliberHelper.new(@rally, $caliber_project, $caliber_id_field_name,
+    @caliber_helper = CaliberHelper.new($caliber_project, $caliber_id_field_name,
         $description_field_hash, $caliber_image_directory, @logger, $caliber_weblink_field_name)
-
+    @caliber_helper.display_vars()
+    @rally = @caliber_helper.get_rally_connection()
+   
     # HTML Mode vs. XML Mode
     # The following is needed to preserve newlines in formatting of UDAValues when
     # Imported into Rally. Caliber export uses newlines in UDAValue attributes as formatting.
     # When importing straight XML, the newlines are ignored completely
     # Rally (and Nokogiri, really) needs markup. This step replaces newlines with <br>
     # And reads the resulting input as HTML rather than XML
-    @logger.info "Opening for reading: XML data file '#{$caliber_file_tc}'"
+    @logger.info "Opening XML file for reading: '#{$caliber_file_tc}'"
     caliber_file = File.open($caliber_file_tc, 'rb')
     caliber_content = caliber_file.read
     caliber_content_html = caliber_content.gsub("\n", "&lt;br/&gt;\n")
@@ -211,14 +163,14 @@ bm_time = Benchmark.measure {
     end
 
     # Output CSV of TestCase data
-    @logger.info "CSV file creation of #{$csv_testcases}..."
+    @logger.info "CSV file creation: '#{$csv_testcases}'"
     testcase_csv = CSV.open($csv_testcases, "wb", {:col_sep => $my_delim})
     testcase_csv << $csv_testcase_fields
 
     # Output CSV of TestCase OID's by Caliber Requirement Name
-    @logger.info "CSV file creation of #{$csv_testcase_oid_output}..."
-    testcase_oid_csv    = CSV.open($csv_testcase_oid_output, "wb", {:col_sep => $my_delim})
-    testcase_oid_csv    << $csv_testcase_oid_output_fields
+    @logger.info "CSV file creation: '#{$csv_TC_OidCidReqname_by_FID}'"
+    testcase_oid_csv    = CSV.open($csv_TC_OidCidReqname_by_FID, "wb", {:col_sep => $my_delim})
+    testcase_oid_csv    << $csv_TC_OidCidReqname_by_FID_fields
 
     # The following are used for the post-run web-linking
     # Hash of TestCase keyed by Caliber Requirement Hierarchy ID
@@ -250,7 +202,7 @@ bm_time = Benchmark.measure {
             
             total_tc = 0
             tags_requirement = this_ReqType.search($tag_Requirement)
-                tags_requirement.each_with_index do | this_Requirement, indx_Requirement | #{
+            tags_requirement.each_with_index do | this_Requirement, indx_Requirement | #{
 
                 @logger.info "        <Requirement ...> tag #{indx_Requirement+1} of #{tags_requirement.length}: index=\"#{this_Requirement['index']}\"\ id=\"#{this_Requirement['id']}\" tag=\"#{this_Requirement['tag']}\" hierarchy=\"#{this_Requirement['hierarchy']}\" name=\"#{this_Requirement['name']}\""
 
@@ -263,7 +215,7 @@ bm_time = Benchmark.measure {
                 this_testcase['project']             = this_Report['project']
                 this_testcase['hierarchy']           = this_Requirement['hierarchy']
                 this_testcase['id']                  = this_Requirement['id']
-                this_testcase['tag']                 = this_Requirement['tag']
+                #this_testcase['tag']                 = this_Requirement['tag']
                 this_testcase['name']                = this_Requirement['name'] || ""
 
                 # process_description_body pulls HTML content out of <html><body> tags
@@ -394,12 +346,14 @@ bm_time = Benchmark.measure {
 
                 # Output testcase OID and Caliber tag name
                 # So we can use this information later when importing traces
-                testcase_oid_data << testcase_tag
-                testcase_oid_data << testcase["ObjectID"]
                 testcase_oid_data << testcase["FormattedID"]
+                testcase_oid_data << testcase["ObjectID"]
+                testcase_oid_data << testcase_id
+                testcase_oid_data << testcase_tag
                 testcase_oid_data << testcase_name
+
                 # Post-pend to CSV
-                testcase_oid_csv  << CSV::Row.new($csv_testcase_oid_output_fields, testcase_oid_data)
+                testcase_oid_csv  << CSV::Row.new($csv_TC_OidCidReqname_by_FID_fields, testcase_oid_data)
 
                 # Circuit-breaker for testing purposes
                 if import_count < $max_import_count-1 then

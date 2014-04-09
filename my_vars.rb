@@ -3,20 +3,20 @@
 # --------------------------------------------------------------------------
 # My test environment.
 #
-#$my_base_url                    = "https://demo-services1.rallydev.com/slm"
-#$my_username                    = "jpkole@rallydev.com"
-#$my_password                    = "!!nrlad1804"
-#$my_wsapi_version               = "1.43"
-#$my_workspace                   = "JDF Tampere"
+$my_base_url                    = "https://demo-services1.rallydev.com/slm"
+$my_username                    = "jpkole@rallydev.com"
+$my_password                    = "!!nrlad1804"
+$my_wsapi_version               = "1.43"
+$my_workspace                   = "JDF Tampere"
 
 # --------------------------------------------------------------------------
 # The real deal...
 #
-$my_base_url                    = "https://rally1.rallydev.com/slm"
-$my_username                    = "rally_caliber@johndeere.com"
-$my_password                    = "!!nrlad1804"
-$my_wsapi_version               = "1.43"
-$my_workspace                   = "JDF Tampere"
+#$my_base_url                    = "https://rally1.rallydev.com/slm"
+#$my_username                    = "rally_caliber@johndeere.com"
+#$my_password                    = "!!nrlad1804"
+#$my_wsapi_version               = "1.43"
+#$my_workspace                   = "JDF Tampere"
 
 # ------------------------------------------------------------------------------
 # JDF_zeuscontrol project (proof of concept)
@@ -61,22 +61,22 @@ $my_workspace                   = "JDF Tampere"
 # ------------------------------------------------------------------------------
 # Proj4: HHC Harvest project
 #
-$my_project                     = "HHC_requirements"                                                # Rally Project name
-$caliber_file_req               = "../from-ftp-site/fetch4-HHC_Harvest/HHC_to_rally.xml"            # 01-Requirements
-$caliber_file_req_traces        = "../from-ftp-site/fetch4-HHC_Harvest/HHC_traces.xml"              # 02-Requirement-Traces
-$caliber_file_tc                = ""                                                                # 03-Testcases
-$caliber_file_tc_traces         = ""                                                                # 04-Testcases-Traces
-$caliber_image_directory        = "../from-ftp-site/fetch3-TimberOffice/ImageCache"                 # 05-Image data
+#$my_project                     = "HHC_requirements"                                                # Rally Project name
+#$caliber_file_req               = "../from-ftp-site/fetch4-HHC_Harvest/HHC_to_rally.xml"            # 01-Requirements
+#$caliber_file_req_traces        = "../from-ftp-site/fetch4-HHC_Harvest/HHC_traces.xml"              # 02-Requirement-Traces
+#$caliber_file_tc                = ""                                                                # 03-Testcases
+#$caliber_file_tc_traces         = ""                                                                # 04-Testcases-Traces
+#$caliber_image_directory        = "../from-ftp-site/fetch3-TimberOffice/ImageCache"                 # 05-Image data
 
 # ------------------------------------------------------------------------------
 # Proj5: DTI project
 #
-#$my_project                     = "DTI_requirements"                                                # Rally Project name
-#$caliber_file_req               = "../from-ftp-site/fetch5-DTI/JDF_DTI_reqs_without_trash.xml"      # 01-Requirements
-#$caliber_file_req_traces        = "../from-ftp-site/fetch5-DTI/JDF_DTItracereq.xml"                 # 02-Requirement-Traces
-#$caliber_file_tc                = "../from-ftp-site/fetch5-DTI/JDF_DTI_TC_without_trash.xml"        # 03-Testcases
-#$caliber_file_tc_traces         = "../from-ftp-site/fetch5-DTI/JDF_DTItraceTC.xml"                  # 04-Testcases-Traces
-#$caliber_image_directory        = "../from-ftp-site/fetch3-TimberOffice/ImageCache"                 # 05-Image data
+$my_project                     = "DTI_requirements"                                                # Rally Project name
+$caliber_file_req               = "../from-ftp-site/fetch5-DTI/JDF_DTI_reqs_without_trash.xml"      # 01-Requirements
+$caliber_file_req_traces        = "../from-ftp-site/fetch5-DTI/JDF_DTItracereq.xml"                 # 02-Requirement-Traces
+$caliber_file_tc                = "../from-ftp-site/fetch5-DTI/JDF_DTI_TC_without_trash.xml"        # 03-Testcases
+$caliber_file_tc_traces         = "../from-ftp-site/fetch5-DTI/JDF_DTItraceTC.xml"                  # 04-Testcases-Traces
+$caliber_image_directory        = "../from-ftp-site/fetch3-TimberOffice/ImageCache"                 # 05-Image data
 
 # ------------------------------------------------------------------------------
 # Proj6: Rimu project
@@ -111,22 +111,38 @@ $max_import_count               = 50_000
 $html_mode                      = true
 $preview_mode                   = false
 
-# CSV file & fields to allow lookup of ...
-$csv_requirements               = "s1-requirements.csv"
-$csv_requirement_fields         =  %w{id hierarchy name project description validation purpose pre_condition basic_course post_condition exceptions remarks}
 
-# CSV file & fields to allow lookup of Story OID by Caliber Requirement Name (needed for traces import).
-$csv_story_oids_by_req          = "s1-story_oids_by_reqname.csv"
-$csv_story_oids_by_req_fields   =  %w{FmtID  ObjectID  CaliberID  reqname}
+# ------------------------------------------------------------------------------
+# CSV USERSTORY:
+# CSV file & fields for lookup of Story OID by Caliber Requirement Name (needed for traces import).
+$csv_requirements                  = "s1-requirements.csv"
+#                                           -------1-------     -------2-------     -------3-------     -------4-------     -------5-------
+$csv_requirement_fields            = %w{    project             hierarchy           id                  tag                 name
+                                            description         caliber_purpose     pre_condition       basic_course        post_condition
+                                            exceptions          input               output              remarks             open_issues     }
+#                                           -------1-------     -------2-------     -------3-------     -------4-------     -------5-------
+$csv_US_OidCidReqname_by_FID        = "s1-US_OidCidReqname_by_FID.csv"
+#                                           -------1-------     -------2-------     -------3-------     -------4-------     -------5-------
+$csv_US_OidCidReqname_by_FID_fields = %w{   FmtID               OID                 id                  tag                 REQname         }
+#                                           -------1-------     -------2-------     -------3-------     -------4-------     -------5-------
 
-# CSV file & fields to allow lookup of ...
-$csv_testcases                  = "s3-testcases.csv"
-$csv_testcase_fields            =  %w{id hierarchy name project source purpose pre_condition testing_course post_condition machine_type software_load content_status remarks validation description include testing_status test_running}
 
-# CSV file & fields to allow lookup of TestCase OID by Caliber TestCase ID (needed for traces import).
-$csv_testcase_oid_output        = "s3-testcase_oids_by_testcaseid.csv"
-$csv_testcase_oid_output_fields =  %w{testcase_id ObjectID FormattedID testcase_name}
+# ------------------------------------------------------------------------------
+# CSV TESTCASE:
+# CSV file & fields for lookup of Testcase OID by Caliber Requirement Name (needed for traces import).
+$csv_testcases                      = "s3-testcases.csv"
+#                                           -------1-------     -------2-------     -------3-------     -------4-------     -------5-------
+$csv_testcase_fields                = %w{   project             hierarchy           id                  tag                 name
+                                            description         validation          purpose             pre_condition       testing_course
+                                            post_condition      remarks             machine_type                                            }
+#                                           -------1-------     -------2-------     -------3-------     -------4-------     -------5-------
+$csv_TC_OidCidReqname_by_FID        = "s3-TC_OidCidReqname_by_FID.csv"
+#                                           -------1-------     -------2-------     -------3-------     -------4-------     -------5-------
+$csv_TC_OidCidReqname_by_FID_fields = %w{   FmtID               OID                 id                  tag             TCname              }
+#                                           -------1-------     -------2-------     -------3-------     -------4-------     -------5-------
 
+
+# ------------------------------------------------------------------------------
 # Log files
 $cal2ral_req_log                = "s1-requirements.log"
 $cal2ral_req_traces_log         = "s2-requirement_traces.log"

@@ -1,23 +1,76 @@
 class CaliberHelper
 
-    def initialize(rally_connection, project, id_fieldname,
-        field_hash, image_directory, logger_instance, weblink_fieldname = nil )
+    def initialize(project, id_fieldname, field_hash, image_directory, logger_instance, weblink_fieldname = nil ) #{
         # ----------------------------------------------------------------------
-        @rally                           = rally_connection
-        @caliber_project                 = project
-        @caliber_id_field_name           = id_fieldname
-        @description_field_hash          = field_hash
-        @caliber_image_directory         = image_directory
-        @logger                          = logger_instance
-        @caliber_weblink_field_name      = weblink_fieldname
-        @max_attachment_length           = 5_000_000
+        @caliber_project            = project
+        @caliber_id_field_name      = id_fieldname
+        @description_field_hash     = field_hash
+        @caliber_image_directory    = image_directory
+        @logger                     = logger_instance
+        @caliber_weblink_field_name = weblink_fieldname
+        @max_attachment_length      = 5_000_000
 
         # Flag to set in @rally_story_hierarchy_hash if Requirement has no Parent
-        @no_parent_id                    = "-9999"
+        @no_parent_id               = "-9999"
 
         # JDF Project setting
-        @jdf_zeus_control_project        = "JDF-Zeus_Control-project"
-    end
+        @jdf_zeus_control_project   = "JDF-Zeus_Control-project"
+    end #} end of "def initialize(project, id_fieldname, field_hash, image_directory, logger_instance, weblink_fieldname = nil )"
+
+
+    def display_vars #{
+        # Report all vars
+        @logger.info "Running #{$PROGRAM_NAME} with the following settings:
+                $my_base_url                                = #{$my_base_url}
+                $my_username                                = #{$my_username}
+                $my_wsapi_version                           = #{$my_wsapi_version}
+                $my_workspace                               = #{$my_workspace}
+                $my_project                                 = #{$my_project}
+                $max_attachment_length                      = #{$max_attachment_length}
+                $max_description_length                     = #{$max_description_length}
+                $caliber_file_req                           = #{$caliber_file_req}
+                $caliber_file_req_traces                    = #{$caliber_file_req_traces}
+                $caliber_file_tc                            = #{$caliber_file_tc}
+                $caliber_file_tc_traces                     = #{$caliber_file_tc_traces}
+                $caliber_image_directory                    = #{$caliber_image_directory}
+                $caliber_id_field_name                      = #{$caliber_id_field_name}
+                $caliber_weblink_field_name                 = #{$caliber_weblink_field_name}
+                $caliber_req_traces_field_name              = #{$caliber_req_traces_field_name}
+                $caliber_tc_traces_field_name               = #{$caliber_tc_traces_field_name}
+                $max_import_count                           = #{$max_import_count}
+                $html_mode                                  = #{$html_mode}
+                $preview_mode                               = #{$preview_mode}
+                $csv_requirements                           = #{$csv_requirements}
+                $csv_requirement_fields                     = #{$csv_requirement_fields}
+                $csv_US_OidCidReqname_by_FID                = #{$csv_US_OidCidReqname_by_FID}
+                $csv_US_OidCidReqname_by_FID_fields         = #{$csv_US_OidCidReqname_by_FID_fields}
+                $csv_testcases                              = #{$csv_testcases}
+                $csv_TC_OidCidReqname_by_FID                = #{$csv_TC_OidCidReqname_by_FID}
+                $csv_TC_OidCidReqname_by_FID_fields         = #{$csv_TC_OidCidReqname_by_FID_fields}
+                $cal2ral_req_log                            = #{$cal2ral_req_log}
+                $cal2ral_req_traces_log                     = #{$cal2ral_req_traces_log}
+                $cal2ral_tc_log                             = #{$cal2ral_tc_log}
+                $cal2ral_tc_traces_log                      = #{$cal2ral_tc_traces_log}
+"
+    end #} end of "def display_vars"
+
+
+    def get_rally_connection #{
+        @logger.info "Initiating connection to Rally: #{$my_base_url}"
+        @rally = RallyAPI::RallyRestJson.new({
+                           :base_url       => $my_base_url,
+                           :username       => $my_username,
+                           :password       => $my_password,
+                           :workspace      => $my_workspace,
+                           :project        => $my_project,
+                           :version        => $my_wsapi_version,
+                           :headers        => RallyAPI::CustomHttpHeader.new(
+                                                :name       => "Caliber Importer",
+                                                :vendor     => "Rally Technical Services",
+                                                :version    => "0.60"       )
+                                            })
+        return @rally
+    end #} end of "def get_rally_connection"
 
 
     def get_mimetype_from_extension(file_ext) #{
@@ -55,16 +108,6 @@ class CaliberHelper
     end #} end of "def get_image_metadata(image_file, image_id)"
 
 
-    #def get_url_from_attachment(rally_attachment, filename) #{
-    #    # ----------------------------------------------
-    #    # Takes a Rally attachment object and filename string and returns a
-    #    # relative URL to the attachment in Rally of the form:
-    #    # /slm/attachment/12345678910/file.jpg
-    #    attachment_oid = rally_attachment["ObjectID"].to_s
-    #    return "/slm/attachment/#{attachment_oid}/#{filename}"
-    #end #} end of "def get_url_from_attachment(rally_attachment, filename)"
-
-
     def create_image_attachment(attachment_data_hash) #{
         # ----------------------------------------------
         # Creates an image (png, gif, jpg, bmp) image in rally
@@ -85,8 +128,6 @@ class CaliberHelper
         attachment_fields["Size"]        = attachment_data_hash[:size]
         attachment = @rally.create(:attachment, attachment_fields)
 
-        #@logger.info "    Imported #{attachment_data_hash[:name]} to a Rally Attachment Artifact: OID=#{attachment_data_hash[:artifactoid]}"
-        #@logger.info "        Created Rally Attachment Artifact: OID=#{attachment.ObjectID}; content=#{attachment_data_hash[:name]}"
         @logger.info "            created Rally Attachment Artifact: OID=#{attachment.ObjectID}; Orig/Base64 sizes=#{attachment_data_hash[:bytes].length}/#{attachment_content_string.length}"
         return attachment
     end #} end of "def create_image_attachment(attachment_data_hash)"
