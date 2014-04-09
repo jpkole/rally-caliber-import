@@ -81,10 +81,6 @@ def cache_testcase_oid(header, row) #{
     testcase_tag    = row[header[3]].strip  # Caliber "tag="
     testcase_name   = row[header[4]].strip  # Caliber Req Name
 
-    if !testcase_id.eql? nil then
-        @testcase_oid_by_reqid[testcase_id] = testcase_oid.to_s
-    end
-
     @testcase_TagFidOidName_by_reqid[testcase_id] = [testcase_tag, testcase_fid.to_s, testcase_oid.to_s, testcase_name]
 
 end #} end of "def cache_testcase_oid(header, row)"
