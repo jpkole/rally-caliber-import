@@ -228,22 +228,24 @@ bm_time = Benchmark.measure {
     end
 
     #---------------------------------------------------------------------------
-    # Read in cached reqname -> Testcase OID mapping from file
+    # Read in cached reqname -> Testcase OID mapping from file, if it exists.
     #
-    @logger.info "CSV file reading (requirement-name --> Story-OID): '#{$csv_TC_OidCidReqname_by_FID}'"
-    input  = CSV.read($csv_TC_OidCidReqname_by_FID,  {:col_sep => $my_delim})
-    header = input.first #ignores first line
-    rows   = []
-    (1...input.size).each { |i| rows << CSV::Row.new(header, input[i])}
-    @logger.info "    Found #{rows.length} rows of data"
-    number_processed = 0
+    if File.file?($csv_TC_OidCidReqname_by_FID) #{
+        @logger.info "CSV file reading (requirement-name --> Story-OID): '#{$csv_TC_OidCidReqname_by_FID}'"
+        input  = CSV.read($csv_TC_OidCidReqname_by_FID,  {:col_sep => $my_delim})
+        header = input.first #ignores first line
+        rows   = []
+        (1...input.size).each { |i| rows << CSV::Row.new(header, input[i])}
+        @logger.info "    Found #{rows.length} rows of data"
+        number_processed = 0
 
-    # Proceed through rows in input CSV and store reqname -> testcase OID lookup in a hash
-    @logger.info "    Building hash of Rally TestCase OID's by Caliber Requirement Name (for traces import)"
-    rows.each do |row|
-        cache_testcase_oid(header, row)
-        number_processed += 1
-    end
+        # Proceed through rows in input CSV and store reqname -> testcase OID lookup in a hash
+        @logger.info "    Building hash of Rally TestCase OID's by Caliber Requirement Name (for traces import)"
+        rows.each do |row|
+            cache_testcase_oid(header, row)
+            number_processed += 1
+        end
+    end #} end of "if File.file?($csv_TC_OidCidReqname_by_FID)"
 
     # Process traces
     import_count = 0
