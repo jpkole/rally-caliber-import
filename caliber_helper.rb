@@ -368,7 +368,6 @@ class CaliberHelper
             # Within an <img...> tag, Rally no longer allows id= tags; so change it to "title=" (which are allowed).
             description = description.gsub(/id=/, "title=")
         end
-        #story["Description"]            = create_markup_from_hash(requirement, @description_field_hash, :requirement)
         story["Description"]            = description
 
         story["Notes"]                  = ""
@@ -533,7 +532,7 @@ class CaliberHelper
             update_fields[@caliber_weblink_field_name] = parent_web_link
 
             @logger.info "    Parenting (##{tc_parents_stitched} of #{tot_tc}); Child Hierarchy #{this_hierarchy_id}: Rally TestCase: FmtID=#{child_testcase_fid}; OID=#{child_testcase_oid} to:"
-            @logger.info "        parent Hierarchy #{this_parent_hierarchy_id}: Rally Testcase: FmtID=#{parent_testcase}; OID=#{parent_testcase}"
+            @logger.info "        parent Hierarchy #{this_parent_hierarchy_id}: Rally Testcase: FmtID=#{parent_testcase_fid}; OID=#{parent_testcase_oid}"
             begin
                 @rally.update("testcase", child_testcase_oid, update_fields)
             rescue => ex

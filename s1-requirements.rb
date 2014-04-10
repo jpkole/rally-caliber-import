@@ -119,7 +119,10 @@ $description_field_hash         = {
         'Basic course'          => 'basic_course',
         'Post-condition'        => 'post_condition',
         'Exceptions'            => 'exceptions',
-        'Description'           => 'description'
+        'Description'           => 'description',
+        'Validation'            => 'validation',
+        'Input'                 => 'input',
+        'Output'                => 'output'
 }
 
 $description_field_hash_ZeusCtl = {
@@ -232,7 +235,7 @@ bm_time = Benchmark.measure {
 
                 # process_description_body pulls HTML content out of <html><body> tags
                 current_req['description']     = @caliber_helper.process_description_body(this_Requirement['description'] || "")
-                #current_req['validation']      = this_Requirement['validation'] || ""
+                current_req['validation']      = this_Requirement['validation'] || ""
 
                 # Store Caliber ID, HierarchyID, Project and Name in variables for convenient logging output
                 req_id                         = current_req['id']

@@ -145,7 +145,7 @@ def create_traces_markup_from_traces_array(traces_array) #{
             story_tag, story_fid, story_oid, story_name = @story_TagFidOidName_by_reqid[this_traceid.sub("REQ", "")]
 
             if story_oid.nil? then
-                @logger.warn "    *** No Rally UserStory found for Caliber Requirement: CID: #{this_traceid} (link will be empty)"
+                @logger.warn "    *** No Rally UserStory found for Caliber Requirement: CID=#{this_traceid} (link will be empty)"
                 this_trace = @req_name_by_reqid[this_traceid] || this_traceid
             else
                 @logger.info "        Linking Trace JDtraceId=#{this_traceid} to Rally UserStory: FmtID=#{story_fid} OID=#{story_oid}"
@@ -268,8 +268,7 @@ bm_time = Benchmark.measure {
 
             story_tag, story_fid, story_oid, story_name = @story_TagFidOidName_by_reqid[this_req_id.sub("REQ", "")]
             if story_oid.nil? then
-debugger
-                @logger.warn "        Can't find Rally UserStory: JDname='#{this_req_name}'; skipping import."
+                @logger.warn "        Can't find Rally UserStory: JDid=#{this_req_id}; JDname='#{this_req_name}'; skipping import."
                 next
             else
                 @logger.info "        Hashed Rally UserStory: FmtID=#{story_fid}; OID=#{story_oid} for JDname='#{this_req_name}'"

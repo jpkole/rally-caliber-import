@@ -117,7 +117,7 @@ def create_traces_markup_from_traces_array(traces_array) #{
         is_requirement = this_traceid.match(/^REQ/)
 
         if !is_testcase.nil? then
-            testcase_tag, testcase_fid, testcase_oid, testcase_name = @testcase_TagFidOidName_by_reqid[this_traceid]
+            testcase_tag, testcase_fid, testcase_oid, testcase_name = @testcase_TagFidOidName_by_reqid[this_traceid.sub("TC", "")]
 
             if testcase_oid.nil? then
                 @logger.warn "        *** No Rally TestCase found for Caliber TestCase; CID=#{this_traceid} - skipping linkage."
@@ -271,7 +271,7 @@ bm_time = Benchmark.measure {
 
             testcase_tag, testcase_fid, testcase_oid, testcase_name = @testcase_TagFidOidName_by_reqid[this_testcase_id.sub("TC", "")]
             if testcase_oid.nil? then
-                @logger.warn "        Can't find Rally TestCase: JDname='#{this_testcase_name}'; skipping import."
+                @logger.warn "        Can't find Rally TestCase: JDid=#{this_testcase_id}; JDname='#{this_testcase_name}'; skipping import."
                 next
             else
                 @logger.info "        Hashed Rally TestCase: FmtID=#{testcase_fid}; OID=#{testcase_oid} for JDname='#{this_testcase_name}'"
