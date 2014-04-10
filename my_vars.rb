@@ -71,7 +71,7 @@ $my_workspace                   = "JDF Tampere"
 # ------------------------------------------------------------------------------
 # Proj5: DTI project
 #
-$my_project                     = "DTI_requirements"                                                # Rally Project name
+$my_project                     = "DTI_requirements-new"                                                # Rally Project name
 $caliber_file_req               = "../from-ftp-site/fetch5-DTI/JDF_DTI_reqs_without_trash.xml"      # 01-Requirements
 $caliber_file_req_traces        = "../from-ftp-site/fetch5-DTI/JDF_DTItracereq.xml"                 # 02-Requirement-Traces
 $caliber_file_tc                = "../from-ftp-site/fetch5-DTI/JDF_DTI_TC_without_trash.xml"        # 03-Testcases

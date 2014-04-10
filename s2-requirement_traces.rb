@@ -130,7 +130,7 @@ def create_traces_markup_from_traces_array(traces_array) #{
             else
                 @logger.info "        Linking Trace JDtraceId=#{this_traceid} to Rally TestCase: FmtID=#{testcase_fid} OID=#{testcase_oid}"
                 #this_trace_name = @testcase_name_by_caliber_testcase_id[testcase_oid] || this_traceid
-                this_trace_name = testcase_name || this_traceid
+                this_trace_name = "#{this_traceid}: #{testcase_name}"
 
                 detail_url = "#{testcase_detail_url_prefix}/#{testcase_oid}"
                 this_trace = "<a href=\"#{detail_url}\">#{this_trace_name}</a>"
@@ -149,10 +149,11 @@ def create_traces_markup_from_traces_array(traces_array) #{
                 this_trace = @req_name_by_reqid[this_traceid] || this_traceid
             else
                 @logger.info "        Linking Trace JDtraceId=#{this_traceid} to Rally UserStory: FmtID=#{story_fid} OID=#{story_oid}"
-                this_trace_name = @req_name_by_reqid[this_traceid.sub("REQ", "")] || this_traceid
+                #this_trace_name = @req_name_by_reqid[this_traceid.sub("REQ", "")] || this_traceid
+                this_trace_name = "#{this_traceid}: #{story_name}"
 
                 detail_url = "#{story_detail_url_prefix}/#{story_oid}"
-                this_trace = "<a href=\"#{detail_url}\">#{this_traceid}  #{this_trace_name}</a>"
+                this_trace = "<a href=\"#{detail_url}\">#{this_trace_name}</a>"
             end
             traces_markup += trace_counter.to_s + ". "
             traces_markup += this_trace

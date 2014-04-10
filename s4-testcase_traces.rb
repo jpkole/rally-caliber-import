@@ -124,7 +124,8 @@ def create_traces_markup_from_traces_array(traces_array) #{
                 this_trace = @testcase_name_by_reqid[this_traceid] || this_traceid
             else
                 @logger.info "            Linking Caliber Trace: CID=#{this_traceid}; to Rally TestCase: FID=#{testcase_fid}; OID=#{testcase_oid}"
-                this_trace_name = @testcase_name_by_reqid[testcase_oid] || this_traceid
+                #this_trace_name = @testcase_name_by_reqid[testcase_oid] || this_traceid
+                this_trace_name = "#{this_traceid}: #{testcase_name}"
 
                 detail_url = "#{testcase_detail_url_prefix}/#{testcase_oid}"
                 this_trace = "<a href=\"#{detail_url}\">#{this_trace_name}</a>"
@@ -136,14 +137,15 @@ def create_traces_markup_from_traces_array(traces_array) #{
         end
 
         if !is_requirement.nil? then
-            story_oid = @story_oid_by_reqid[this_traceid.sub("REQ", "")]
-            story_tag, story_fid, story_oid, req_name = @story_TagFidOidName_by_reqid[this_traceid.sub("REQ", "")]
+            story_tag, story_fid, story_oid, story_name = @story_TagFidOidName_by_reqid[this_traceid.sub("REQ", "")]
+
             if story_oid.nil? then
                 @logger.warn "        *** No Rally UserStory found for Caliber Requirement; CID=#{this_traceid} - skipping linkage."
                 this_trace = @req_name_by_reqid[this_traceid] || this_traceid
             else
                 @logger.info "            Linking Caliber Trace: CID=#{this_traceid}; to Rally UserStory: FID=#{story_fid}; OID=#{story_oid}."
                 this_trace_name = @req_name_by_reqid[this_traceid] || this_traceid
+                this_trace_name = "#{this_traceid}: #{story_name}"
 
                 detail_url = "#{story_detail_url_prefix}/#{story_oid}"
                 this_trace = "<a href=\"#{detail_url}\">#{this_trace_name}</a>"
