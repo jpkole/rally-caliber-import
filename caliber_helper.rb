@@ -26,27 +26,34 @@ class CaliberHelper
                 $my_wsapi_version                           = #{$my_wsapi_version}
                 $my_workspace                               = #{$my_workspace}
                 $my_project                                 = #{$my_project}
-                $max_attachment_length                      = #{$max_attachment_length}
-                $max_description_length                     = #{$max_description_length}
+
                 $caliber_file_req                           = #{$caliber_file_req}
                 $caliber_file_req_traces                    = #{$caliber_file_req_traces}
                 $caliber_file_tc                            = #{$caliber_file_tc}
                 $caliber_file_tc_traces                     = #{$caliber_file_tc_traces}
                 $caliber_image_directory                    = #{$caliber_image_directory}
+
                 $caliber_id_field_name                      = #{$caliber_id_field_name}
-                $caliber_weblink_field_name                 = #{$caliber_weblink_field_name}
                 $caliber_req_traces_field_name              = #{$caliber_req_traces_field_name}
+                $caliber_weblink_field_name                 = #{$caliber_weblink_field_name}
                 $caliber_tc_traces_field_name               = #{$caliber_tc_traces_field_name}
+
+                $max_attachment_length                      = #{$max_attachment_length}
+                $max_description_length                     = #{$max_description_length}
                 $max_import_count                           = #{$max_import_count}
                 $html_mode                                  = #{$html_mode}
                 $preview_mode                               = #{$preview_mode}
+
                 $csv_requirements                           = #{$csv_requirements}
                 $csv_requirement_fields                     = #{$csv_requirement_fields}
                 $csv_US_OidCidReqname_by_FID                = #{$csv_US_OidCidReqname_by_FID}
                 $csv_US_OidCidReqname_by_FID_fields         = #{$csv_US_OidCidReqname_by_FID_fields}
+
                 $csv_testcases                              = #{$csv_testcases}
+                $csv_testcase_fields                        = #{$csv_testcase_fields}
                 $csv_TC_OidCidReqname_by_FID                = #{$csv_TC_OidCidReqname_by_FID}
                 $csv_TC_OidCidReqname_by_FID_fields         = #{$csv_TC_OidCidReqname_by_FID_fields}
+
                 $cal2ral_req_log                            = #{$cal2ral_req_log}
                 $cal2ral_req_traces_log                     = #{$cal2ral_req_traces_log}
                 $cal2ral_tc_log                             = #{$cal2ral_tc_log}
@@ -183,7 +190,7 @@ class CaliberHelper
             # Array with relative URL's to Rally-embedded attachments
             new_attachment_sources = []
 
-            @logger.info "    Import #{artifact_count} of #{artifacts_with_images_hash.length}: adding #{this_image_list.length} image(s) to Rally User Story; FmtID=#{this_artifact_fmtid}; OID=#{this_artifact_oid}"
+            @logger.info "    Import #{artifact_count} of #{artifacts_with_images_hash.length}: adding #{this_image_list.length} image(s) to Rally Artifact; FmtID=#{this_artifact_fmtid}; OID=#{this_artifact_oid}"
             this_image_list.each_with_index do | this_image_file, indx_image | #{
 
                 @logger.info "        importing image file #{indx_image+1} of #{this_image_list.length}: id=#{this_image_title_list[indx_image]}; Name=#{File.basename(this_image_file)}"
@@ -404,16 +411,25 @@ class CaliberHelper
         testcase_description          = testcase['description']
 
         preconditions_field_hash = {
-            'Testing Status'             => 'testing_status',
-            'Test Running'               => 'test_running',
-            'Machine Type'               => 'machine_type'
+            'Testing Status'          => 'testing_status',
+            'Test Running'            => 'test_running',
+            'Machine Type'            => 'machine_type'
         }
 
         #@logger.info "    Processing Caliber TestCase ID: #{testcase_id}; Hierarchy: #{testcase_hierarchy}; Project: #{testcase_project}"
 
         testcase_fields = {}
         testcase_fields["Name"]                   = make_name(testcase, :testcase)
-        testcase_fields["Description"]            = create_markup_from_hash(testcase, @description_field_hash, :testcase)
+#################
+        description = create_markup_from_hash(testcase, @description_field_hash, :testcase)
+        if !description.nil? then
+            # Within an <img...> tag, Rally no longer allows src= strings which have a leading "file://"; so change it to "http://".
+            description = description.gsub(/file:\/\//, "http://")
+            # Within an <img...> tag, Rally no longer allows id= tags; so change it to "title=" (which are allowed).
+            description = description.gsub(/id=/, "title=")
+        end
+        testcase_fields["Description"]  = description
+#################
         testcase_fields["PreConditions"]          = create_markup_from_hash(testcase, preconditions_field_hash, :testcase)
         testcase_fields[@caliber_id_field_name]   = testcase_id
 

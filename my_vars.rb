@@ -71,22 +71,22 @@ $my_workspace                   = "JDF Tampere"
 # ------------------------------------------------------------------------------
 # Proj5: DTI project
 #
-#$my_project                     = "DTI_requirements-new"                                                # Rally Project name
-#$caliber_file_req               = "../from-ftp-site/fetch5-DTI/JDF_DTI_reqs_without_trash.xml"      # 01-Requirements
-#$caliber_file_req_traces        = "../from-ftp-site/fetch5-DTI/JDF_DTItracereq.xml"                 # 02-Requirement-Traces
-#$caliber_file_tc                = "../from-ftp-site/fetch5-DTI/JDF_DTI_TC_without_trash.xml"        # 03-Testcases
-#$caliber_file_tc_traces         = "../from-ftp-site/fetch5-DTI/JDF_DTItraceTC.xml"                  # 04-Testcases-Traces
-#$caliber_image_directory        = "../from-ftp-site/fetch3-TimberOffice/ImageCache"                 # 05-Image data
+$my_project                     = "DTI_requirements"                                                # Rally Project name
+$caliber_file_req               = "../from-ftp-site/fetch5-DTI/JDF_DTI_reqs_without_trash.xml"      # 01-Requirements
+$caliber_file_req_traces        = "../from-ftp-site/fetch5-DTI/JDF_DTItracereq.xml"                 # 02-Requirement-Traces
+$caliber_file_tc                = "../from-ftp-site/fetch5-DTI/JDF_DTI_TC_without_trash.xml"        # 03-Testcases
+$caliber_file_tc_traces         = "../from-ftp-site/fetch5-DTI/JDF_DTItraceTC.xml"                  # 04-Testcases-Traces
+$caliber_image_directory        = "../from-ftp-site/fetch3-TimberOffice/ImageCache"                 # 05-Image data
 
 # ------------------------------------------------------------------------------
 # Proj6: Rimu project
 #
-$my_project                     = "RIMU_requirements"                                               # Rally Project name
-$caliber_file_req               = "../from-ftp-site/fetch6-Rimu_Reqs_and_Traces/rimu.xml"           # 01-Requirements
-$caliber_file_req_traces        = "../from-ftp-site/fetch6-Rimu_Reqs_and_Traces/JDF_rimutraces.xml" # 02-Requirement-Traces
-$caliber_file_tc                = ""                                                                # 03-Testcases
-$caliber_file_tc_traces         = ""                                                                # 04-Testcases-Traces
-$caliber_image_directory        = "../from-ftp-site/fetch3-TimberOffice/ImageCache"                 # 05-Image data (Same as TOffice)
+#$my_project                     = "RIMU_requirements"                                               # Rally Project name
+#$caliber_file_req               = "../from-ftp-site/fetch6-Rimu_Reqs_and_Traces/rimu.xml"           # 01-Requirements
+#$caliber_file_req_traces        = "../from-ftp-site/fetch6-Rimu_Reqs_and_Traces/JDF_rimutraces.xml" # 02-Requirement-Traces
+#$caliber_file_tc                = ""                                                                # 03-Testcases
+#$caliber_file_tc_traces         = ""                                                                # 04-Testcases-Traces
+#$caliber_image_directory        = "../from-ftp-site/fetch3-TimberOffice/ImageCache"                 # 05-Image data (Same as TOffice)
 
 # ------------------------------------------------------------------------------
 # Custom fields in Rally:

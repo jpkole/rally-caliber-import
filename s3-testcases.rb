@@ -322,7 +322,8 @@ bm_time = Benchmark.measure {
                 if caliber_image_count < 1 then
                     @logger.info "            No images found for this Requirement."
                 else
-                    description_with_images = this_testcase['description']
+                    #description_with_images = this_testcase['description']
+                    description_with_images = testcase.elements[:description]
                     image_file_objects, image_file_ids, image_file_titles = @caliber_helper.get_caliber_image_files(description_with_images)
                     caliber_image_data = {
                         "files"         => image_file_objects,
