@@ -190,7 +190,7 @@ class CaliberHelper
             # Array with relative URL's to Rally-embedded attachments
             new_attachment_sources = []
 
-            @logger.info "    Import #{artifact_count} of #{artifacts_with_images_hash.length}: adding #{this_image_list.length} image(s) to Rally Artifact; FmtID=#{this_artifact_fmtid}; OID=#{this_artifact_oid}"
+            @logger.info "    Import #{artifact_count} of #{artifacts_with_images_hash.length}: adding #{this_image_list.length} image(s) to Rally Artifact; FmtID=#{this_artifact_fmtid}; OID=#{this_artifact_oid};"
             this_image_list.each_with_index do | this_image_file, indx_image | #{
 
                 @logger.info "        importing image file #{indx_image+1} of #{this_image_list.length}: id=#{this_image_title_list[indx_image]}; Name=#{File.basename(this_image_file)}"
@@ -231,7 +231,7 @@ class CaliberHelper
                         # So that we can stitch it back into the Description to "in-line" the image
                         new_attachment_sources.push(attachment_src_url)
                     rescue => ex
-                        @logger.error "Error occurred trying to create attachment from #{this_image_file} for Rally Artifact with OID=#{this_artifact_oid}"
+                        @logger.error "Error occurred trying to create attachment from #{this_image_file} for Rally Artifact with OID=#{this_artifact_oid};"
                         @logger.error ex.message
                         @logger.error ex.backtrace
                     end
@@ -348,7 +348,7 @@ class CaliberHelper
         if artifact_markup.length <= $max_description_length
             return artifact_markup
         else
-            @logger.warn "        *** Description length: #{artifact_markup.length} exceeds Rally limit of #{$max_description_length}; truncated; CID=#{caliber_object["id"]}"
+            @logger.warn "        *** Description length: #{artifact_markup.length} exceeds Rally limit of #{$max_description_length}; truncated; CID=#{caliber_object["id"]};"
             trunc_warn = '*** Too long; TRUNCATED! ***'
 
             # Save a copy of the description (that is too long), into its own file.
@@ -390,12 +390,12 @@ class CaliberHelper
         story[@caliber_id_field_name]   = requirement['id']
         begin
             newstory = @rally.create("hierarchicalrequirement", story)
-            newstory.read
+            #newstory.read
             newstory_oid = newstory['ObjectID']
             newstory_fid = newstory['FormattedID']
             return newstory
         rescue => ex
-            @logger.error "Error occurred creating Rally Story from Caliber Requirement ID: #{requirement['id']}. Not imported."
+            @logger.error "Error occurred creating Rally Story from CID=#{requirement['id']}; Not imported."
             @logger.error ex.message
             @logger.error ex.backtrace
         end
@@ -416,7 +416,7 @@ class CaliberHelper
             'Machine Type'            => 'machine_type'
         }
 
-        #@logger.info "    Processing Caliber TestCase ID: #{testcase_id}; Hierarchy: #{testcase_hierarchy}; Project: #{testcase_project}"
+        #@logger.info "    Processing Caliber TestCase CID=#{testcase_id}; Hierarchy: #{testcase_hierarchy}; Project: #{testcase_project}"
 
         testcase_fields = {}
         testcase_fields["Name"]                   = make_name(testcase, :testcase)
@@ -443,7 +443,7 @@ class CaliberHelper
             testcase_oid = testcase['ObjectID']
             return testcase
         rescue => ex
-            @logger.error "Error occurred creating Rally TestCase from Caliber TestCase ID: #{testcase_id}. Not imported."
+            @logger.error "Error occurred creating Rally TestCase from CID=#{testcase_id}; Not imported."
             @logger.error ex.message
             @logger.error ex.backtrace
         end
@@ -498,12 +498,12 @@ class CaliberHelper
             update_fields = {}
             update_fields["Parent"] = parent_story._ref
 
-            @logger.info "    Parenting (##{us_parents_stitched} of #{tot_us}); Child Hierarchy #{this_hierarchy_id}: Rally UserStory: FmtID=#{child_story_fid}; OID=#{child_story_oid} to:"
-            @logger.info "        parent Hierarchy #{this_parent_hierarchy_id}: Rally UserStory: FmtID=#{parent_story_fid}; OID=#{parent_story_oid}"
+            @logger.info "    Parenting (##{us_parents_stitched} of #{tot_us}); Child Hierarchy #{this_hierarchy_id}: Rally UserStory: FmtID=#{child_story_fid}; OID=#{child_story_oid}; to:"
+            @logger.info "        parent Hierarchy #{this_parent_hierarchy_id}: Rally UserStory: FmtID=#{parent_story_fid}; OID=#{parent_story_oid};"
             begin
                 @rally.update("hierarchicalrequirement", child_story_oid, update_fields)
             rescue => ex
-                @logger.error "Error occurred attempting to Parent Rally Story: OID=#{child_story_oid}; to Story: OID=#{parent_story_oid}"
+                @logger.error "Error occurred attempting to Parent Rally Story: OID=#{child_story_oid}; to Story: OID=#{parent_story_oid};"
                 @logger.error ex.message
                 @logger.error ex.backtrace
             end
@@ -547,12 +547,12 @@ class CaliberHelper
             update_fields = {}
             update_fields[@caliber_weblink_field_name] = parent_web_link
 
-            @logger.info "    Parenting (##{tc_parents_stitched} of #{tot_tc}); Child Hierarchy #{this_hierarchy_id}: Rally TestCase: FmtID=#{child_testcase_fid}; OID=#{child_testcase_oid} to:"
-            @logger.info "        parent Hierarchy #{this_parent_hierarchy_id}: Rally Testcase: FmtID=#{parent_testcase_fid}; OID=#{parent_testcase_oid}"
+            @logger.info "    Parenting (##{tc_parents_stitched} of #{tot_tc}); Child Hierarchy #{this_hierarchy_id}: Rally TestCase: FmtID=#{child_testcase_fid}; OID=#{child_testcase_oid}; to:"
+            @logger.info "        parent Hierarchy #{this_parent_hierarchy_id}: Rally Testcase: FmtID=#{parent_testcase_fid}; OID=#{parent_testcase_oid};"
             begin
                 @rally.update("testcase", child_testcase_oid, update_fields)
             rescue => ex
-                @logger.error "Error occurred attempting to Link Rally TestCase: OID=#{child_testcase_oid}; to TestCase: OID=#{parent_testcase_oid}"
+                @logger.error "Error occurred attempting to Link Rally TestCase: OID=#{child_testcase_oid}; to TestCase: OID=#{parent_testcase_oid};"
                 @logger.error ex.message
                 @logger.error ex.backtrace
             end

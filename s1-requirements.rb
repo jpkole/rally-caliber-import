@@ -293,7 +293,7 @@ bm_time = Benchmark.measure {
                 if $import_to_rally then
                     story = @caliber_helper.create_story_from_caliber(current_req)
                     total_us = total_us + 1
-                    @logger.info "            Created Rally UserStory #{total_us} of #{tags_requirement.length}: FmtID=#{story.FormattedID}; OID=#{story.ObjectID}; from Caliber Requirement id=#{this_Requirement['id']}"
+                    @logger.info "            Created Rally UserStory #{total_us} of #{tags_requirement.length}: FmtID=#{story.FormattedID}; OID=#{story.ObjectID}; from CID=#{this_Requirement['id']};"
                 end
 
                 # Save the Story OID and associate it to the Caliber Hierarchy ID for later use in stitching

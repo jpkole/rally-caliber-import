@@ -292,7 +292,7 @@ bm_time = Benchmark.measure {
                 if $import_to_rally then
                     testcase = @caliber_helper.create_testcase_from_caliber(this_testcase)
                     total_tc = total_tc + 1
-                    @logger.info "            Created Rally TestCase #{total_tc} of #{tags_requirement.length}:  FmtID=#{testcase.FormattedID}; OID=#{testcase.ObjectID}; from Caliber Requirement id=#{this_Requirement['id']}"
+                    @logger.info "            Created Rally TestCase #{total_tc} of #{tags_requirement.length}:  FmtID=#{testcase.FormattedID}; OID=#{testcase.ObjectID}; from CID=#{this_Requirement['id']};"
                 end
 
                 # Save the TestCase OID and associated it to the Caliber Hierarchy ID for later use

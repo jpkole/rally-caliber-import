@@ -125,10 +125,10 @@ def create_traces_markup_from_traces_array(traces_array) #{
             testcase_tag, testcase_fid, testcase_oid, testcase_name = @testcase_TagFidOidName_by_reqid[this_traceid.sub("TC", "")]
 
             if testcase_oid.nil? then
-                @logger.warn "    *** No Rally TestCase found for Caliber TestCase: CID=#{this_traceid} (link will be empty)"
+                @logger.warn "    *** No Rally TestCase found for Caliber TestCase: CID=#{this_traceid}; (link will be empty)"
                 this_trace = this_traceid
             else
-                @logger.info "        Linking Trace JDtraceId=#{this_traceid} to Rally TestCase: FmtID=#{testcase_fid} OID=#{testcase_oid}"
+                @logger.info "        Linking Trace JDtraceId=#{this_traceid}; to Rally TestCase: FmtID=#{testcase_fid}; OID=#{testcase_oid};"
                 #this_trace_name = @testcase_name_by_caliber_testcase_id[testcase_oid] || this_traceid
                 this_trace_name = "#{this_traceid}: #{testcase_name}"
 
@@ -145,10 +145,10 @@ def create_traces_markup_from_traces_array(traces_array) #{
             story_tag, story_fid, story_oid, story_name = @story_TagFidOidName_by_reqid[this_traceid.sub("REQ", "")]
 
             if story_oid.nil? then
-                @logger.warn "    *** No Rally UserStory found for Caliber Requirement: CID=#{this_traceid} (link will be empty)"
+                @logger.warn "    *** No Rally UserStory found for Caliber Requirement: CID=#{this_traceid}; (link will be empty)"
                 this_trace = @req_name_by_reqid[this_traceid] || this_traceid
             else
-                @logger.info "        Linking Trace JDtraceId=#{this_traceid} to Rally UserStory: FmtID=#{story_fid} OID=#{story_oid}"
+                @logger.info "        Linking Trace JDtraceId=#{this_traceid}; to Rally UserStory: FmtID=#{story_fid}; OID=#{story_oid};"
                 #this_trace_name = @req_name_by_reqid[this_traceid.sub("REQ", "")] || this_traceid
                 this_trace_name = "#{this_traceid}: #{story_name}"
 
@@ -172,7 +172,7 @@ def update_story_with_caliber_traces(story_oid, req_name, traces_text)
     begin
         @rally.update("hierarchicalrequirement", story_oid, update_fields)
     rescue => ex
-        @logger.error "Error occurred attempting to Import Caliber Traces to Rally UserStory: OID=#{story_oid}."
+        @logger.error "Error occurred attempting to Import Caliber Traces to Rally UserStory: OID=#{story_oid};"
         @logger.error ex.message
         @logger.error ex.backtrace
     end
@@ -267,7 +267,7 @@ bm_time = Benchmark.measure {
                 this_req_name = this_JDname.text
             end
 
-            @logger.info "    <#{$tag_JDrequest}> tag #{indx_JDrequest+1} of #{all_JDrequest_tags.length}; JDid=#{this_req_id}"
+            @logger.info "    <#{$tag_JDrequest}> tag #{indx_JDrequest+1} of #{all_JDrequest_tags.length}; JDid=#{this_req_id};"
 
             story_tag, story_fid, story_oid, story_name = @story_TagFidOidName_by_reqid[this_req_id.sub("REQ", "")]
             if story_oid.nil? then
@@ -309,12 +309,12 @@ bm_time = Benchmark.measure {
             end
 
             if $preview_mode then
-                @logger.info "    Rally Story OID=#{this_req_id} needs updated with #{traces_array.length} Caliber Traces from Requirement: #{this_req_name}"
+                @logger.info "    Rally Story OID=#{this_req_id}; needs updated with #{traces_array.length} Caliber Traces from Requirement: '#{this_req_name}'"
             else
 	            if traces_text.nil? then
-                    @logger.info "        Nothing to update for Rally Story OID=#{story_oid} (no traces found)."
+                    @logger.info "        Nothing to update for Rally Story OID=#{story_oid}; (no traces found)."
 		        else
-                    @logger.info "        Updating Rally Story with Caliber Traces: FmtID=#{story_fid}; OID=#{story_oid};  CID=#{this_req_id}"
+                    @logger.info "        Updating Rally Story with Caliber Traces: FmtID=#{story_fid}; OID=#{story_oid};  CID=#{this_req_id};"
                     update_story_with_caliber_traces(story_oid, this_req_name, traces_text)
 		        end
             end

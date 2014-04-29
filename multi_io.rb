@@ -3,7 +3,7 @@ class MultiIO
 
     def initialize(*targets)
         @targets = targets
-	@msg_count_hash = Hash.new (0)
+	@msg_count_hash = Hash.new(0)
 	@time_first = "nil"
 	@time_last = "nil"
     end

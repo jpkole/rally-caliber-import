@@ -61,25 +61,25 @@ $my_workspace                   = "JDF Tampere"
 # ------------------------------------------------------------------------------
 # Proj4: HHC Harvest project
 #
-#$my_project                     = "HHC_requirements"                                                # Rally Project name
-#$caliber_file_req               = "../from-ftp-site/fetch4-HHC_Harvest/HHC_to_rally.xml"            # 01-Requirements
-#$caliber_file_req_traces        = "../from-ftp-site/fetch4-HHC_Harvest/HHC_traces.xml"              # 02-Requirement-Traces
-#$caliber_file_tc                = ""                                                                # 03-Testcases
-#$caliber_file_tc_traces         = ""                                                                # 04-Testcases-Traces
-#$caliber_image_directory        = "../from-ftp-site/fetch3-TimberOffice/ImageCache"                 # 05-Image data
-
-# ------------------------------------------------------------------------------
-# Proj5: DTI project
-#
-$my_project                     = "DTI_requirements"                                                # Rally Project name
-$caliber_file_req               = "../from-ftp-site/fetch5-DTI/JDF_DTI_reqs_without_trash.xml"      # 01-Requirements
-$caliber_file_req_traces        = "../from-ftp-site/fetch5-DTI/JDF_DTItracereq.xml"                 # 02-Requirement-Traces
-$caliber_file_tc                = "../from-ftp-site/fetch5-DTI/JDF_DTI_TC_without_trash.xml"        # 03-Testcases
-$caliber_file_tc_traces         = "../from-ftp-site/fetch5-DTI/JDF_DTItraceTC.xml"                  # 04-Testcases-Traces
+$my_project                     = "HHC_requirements"                                                # Rally Project name
+$caliber_file_req               = "../from-ftp-site/fetch4-HHC_Harvest/HHC_to_rally.xml"            # 01-Requirements
+$caliber_file_req_traces        = "../from-ftp-site/fetch4-HHC_Harvest/HHC_traces.xml"              # 02-Requirement-Traces
+$caliber_file_tc                = ""                                                                # 03-Testcases
+$caliber_file_tc_traces         = ""                                                                # 04-Testcases-Traces
 $caliber_image_directory        = "../from-ftp-site/fetch3-TimberOffice/ImageCache"                 # 05-Image data
 
 # ------------------------------------------------------------------------------
-# Proj6: Rimu project
+# Proj5: DTI project (runtimes: s1=16 minutes, s2=1.8 minute, s3=7.7 minutes, s4-1.5 minutes)
+#
+#$my_project                     = "DTI_requirements"                                                # Rally Project name
+#$caliber_file_req               = "../from-ftp-site/fetch5-DTI/JDF_DTI_reqs_without_trash.xml"      # 01-Requirements
+#$caliber_file_req_traces        = "../from-ftp-site/fetch5-DTI/JDF_DTItracereq.xml"                 # 02-Requirement-Traces
+#$caliber_file_tc                = "../from-ftp-site/fetch5-DTI/JDF_DTI_TC_without_trash.xml"        # 03-Testcases
+#$caliber_file_tc_traces         = "../from-ftp-site/fetch5-DTI/JDF_DTItraceTC.xml"                  # 04-Testcases-Traces
+#$caliber_image_directory        = "../from-ftp-site/fetch3-TimberOffice/ImageCache"                 # 05-Image data
+
+# ------------------------------------------------------------------------------
+# Proj6: Rimu project (runtimes: s1=40 minutes, s2=1 minute)
 #
 #$my_project                     = "RIMU_requirements"                                               # Rally Project name
 #$caliber_file_req               = "../from-ftp-site/fetch6-Rimu_Reqs_and_Traces/rimu.xml"           # 01-Requirements
@@ -87,6 +87,28 @@ $caliber_image_directory        = "../from-ftp-site/fetch3-TimberOffice/ImageCac
 #$caliber_file_tc                = ""                                                                # 03-Testcases
 #$caliber_file_tc_traces         = ""                                                                # 04-Testcases-Traces
 #$caliber_image_directory        = "../from-ftp-site/fetch3-TimberOffice/ImageCache"                 # 05-Image data (Same as TOffice)
+
+# ------------------------------------------------------------------------------
+# Proj7: Timbermatic / Zeus project (runtimes: s1=1.7 hours, s2=13.6 minutes)
+#
+#$my_project                     = "Timbermatic_requirements"                                        # Rally Project name
+#$caliber_file_req               = "../from-ftp-site/fetch7-Timbermatic/JDF_zeusPC.xml"              # 01-Requirements
+#$caliber_file_req_traces        = "../from-ftp-site/fetch7-Timbermatic/Zeus_PC_traces.xml"          # 02-Requirement-Traces
+#$caliber_file_tc                = ""                                                                # 03-Testcases
+#$caliber_file_tc_traces         = ""                                                                # 04-Testcases-Traces
+#$caliber_image_directory        = "../from-ftp-site/fetch7-Timbermatic/ImageCache"                  # 05-Image data
+
+# ------------------------------------------------------------------------------
+# Proj8: Carrier project.
+#   Elapsed time (minutes): demo-services1: s1=95, s2=25, s3=76, s4=23, tot=220
+#                           rally1:         s1=55, s2=10, s3=31, s4=9, tot=105
+#$my_project                     = "Carrier_requirements"                                            # Rally Project name
+#$caliber_file_req               = "../from-ftp-site/fetch8-Carrier/carrier_req.xml"                 # 01-Requirements
+#$caliber_file_req_traces        = "../from-ftp-site/fetch8-Carrier/carrier_req_traces.xml"          # 02-Requirement-Traces
+#$caliber_file_tc                = "../from-ftp-site/fetch8-Carrier/carrier_tc.xml"                  # 03-Testcases
+#$caliber_file_tc_traces         = "../from-ftp-site/fetch8-Carrier/carrier_TC_traces.xml"           # 04-Testcases-Traces
+#$caliber_image_directory        = "../from-ftp-site/fetch7-Timbermatic/ImageCache"                  # 05-Image data
+
 
 # ------------------------------------------------------------------------------
 # Custom fields in Rally:
@@ -103,13 +125,14 @@ $caliber_tc_traces_field_name   = "Externalreference"   # TC - type Text
 # Runtime preferences
 #
 $max_attachment_length          = 5_242_880 # 5mb - https://help.rallydev.com/creating-user-story
-$max_description_length         = 32_768 # fail
-$max_description_length         = 31_310 # This apparently needs to be lower than the published 32,768... maybe nokigiri adds more?
-#maybe try 31310 for Toffice (above)
+$max_description_length         = 32_768    # fail
+$max_description_length         = 31_310    # This apparently needs to be lower than the published 32,768...
+                                            # maybe nokigiri adds more?
+                                            # maybe try 31310 for Toffice (above)
 $max_import_count               = 50_000
 
-$html_mode                      = true
-$preview_mode                   = false
+$html_mode                      = true      #
+$preview_mode                   = false     #
 
 
 # ------------------------------------------------------------------------------
